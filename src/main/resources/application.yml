@@ -14,6 +14,9 @@ agv:
   obstacle_duration: 30  # 前有障礙多久時要發出警告
 
 elevator:
+  ip: 192.168.0.100
+  port: 8887
+  timeout: 3000
   pre_person_open_door_duration: 10  # 人員呼叫，電梯開門多久後沒按下人員佔用按鈕，歸還權限
 
 http:

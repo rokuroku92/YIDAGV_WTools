@@ -13,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -40,7 +41,7 @@ public class ElevatorManager {
     private final Queue<Integer> callQueue;
     public ElevatorManager() {
         callQueue = new ConcurrentLinkedDeque<>();
-        lastCallerStatus = new int[6];
+        lastCallerStatus = new int[8];
     }
 
     @PostConstruct
@@ -50,11 +51,11 @@ public class ElevatorManager {
         elevatorPersonCount = 0;
     }
 
-    @Scheduled(fixedRate = 1000)
+//    @Scheduled(fixedRate = 1000)
     public void elevatorProcess() {
         String[] statusData = crawlStatus().orElse(new String[0]);
         if (statusData.length == 0) return;
-        int[] callerStatus = new int[6];
+        int[] callerStatus = new int[8];
         Arrays.fill(callerStatus, 0);
         String[] elevatorData = statusData[0].split(",");
         // 假設開門
@@ -64,25 +65,27 @@ public class ElevatorManager {
         // 假設電梯有障礙
         iObstacle = elevatorData[3].equals("1");
 
-        for(int i = 1; i <= statusData.length; i++){
+        for(int i = 0; i < statusData.length-1; i++){
             String[] data = statusData[i].split(",");  // 分隔資料
             if (data[0].equals("-1")){
                 callerStatus[i] = -1;
                 continue;
             }
-            // 假設呼叫按鈕按下
-            if (data[1].equals("1")){
-                int finalI = i;
-                AtomicBoolean had = new AtomicBoolean(false);
-                callQueue.forEach(floor -> {
-                    if(floor == finalI){
-                        had.set(true);
+            if(i % 2 == 0) {
+                // 假設呼叫按鈕按下
+                if (Objects.requireNonNull(parseStatus(Integer.parseInt(data[1])))[0]){
+                    int finalI = i;
+                    AtomicBoolean had = new AtomicBoolean(false);
+                    callQueue.forEach(floor -> {
+                        if(floor == finalI){
+                            had.set(true);
+                        }
+                    });
+                    if(!had.get()){
+                        callQueue.offer(i);
                     }
-                });
-                if(!had.get()){
-                    callQueue.offer(i);
+                    callerStatus[i] = 2;  // TODO: 假設 2 是閃黃燈
                 }
-                callerStatus[i] = 2;  // TODO: 假設 2 是閃黃燈
             }
         }
 
@@ -91,27 +94,28 @@ public class ElevatorManager {
                 return;
             }
             case PRE_PERSON -> {
+                Integer floor = callQueue.peek();
+                callerStatus[floor] = 3;  // TODO: 假設黃色恆亮是3
                 if (iOpenDoor){
                     if (!iPersonOccupancyButton){
                         prePersonOpenDoorCount++;
                         if(prePersonOpenDoorCount > prePersonOpenDoorDuration){
-                            Integer floor = callQueue.poll();
+                            callQueue.poll();
                             // TODO: clear callerButton
                             controlElevatorDoor(floor, false);
                             elevatorPermission = ElevatorPermission.FREE;
                             prePersonOpenDoorCount = 0;
                         }
                     } else {
-                        Integer floor = callQueue.poll();
+                        callQueue.poll();
                         // TODO: clear callerButton
                         controlElevatorDoor(floor, false);
-                        prePersonOpenDoorCount = 0;
                         elevatorPermission = ElevatorPermission.PERSON;
+                        prePersonOpenDoorCount = 0;
                     }
                 }
             }
             case PERSON -> {
-                prePersonOpenDoorCount = 0;
                 elevatorPersonCount++;
                 if (!iPersonOccupancyButton){
                     elevatorPersonCount = 0;
@@ -121,17 +125,16 @@ public class ElevatorManager {
             }
             case FREE -> {
                 elevatorPersonCount = 0;
-                if (!callQueue.isEmpty()){
+                if (!callQueue.isEmpty() && !iOpenDoor){
                     Integer floor = callQueue.peek();
                     if (controlElevatorDoor(floor, true)){
-                        callerStatus[floor-1] = 3;  // TODO: 假設黃色恆亮是3
                         elevatorPermission = ElevatorPermission.PRE_PERSON;
                     }
                 }
             }
         }
 
-        for (int i = 0; i < callerStatus.length; i++) {
+        for (int i = 0; i < callerStatus.length; i+=2) {
             if(callerStatus[i] == -1){
                 lastCallerStatus[i] = -1;
                 continue;
@@ -148,9 +151,9 @@ public class ElevatorManager {
                 }
                 case SYSTEM -> {
                     if (callerStatus[i] == 2){
-                        sendCaller(i+1, 9);  // TODO: 假設紅色燈號恆亮、黃色閃爍是5
+                        sendCaller(i+1, 9);  // TODO: 假設紅色、黃色燈號恆亮是9
                     } else {
-                        sendCaller(i+1, 8);  // TODO: 假設紅燈號恆亮4
+                        sendCaller(i+1, 8);  // TODO: 假設紅燈號恆亮8
                     }
                 }
 
@@ -252,6 +255,19 @@ public class ElevatorManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean[] parseStatus(int statusValue) {
+        if(statusValue < 0) return null;
+        boolean[] statusArray = new boolean[8];
+        // 從右到左解析各個位元狀態
+        for (int i = 0; i < statusArray.length ; i++) {
+            // 檢查第i位是否為1，若是則代表狀態為真
+            statusArray[i] = (statusValue & 1) == 1;
+            // 右移一位，繼續解析下一位元
+            statusValue >>= 1;
+        }
+        return statusArray;
     }
 
 

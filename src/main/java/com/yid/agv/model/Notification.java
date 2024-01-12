@@ -7,7 +7,7 @@ public class Notification {
     private Long id;
     private String name;
     private int level;
-    private String content;
+    private String message;
     private String createTime;
 
 }

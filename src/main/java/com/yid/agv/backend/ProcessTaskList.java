@@ -34,7 +34,7 @@ public class ProcessTaskList {
     private ElevatorManager elevatorManager;
 
 
-    @Scheduled(fixedRate = 4000)
+//    @Scheduled(fixedRate = 4000)
     public void checkTaskList() {
 
         for(int i = 1; i <= taskListManager.getTaskListMapSize(); i++){

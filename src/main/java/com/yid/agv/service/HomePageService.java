@@ -18,9 +18,6 @@ public class HomePageService {
     
     @Autowired
     private NotificationDao notificationDao;
-
-    @Autowired
-    private MessageDataDao messageDataDao;
     
     @Autowired
     private ModeDao modeDao;
@@ -52,6 +49,10 @@ public class HomePageService {
         return agvIdDao.queryAGVList();
     }
 
+    public List<Notification> queryNotificationsL(){
+        return notificationDao.queryNotificationsL();
+    }
+
     public List<Notification> queryTodayNotifications(){
         return notificationDao.queryTodayNotifications();
     }
@@ -68,9 +69,6 @@ public class HomePageService {
         return notificationDao.queryNotifications();
     }
 
-    public List<MessageData> queryMessageData(){
-        return messageDataDao.queryMessageData();
-    }
 
     public List<Mode> queryModes(){
         return modeDao.queryModes();

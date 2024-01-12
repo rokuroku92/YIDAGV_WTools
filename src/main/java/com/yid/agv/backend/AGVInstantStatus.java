@@ -2,6 +2,8 @@ package com.yid.agv.backend;
 
 import com.yid.agv.backend.agv.AGVManager;
 import com.yid.agv.backend.agv.AGV;
+import com.yid.agv.backend.agvtask.AGVQTask;
+import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.model.Station;
@@ -46,6 +48,8 @@ public class AGVInstantStatus {
     @Autowired
     private AnalysisDao analysisDao;
     @Autowired
+    private TaskDetailDao taskDetailDao;
+    @Autowired
     private AGVManager agvManager;
     @Autowired
     private AGVTaskManager taskQueue;
@@ -65,7 +69,7 @@ public class AGVInstantStatus {
                 .collect(Collectors.toMap(Station::getId, Station::getTag));
     }
 
-    @Scheduled(fixedRate = 1000) // 每秒執行
+//    @Scheduled(fixedRate = 1000) // 每秒執行
     public void updateAgvStatuses() {
         // 抓取AGV狀態，並更新到agvStatuses
         String[] agvStatusData = crawlAGVStatus().orElse(new String[0]);
@@ -105,7 +109,7 @@ public class AGVInstantStatus {
             case PRE_START_STATION -> {
                 Integer startStation = agv.getTask().getStartStationId();
                 if (startStation != null && startStation != 0 && agv.getPlace().equals(Integer.toString(stationIdTagMap.get(startStation)))){
-//                    taskQueue.setBookedStation(startStation,0);
+//                    gridManager.setGridStatus(startStation, Grid.Status.FREE);
                     // TODO: 取消Booked
                     agv.setTaskStatus(AGV.TaskStatus.PRE_TERMINAL_STATION);
                 }
@@ -113,7 +117,7 @@ public class AGVInstantStatus {
             case PRE_TERMINAL_STATION -> {
                 Integer terminalStation = agv.getTask().getTerminalStationId();
                 if (terminalStation != null && terminalStation != 0 && agv.getPlace().equals(Integer.toString(stationIdTagMap.get(terminalStation)))){
-//                    taskQueue.setBookedStation(terminalStation,0);
+//                    gridManager.setGridStatus(terminalStation, Grid.Status.OCCUPIED);
                     // TODO: 取消Booked
                     agv.setTaskStatus(AGV.TaskStatus.COMPLETED);
                 }
@@ -124,21 +128,21 @@ public class AGVInstantStatus {
 
     private void updateAGVBasicStatus(AGV agv, String[] data, NotificationDao.Title agvTitle, int i){
         if(data[0].trim().equals("-1")){  // 車號為-1時，判定為AGV離線
-            if(agv.getStatus() != AGV.Status.OFFLINE){
-                updateAGVOfflineStatus(agv, agvTitle, i);
-            }
+            updateAGVOfflineStatus(agv, agvTitle, i);
         } else {
             updateAGVOnlineStatus(agv, data, agvTitle, i);
         }
     }
 
     private void updateAGVOfflineStatus(AGV agv, NotificationDao.Title agvTitle, int i){
-        agv.setStatus(AGV.Status.OFFLINE);
-        agv.setSignal(0);
-        agv.setBattery(0);
-        notificationDao.insertMessage(agvTitle, NotificationDao.Status.OFFLINE);
-        CountUtilizationRate.isPoweredOn[i] = false;
-        CountUtilizationRate.isWorking[i] = false;
+        if(agv.getStatus() != AGV.Status.OFFLINE){
+            notificationDao.insertMessage(agvTitle, NotificationDao.Status.OFFLINE);
+            agv.setStatus(AGV.Status.OFFLINE);
+            agv.setSignal(0);
+            agv.setBattery(0);
+            CountUtilizationRate.isPoweredOn[i] = false;
+            CountUtilizationRate.isWorking[i] = false;
+        }
     }
 
 
@@ -170,7 +174,7 @@ public class AGVInstantStatus {
 
         if (agv.isTagError()){
             handleTagError(parseAGVStatus(Integer.parseInt(data[4].trim())), agv);
-        } else if (agv.getStatus() == AGV.Status.ONLINE){
+        } else if (agv.getStatus() == AGV.Status.ONLINE && agv.getTask() != null){
             agv.setObstacleCount(0);
             // data[4] 任務狀態
             boolean[] taskStatus = parseAGVStatus(Integer.parseInt(data[4].trim()));
@@ -180,7 +184,7 @@ public class AGVInstantStatus {
                 if (taskStatus[0]) {
                     handleExecutingTask(agv);
                 } else {
-                    handleCompletedTask(agv);
+                    handleCompletedTask(agv, agvTitle);
                 }
             }
         } else if (agv.getStatus() == AGV.Status.OBSTACLE) { // 若前有障礙時
@@ -197,7 +201,8 @@ public class AGVInstantStatus {
 
     private void handleTagError(boolean[] taskStatus, AGV agv){
         if (taskStatus[0] && !agv.isLastTaskBuffer()) {
-            if(!agv.isFixAgvTagErrorCompleted()){
+//            if(!agv.isFixAgvTagErrorCompleted()) OLD
+            if(agv.getStatus() == AGV.Status.WRONG_TAG_NUMBER){
                 fixAgvTagError(agv);
             }
         } else if (taskStatus[0] && agv.isLastTaskBuffer()) {
@@ -206,7 +211,7 @@ public class AGVInstantStatus {
             agv.setTagErrorDispatchCompleted(false);
             agv.setLastTaskBuffer(false);
         } else if (!taskStatus[0]) {
-            if(!agv.isTagErrorDispatchCompleted()){
+            if(!agv.isTagErrorDispatchCompleted() || taskStatus[7]){
                 try{
                     tagErrorDispatch(agv);
                 } catch (IllegalStateException e){
@@ -214,6 +219,7 @@ public class AGVInstantStatus {
                 }
             }
             agv.setLastTaskBuffer(true);
+
         }
 
     }
@@ -241,32 +247,24 @@ public class AGVInstantStatus {
     }
 
     private void handleExecutingTask(AGV agv){
-        if(!agv.getTask().getTaskNumber().startsWith("#SB")){
+        if(agv.getTask().getStatus() == 1){
+            agv.getTask().setStatus(2);
+            AGVQTask task = agv.getTask();
+            taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), -1);
+        }
+        if(!agv.getTask().getTaskNumber().matches("#(SB|LB).*")){
             CountUtilizationRate.isWorking[agv.getId()-1] = true;
         }
     }
-
-    private void handleCompletedTask(AGV agv){
+    private void handleCompletedTask(AGV agv, NotificationDao.Title agvTitle){
+        if(agv.getTaskStatus() == AGV.TaskStatus.PRE_START_STATION || agv.getTask().getStatus() == 1){
+            return;
+        }
         CountUtilizationRate.isWorking[agv.getId()-1] = false;
         if(agv.getTask() != null){
-            processTasks.completedTask(agv);
+            processTasks.completedTask(agv, agvTitle);
             agv.setReDispatchCount(0);
         }
-
-//        if (iTask) {
-//            // 任務完成(task完成)
-//            agv.setTask(null);
-//            agv.setTaskStatus(AGV.TaskStatus.NO_TASK);
-//            if (!iStandbyTask) {
-//                ProcessTasks.completedTask(agv);
-//                iTask = false;
-//            } else {
-//                iTask = false;
-//                iStandbyTask = false;
-//                ProcessTasks.completedGoStandbyTask(taskDao);
-//            }
-//            reDispatch = 0;
-//        }
     }
 
     private void updateAgvStatus(AGV agv, String data, NotificationDao.Title agvTitle){
@@ -436,7 +434,8 @@ public class AGVInstantStatus {
     private void fixAgvTagError(AGV agv) {
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(agvUrl + "/cmd=" + agv.getId() + "&QJ0130X"))
+                .uri(URI.create(agvUrl + "/cmd=" + agv.getId() + "&QJ0131X"))
+//                .uri(URI.create(agvUrl + "/cmd=" + agv.getId() + "&QJ0130X"))
                 .GET()
                 .timeout(timeout)
                 .build();

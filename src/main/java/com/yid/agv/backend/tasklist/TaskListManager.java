@@ -40,7 +40,7 @@ public class TaskListManager {
         System.out.println("Initialize taskListMap: " + taskListMap);
     }
 
-    @Scheduled(fixedRate = 4000)
+//    @Scheduled(fixedRate = 4000)
     public synchronized void refreshTaskList(){
         taskListMap.forEach((taskProcessId, taskList) -> {
             if(taskList == null) {

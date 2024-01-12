@@ -1,10 +1,10 @@
 package com.yid.agv.controller;
 
 import com.google.gson.Gson;
+import com.yid.agv.backend.elevator.ElevatorSocketBox;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.dto.TaskListRequest;
-import com.yid.agv.model.AGVId;
 import com.yid.agv.model.Analysis;
 import com.yid.agv.service.AnalysisService;
 
@@ -13,14 +13,13 @@ import com.yid.agv.service.HomePageService;
 import com.yid.agv.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "*")
 public class ApiController {
     private final Gson gson = new Gson();
 
@@ -44,17 +43,22 @@ public class ApiController {
         return gson.toJson(homePageService.queryAGVList());
     }
 
-    @GetMapping(value = "/homepage/nowtasks", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    @GetMapping(value = "/task/now", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getTasksJson() {
         return gson.toJson(taskService.queryNowTaskLists());
     }
+    @RequestMapping(value = "/task/taskdetail", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    public String getTaskDetails(@RequestParam("taskNumber") String taskNumber) {
+        taskNumber = "#" + taskNumber;
+        return gson.toJson(taskService.queryTaskDetailsByTaskNumber(taskNumber));
+    }
 
-    @GetMapping(value = "/history/tasks", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
-    public String getTodayTask(){
+    @GetMapping(value = "/task/tasks", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    public String getTasks(){
         return gson.toJson(taskService.queryTaskLists());
     }
 
-    @GetMapping(value = "/history/tasks/all", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    @GetMapping(value = "/task/all", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getAllTask(){
         return gson.toJson(taskService.queryAllTaskLists());
     }
@@ -65,8 +69,8 @@ public class ApiController {
     }
 
     @GetMapping(value = "/homepage/notifications", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
-    public String getTodayNotifications(){
-        return gson.toJson(homePageService.queryTodayNotifications());
+    public String getNotificationsL(){
+        return gson.toJson(homePageService.queryNotificationsL());
     }
 
     @GetMapping(value = "/history/notifications", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
@@ -74,14 +78,14 @@ public class ApiController {
         return gson.toJson(homePageService.queryNotifications());
     }
 
+    @GetMapping(value = "/history/notifications/today", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    public String getTodayNotifications(){
+        return gson.toJson(homePageService.queryTodayNotifications());
+    }
+
     @GetMapping(value = "/history/notifications/all", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getAllNotifications(){
         return gson.toJson(homePageService.queryAllNotifications());
-    }
-
-    @GetMapping(value = "/homepage/messageData", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
-    public String getAgvStatusData(){
-        return gson.toJson(homePageService.queryMessageData());
     }
 
     @GetMapping(value = "/grid/status", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")

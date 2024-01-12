@@ -73,10 +73,10 @@ public class ProcessAGVTask {
             boolean iAtStandbyStation = iEqualsStandbyStation(agv.getPlace());
             boolean taskQueueIEmpty = AGVTaskManager.isEmpty(agv.getId());
 
-            if(agv.isILowBattery() && !iAtStandbyStation){  // TODO: 低電量時，派遣回待命點
+            if(agv.isILowBattery() && !iAtStandbyStation){  // 低電量時，派遣回待命點
                 goStandbyTask(agv);
-            } else if (!taskQueueIEmpty && !agv.isILowBattery()){  // TODO: 正常派遣
-                // 這個專案不用寫優先派遣演算法
+            } else if (!taskQueueIEmpty && !agv.isILowBattery()){  // 正常派遣
+                // 這個專案不用寫優先派遣邏輯
                 AGVQTask goTask = AGVTaskManager.getNewTaskByAGVId(agv.getId());
                 agv.setTask(goTask);
                 System.out.println("Process dispatch...");
@@ -90,7 +90,7 @@ public class ProcessAGVTask {
                     // TODO: 刪除任務，可以直接將agv抱著的task -> null
                 }
 
-            } else if (!taskQueueIEmpty && !iAtStandbyStation){  // TODO: 派遣回待命點
+            } else if (!taskQueueIEmpty && !iAtStandbyStation){  // 派遣回待命點
                 goStandbyTask(agv);
             }
 
@@ -105,8 +105,8 @@ public class ProcessAGVTask {
         List<Integer> standbyTags = stationDao.queryStandbyStations().stream()
                 .map(Station::getTag).toList();
 
-
         for (int standbyTag : standbyTags) {
+            standbyTag = ((standbyTag-1000)%250)+1000;
             if (standbyTag == placeVal
                     || standbyTag+250 == placeVal
                     || standbyTag+500 == placeVal
@@ -127,7 +127,7 @@ public class ProcessAGVTask {
                 if (task == null) return false;
                 String nowPlace = agv.getPlace();
                 String url;
-                if (task.getTaskNumber().startsWith("#SB") || agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION){
+                if (task.getTaskNumber().matches("#(SB|LB).*") || agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION){
                     url = agvUrl + "/task0=" + task.getAgvId() + "&" + task.getModeId() + "&" + nowPlace +
                             "&" + stationIdTagMap.get(task.getTerminalStationId());
                 } else if (task.getTaskNumber().startsWith("#YE")|| task.getTaskNumber().startsWith("#RE") || task.getTaskNumber().startsWith("#NE")){
@@ -194,9 +194,9 @@ public class ProcessAGVTask {
         agv.setTask(null);
     }
 
-    public void completedTask(AGV agv){
+    public void completedTask(AGV agv, NotificationDao.Title agvTitle){
         AGVQTask task = agv.getTask();
-        if(!task.getTaskNumber().startsWith("#SB")){
+        if(!task.getTaskNumber().matches("#(SB|LB).*")){
             int analysisId = analysisDao.getTodayAnalysisId().get(task.getAgvId() - 1).getAnalysisId();
             analysisDao.updateTask(analysisDao.queryAnalysisByAnalysisId(analysisId).getTask() + 1, analysisId);
             String taskStartStation = gridManager.getGridNameByStationId(task.getStartStationId());
@@ -222,7 +222,8 @@ public class ProcessAGVTask {
                 }
             }
         }
-        System.out.println("Completed task number "+task.getTaskNumber()+".");
+        System.out.println("Completed task " + task.getTaskNumber() + ":" + task.getSequence() + ".");
+        notificationDao.insertMessage(agvTitle, "Completed task " + task.getTaskNumber() + ":" + task.getSequence());
         taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 100);
         taskListManager.setTaskListProgressBySequence(task.getTaskNumber(), task.getSequence());
         agv.setTaskStatus(AGV.TaskStatus.NO_TASK);
@@ -244,18 +245,24 @@ public class ProcessAGVTask {
             throw new RuntimeException();
         }
 
+        String standbyStationName = gridManager.getGridNameByStationId(standbyStation.get());
+
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String formattedDateTime = now.format(formatter);
+
+        String taskNumber = agv.isILowBattery() ? "#LB" + agv.getId() + formattedDateTime : "#SB" + agv.getId() + formattedDateTime;
 
         AGVQTask toStandbyTask = new AGVQTask();
         toStandbyTask.setAgvId(agv.getId());
         toStandbyTask.setModeId(1);
         toStandbyTask.setStatus(0);
         toStandbyTask.setSequence(1);
-        toStandbyTask.setTaskNumber("#SB" + agv.getId() + formattedDateTime);
+        toStandbyTask.setTaskNumber(taskNumber);
         toStandbyTask.setStartStationId(standbyStation.get());
+        toStandbyTask.setStartStation(standbyStationName);
         toStandbyTask.setTerminalStationId(standbyStation.get());
+        toStandbyTask.setTerminalStation(standbyStationName);
 
         agv.setTask(toStandbyTask);
 

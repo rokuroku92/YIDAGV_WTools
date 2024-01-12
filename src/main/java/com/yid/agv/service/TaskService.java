@@ -6,6 +6,7 @@ import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.dto.TaskListRequest;
 import com.yid.agv.model.NowTaskListResponse;
+import com.yid.agv.model.TaskDetail;
 import com.yid.agv.model.TaskList;
 import com.yid.agv.repository.GridListDao;
 import com.yid.agv.repository.NowTaskListDao;
@@ -53,6 +54,9 @@ public class TaskService {
     public List<TaskList> queryAllTaskLists(){
         return taskListDao.queryAllTaskLists();
     }
+    public List<TaskDetail> queryTaskDetailsByTaskNumber(String taskNumber){
+        return taskDetailDao.queryTaskDetailsByTaskNumber(taskNumber);
+    }
 
     public boolean cancelTask(String taskNumber){
         // TODO: com
@@ -65,6 +69,13 @@ public class TaskService {
         if (taskSize == 0){
             return "未輸入起始格位";
         }
+        for (int i = 0; i < taskSize; i++) {
+            if(gridManager.getGridStatus(taskListRequest.getTasks().get(i).getStartGrid()) != Grid.Status.FREE){
+                return "起始格位非可用";
+            }
+        }
+
+//        List<List<String>> objectData = taskListRequest.getTasks().forEach();
 
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
