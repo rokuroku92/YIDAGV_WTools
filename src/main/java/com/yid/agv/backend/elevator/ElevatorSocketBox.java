@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Objects;
 
 
 @Component
@@ -30,7 +31,14 @@ public class ElevatorSocketBox {
     private int ELEVATOR_PORT;
     @Value("${elevator.timeout}")
     private int ELEVATOR_TIMEOUT;
+    @Value("${elevator.fail_socket}")
+    private int ELEVATOR_FAIL_SOCKET;
 
+    private boolean ElevatorBoxConnected;
+    private boolean ElevatorBoxManual;
+    private boolean ElevatorBoxScan;
+    private boolean ElevatorBoxError;
+    private boolean ElevatorBoxBuzzer;
     private Thread receiveThread;
     private Thread sendThread;
     private static volatile boolean running = true;
@@ -38,11 +46,15 @@ public class ElevatorSocketBox {
     private BufferedInputStream reader;
     private PrintWriter writer;
     private final ElevatorBoxCommand defaultCommand = ElevatorBoxCommand.ASK_STATUS;
+    private int failSocketCount = 0;
 
-    @PostConstruct
-    public void init() {
+//    @PostConstruct
+    public void __init() {
+        new Thread(this::init).start();
+    }
+
+    public void init(){
         connectToServer();
-
         // 啟動接收訊息的執行緒
         receiveThread = new Thread(() -> {
             try {
@@ -52,22 +64,32 @@ public class ElevatorSocketBox {
                     if (serverMessage == null) {
                         // Server has closed the connection
                         System.out.println("Server has closed the connection, trying to reconnect...");
-                        connectToServer();
+                        reStartThread();
                     } else {
-                        System.out.println("ServerMessage: " + serverMessage);
+//                        System.out.println("ServerMessage: " + serverMessage);
+                        failSocketCount--;
                         if(serverMessage.matches("^QQQ([A-Z]\\d{4})XXX$")){
                             // TODO: update status
+                            String resultMode = serverMessage.substring(3, 4);
+                            int resultValue = Integer.parseInt(serverMessage.substring(4, 8));
+                            boolean[] parseResultValue = parseCommand(resultValue);
+                            if ("R".equals(resultMode)) {
+//                                ElevatorBoxI??? = Objects.requireNonNull(parseResultValue)[0];
+                                ElevatorBoxManual = Objects.requireNonNull(parseResultValue)[1];
+                                ElevatorBoxScan = Objects.requireNonNull(parseResultValue)[2];
+                                ElevatorBoxError = Objects.requireNonNull(parseResultValue)[3];
+                                ElevatorBoxBuzzer = Objects.requireNonNull(parseResultValue)[4];
+                            }
+
                         }
                     }
                 }
                 System.out.println("ReceiveThread stop.");
             } catch (SocketException s) {
-                if(running){
-                    receiveThread.interrupt();
-                    receiveThread.start();
-                }
+                reStartThread();
             } catch (IOException e) {
                 e.printStackTrace();
+                reStartThread();
             }
         });
         receiveThread.setDaemon(false);
@@ -80,35 +102,15 @@ public class ElevatorSocketBox {
                     sendCommandToElevatorBox(defaultCommand);
                     Thread.sleep(1000);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InterruptedException ignore) {
+//                i.printStackTrace();
             }
         });
         sendThread.start();
 
         // 設定 ShutdownHook
-//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//            System.out.println("Closing Socket...");
-//            running = false;  // 停止所有執行緒
-//            try {
-//                receiveThread.interrupt();
-//                System.out.println("Closing receiveThread...");
-//                sendThread.join();
-//                System.out.println("Closing sendThread...");
-//                if (socket != null && !socket.isClosed()) {
-//                    socket.close();  // 關閉 Socket
-//                }
-//                if (reader != null) {
-//                    reader.close();
-//                }
-//                if (writer != null) {
-//                    writer.close();  // 關閉 PrintWriter
-//                }
-//            } catch (InterruptedException | IOException e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println("All SocketThread has been terminated!");
-//        }));
+//        Runtime.getRuntime().addShutdownHook(new Thread(this::cleanup));
+
     }
 
     @PreDestroy
@@ -117,10 +119,11 @@ public class ElevatorSocketBox {
         System.out.println("Closing Socket...");
         running = false;  // 停止所有執行緒
         try {
-            receiveThread.interrupt();
             System.out.println("Closing receiveThread...");
-            sendThread.join();
+            receiveThread.interrupt();
             System.out.println("Closing sendThread...");
+            sendThread.interrupt();
+            sendThread.join();
             if (socket != null && !socket.isClosed()) {
                 socket.close();  // 關閉 Socket
             }
@@ -130,7 +133,8 @@ public class ElevatorSocketBox {
             if (writer != null) {
                 writer.close();  // 關閉 PrintWriter
             }
-        } catch (InterruptedException | IOException e) {
+        } catch (InterruptedException ignore) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println("All SocketThread has been terminated!");
@@ -153,6 +157,8 @@ public class ElevatorSocketBox {
             OutputStream outputStream = socket.getOutputStream();
             writer = new PrintWriter(outputStream, true);
 
+            failSocketCount = 0;
+            ElevatorBoxConnected = true;
             System.out.println("Connected to ElevatorBox!");
         } catch (IOException e) {
             System.out.println("Failed to connect to server, try again later...");
@@ -165,30 +171,75 @@ public class ElevatorSocketBox {
         }
     }
 
+    private void reStartThread() {
+        if(running){
+            System.out.println("Do restart thread...");
+            cleanup();
+            running = true;
+            if(!socket.isClosed()){
+                init();
+            }
+        }
+    }
+
     private String readInputStream(BufferedInputStream _in) throws IOException {
-//        StringBuilder data = new StringBuilder();
-//        int s;
-//        while ((s = _in.read()) != -1) {
-//            data.append((char) s);
-//        }
-//        return data.length() > 0 ? data.toString() : null;
-        String data = "";
+        StringBuilder data = new StringBuilder();
         int s = _in.read();
         if(s==-1) return null;
-        data += ""+(char)s;
+        data.append((char)s);
         int len = _in.available();
         if(len > 0) {
             byte[] byteData = new byte[len];
             _in.read(byteData);
-            data += new String(byteData);
+            data.append(new String(byteData));
         }
-        return data;
+        return data.toString();
+    }
+
+    private boolean[] parseCommand(int statusValue) {
+        if(statusValue < 0) return null;
+        boolean[] statusArray = new boolean[8];
+        // 從右到左解析各個位元狀態
+        for (int i = 0; i < statusArray.length ; i++) {
+            // 檢查第i位是否為1，若是則代表狀態為真
+            statusArray[i] = (statusValue & 1) == 1;
+            // 右移一位，繼續解析下一位元
+            statusValue >>= 1;
+        }
+        return statusArray;
     }
 
     public synchronized void sendCommandToElevatorBox(ElevatorBoxCommand elevatorBoxCommand){
         if (socket != null && !socket.isClosed()) {
-            System.out.println("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
+            if(elevatorBoxCommand != ElevatorBoxCommand.ASK_STATUS){
+                System.out.println("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
+            }
             writer.println(elevatorBoxCommand.getCommand());
+            failSocketCount++;
+            if(failSocketCount >= ELEVATOR_FAIL_SOCKET){
+                ElevatorBoxConnected = false;
+                reStartThread();
+            }
         }
+    }
+
+    public boolean isElevatorBoxConnected() {
+        return ElevatorBoxConnected;
+    }
+
+    public boolean isElevatorBoxManual() {
+        return ElevatorBoxManual;
+    }
+
+    public boolean isElevatorBoxScan() {
+        return ElevatorBoxScan;
+    }
+
+    public boolean isElevatorBoxError() {
+        return ElevatorBoxError;
+    }
+
+    public boolean isElevatorBoxBuzzer() {
+        return ElevatorBoxBuzzer;
     }
 }

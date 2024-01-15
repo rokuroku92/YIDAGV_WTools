@@ -1,7 +1,12 @@
 jdbc:
-  url: jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
-  username: root
-  password: 12345678
+  primary:
+    url: jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
+    username: root
+    password: 12345678
+  WTools:
+    url: jdbc:mysql://localhost:3306/WTools_simulation?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
+    username: AgvYidUser
+    password: 12345678
 
 agvControl:
 #  url: http://192.168.0.100:20100
@@ -17,6 +22,7 @@ elevator:
   ip: 192.168.0.100
   port: 8887
   timeout: 3000
+  fail_socket: 5
   pre_person_open_door_duration: 10  # 人員呼叫，電梯開門多久後沒按下人員佔用按鈕，歸還權限
 
 http:

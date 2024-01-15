@@ -13,13 +13,15 @@ public class TaskListRequest {
     @Data
     public static class Task {
         private String startGrid;
+        private List<String> lineCode;
         private List<String> workNumber;
 
         @Override
         public String toString() {
-            return super.toString()+"Task{" +
+            return "Task{" +
                     "startGrid='" + startGrid + '\'' +
-                    ", objectNumber=" + workNumber +
+                    ", lineCode='" + lineCode + '\'' +
+                    ", workNumber=" + workNumber +
                     '}';
         }
     }
