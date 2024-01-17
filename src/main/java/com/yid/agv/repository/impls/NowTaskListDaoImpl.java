@@ -18,7 +18,7 @@ public class NowTaskListDaoImpl implements NowTaskListDao {
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<NowTaskList> queryNowTaskLists(int processId){
+    public List<NowTaskList> queryNowTaskListsByProcessId(int processId){
         String sql = "SElECT * FROM now_task_list ORDER BY id";
         switch (processId){
             case 1 -> sql = "SElECT * FROM now_task_list WHERE task_number LIKE '#YE%' OR task_number LIKE '#RE%' ORDER BY id";
@@ -29,8 +29,8 @@ public class NowTaskListDaoImpl implements NowTaskListDao {
 
         for (NowTaskList nowTask : nowTaskLists) {
             int phaseValue = nowTask.getPhaseId();
-            Phase phaseEnum = Phase.valueOfByValue(phaseValue); // 使用自定义方法映射到 enum Phase
-            nowTask.setPhase(phaseEnum); // 设置映射后的 enum Phase 到 NowTaskList
+            Phase phaseEnum = Phase.valueOfByValue(phaseValue); // 使用自定義方法映射到 enum Phase
+            nowTask.setPhase(phaseEnum); // 設置映射後的 enum Phase 到 NowTaskList
         }
         return nowTaskLists;
     }

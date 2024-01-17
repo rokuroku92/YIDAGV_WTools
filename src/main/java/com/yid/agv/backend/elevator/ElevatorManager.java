@@ -91,7 +91,6 @@ public class ElevatorManager {
 
         switch (elevatorPermission){
             case SYSTEM -> {
-                return;
             }
             case PRE_PERSON -> {
                 Integer floor = callQueue.peek();

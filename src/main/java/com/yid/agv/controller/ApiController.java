@@ -1,7 +1,6 @@
 package com.yid.agv.controller;
 
 import com.google.gson.Gson;
-import com.yid.agv.backend.elevator.ElevatorSocketBox;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.dto.TaskListRequest;
@@ -107,6 +106,17 @@ public class ApiController {
                     "battery": 90,
                     "signal": 100,
                     "taskStatus": "PRE_TERMINAL_STATION",
+                    "task": {
+                        "taskNumber": "#YE202310310002",
+                        "agvId": 1,
+                        "sequence": 3,
+                        "startStation": "1-T-1",
+                        "terminalStation": "E-1",
+                        "startStationId": 48,
+                        "terminalStationId": 88,
+                        "modeId": 0,
+                        "status": 2
+                    },
                     "iLowBattery": false,
                     "lowBatteryCount": 0,
                     "reDispatchCount": 0,
@@ -176,6 +186,16 @@ public class ApiController {
         return gson.toJson(list);
     }
 
+    @RequestMapping(value = "/grid/updateLineCode", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String updateLineCode(@RequestParam("gridName") String gridName, @RequestParam("lineNumber") String lineNumber, @RequestParam("lineCode") String lineCode){
+        return gridService.updateLineCode(gridName, lineNumber, lineCode)? "OK" : "FAIL";
+    }
+
+    @RequestMapping(value = "/grid/clearGrid", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String clearGrid(@RequestParam("gridName") String gridName){
+        return gridService.clearGrid(gridName)? "OK" : "FAIL";
+    }
+
     @RequestMapping(value = "/cancelTask", produces = MediaType.TEXT_PLAIN_VALUE)
     public String cancelTask(@RequestParam("taskNumber") String taskNumber){
         taskNumber = "#" + taskNumber;
@@ -185,19 +205,20 @@ public class ApiController {
 
     @PostMapping(value = "/sendtasklist")
     public String handleTaskList(@RequestBody TaskListRequest jsonData){
-        System.out.println(jsonData);
-        String area = null;
-        switch (jsonData.getMode()) {
-            case 1 -> area = "3-" + jsonData.getTerminal();
-            case 2 -> area = "2-" + jsonData.getTerminal();
-            case 3 -> area = "1-" + jsonData.getTerminal();
-        }
-        List<Grid> availableGrids = gridManager.getAvailableGrids(area);
-        System.out.println(availableGrids.size());
-        if(availableGrids.size() < jsonData.getTasks().size()){
-            return "終點區域格位已滿";
-        }
-        return "YES";
-//        return taskService.addTaskList(jsonData);
+//        System.out.println(jsonData);
+//        String area = null;
+//        switch (jsonData.getMode()) {
+//            case 1 -> area = "3-" + jsonData.getTerminal();
+//            case 2 -> area = "2-" + jsonData.getTerminal();
+//            case 3 -> area = "1-" + jsonData.getTerminal();
+//        }
+//
+//        List<Grid> availableGrids = gridManager.getAvailableGrids(area);
+//        System.out.println(availableGrids.size());
+//        if(availableGrids.size() < jsonData.getTasks().size()){
+//            return "終點區域格位已滿";
+//        }
+//        return "YES";
+        return taskService.addTaskList(jsonData);
     }
 }

@@ -20,4 +20,5 @@ public interface GridListDao {
                             String objectName4, String objectNumber1, String objectNumber2, String objectNumber3,
                             String objectNumber4, String lineCod1, String lineCode2, String lineCod3, String lineCod4);
     boolean clearWorkOrder(int stationId);
+    boolean updateLineCode(int stationId, String lineNumber, String lineCode);
 }

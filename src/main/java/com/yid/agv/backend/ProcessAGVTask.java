@@ -199,8 +199,11 @@ public class ProcessAGVTask {
         if(!task.getTaskNumber().matches("#(SB|LB).*")){
             int analysisId = analysisDao.getTodayAnalysisId().get(task.getAgvId() - 1).getAnalysisId();
             analysisDao.updateTask(analysisDao.queryAnalysisByAnalysisId(analysisId).getTask() + 1, analysisId);
-            String taskStartStation = gridManager.getGridNameByStationId(task.getStartStationId());
-            String taskTerminalStation = gridManager.getGridNameByStationId(task.getTerminalStationId());
+//            String taskStartStation = gridManager.getGridNameByStationId(task.getStartStationId());
+//            String taskTerminalStation = gridManager.getGridNameByStationId(task.getTerminalStationId());
+            String taskStartStation = task.getStartStation();
+            String taskTerminalStation = task.getTerminalStation();
+
             switch (task.getAgvId()){
                 case 1 -> {
                     if (taskStartStation.startsWith("E-")){  // 3F->1F

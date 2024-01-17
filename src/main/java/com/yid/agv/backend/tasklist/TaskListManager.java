@@ -1,5 +1,7 @@
 package com.yid.agv.backend.tasklist;
 
+import com.yid.agv.backend.station.Grid;
+import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
 import com.yid.agv.model.TaskList;
@@ -24,6 +26,8 @@ public class TaskListManager {
     private TaskListDao taskListDao;
     @Autowired
     private TaskDetailDao taskDetailDao;
+    @Autowired
+    private GridManager gridManager;
 
     private final Map<Integer, NowTaskList> taskListMap;
     private final Map<String, List<TaskDetail>> taskDetailsMap;
@@ -38,13 +42,32 @@ public class TaskListManager {
         taskListMap.put(1, null);
         taskListMap.put(2, null);
         System.out.println("Initialize taskListMap: " + taskListMap);
+
+        // 處理資料庫中狀態為執行中的任務
+//        List<TaskList> unexpectedTasks = taskListDao.queryUnexpectedTaskLists();
+        taskListMap.forEach((taskProcessId, taskList) -> {
+            List<NowTaskList> unCompletedTaskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
+            unCompletedTaskLists.forEach(unCompletedTaskList -> {
+                if (unCompletedTaskList.getProgress() != 0){
+                    List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
+                    unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
+                        if(unCompletedTaskDetail.getStatus() != 100) {
+                            gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
+                            gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
+                        }
+                    });
+                    nowTaskListDao.deleteNowTaskList(unCompletedTaskList.getTaskNumber());
+                    taskListDao.updateTaskListStatus(unCompletedTaskList.getTaskNumber(), -1);
+                }
+            });
+        });
     }
 
 //    @Scheduled(fixedRate = 4000)
     public synchronized void refreshTaskList(){
         taskListMap.forEach((taskProcessId, taskList) -> {
             if(taskList == null) {
-                List<NowTaskList> taskLists = nowTaskListDao.queryNowTaskLists(taskProcessId);
+                List<NowTaskList> taskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
                 if (taskLists.size()>0){
                     NowTaskList doTaskList = taskLists.get(0);
                     if (doTaskList != null){

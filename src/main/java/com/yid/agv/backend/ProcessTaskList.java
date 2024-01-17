@@ -8,15 +8,18 @@ import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.elevator.ElevatorPermission;
 import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.model.NowTaskList;
+import com.yid.agv.model.Station;
 import com.yid.agv.model.TaskDetail;
 import com.yid.agv.repository.NowTaskListDao;
 import com.yid.agv.repository.Phase;
 import com.yid.agv.repository.TaskDetailDao;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProcessTaskList {
@@ -43,13 +46,13 @@ public class ProcessTaskList {
             List<TaskDetail> taskDetails = taskListManager.getTaskDetailByTaskNumber(nowTaskList.getTaskNumber());
 
             if (nowTaskList.getTaskNumber().startsWith("#YE")){
-                if (agvManager.getAgv(1).getStatus() != AGV.Status.ONLINE) continue;
+//                if (agvManager.getAgv(1).getStatus() != AGV.Status.ONLINE) continue;
                 handleYETask(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#RE")){
-                if (agvManager.getAgv(3).getStatus() != AGV.Status.ONLINE) continue;
+//                if (agvManager.getAgv(3).getStatus() != AGV.Status.ONLINE) continue;
                 handleRETask(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#NE")){
-                if (agvManager.getAgv(2).getStatus() != AGV.Status.ONLINE) continue;
+//                if (agvManager.getAgv(2).getStatus() != AGV.Status.ONLINE) continue;
                 handleNETask(nowTaskList, taskDetails, i);
             }
         }

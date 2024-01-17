@@ -20,7 +20,7 @@ public class TaskListRequest {
         public String toString() {
             return "Task{" +
                     "startGrid='" + startGrid + '\'' +
-                    ", lineCode='" + lineCode + '\'' +
+                    ", lineCode=" + lineCode +
                     ", workNumber=" + workNumber +
                     '}';
         }

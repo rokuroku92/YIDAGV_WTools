@@ -96,4 +96,13 @@ public class GridListDaoImpl implements GridListDao {
         int rowsAffected = jdbcTemplate.update(sql, stationId);
         return (rowsAffected > 0);
     }
+
+    @Override
+    public boolean updateLineCode(int stationId, String lineNumber, String lineCode){
+
+        String sql = "UPDATE `grid_list` SET `line_code_" + lineNumber + "` = ? WHERE `station_id` = ?";
+
+        int rowsAffected = jdbcTemplate.update(sql, lineCode, stationId);
+        return (rowsAffected > 0);
+    }
 }

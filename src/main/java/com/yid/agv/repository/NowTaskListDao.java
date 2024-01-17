@@ -6,7 +6,7 @@ import com.yid.agv.model.NowTaskListResponse;
 import java.util.List;
 
 public interface NowTaskListDao {
-    List<NowTaskList> queryNowTaskLists(int processId);
+    List<NowTaskList> queryNowTaskListsByProcessId(int processId);
     List<NowTaskListResponse> queryNowTaskListsResult();
     boolean insertNowTaskList(String taskNumber, int step);
 

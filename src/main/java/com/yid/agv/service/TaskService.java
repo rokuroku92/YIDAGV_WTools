@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class TaskService {
@@ -91,22 +91,22 @@ public class TaskService {
             }
         }
 
-        AtomicBoolean iNull = new AtomicBoolean(false);
+        AtomicReference<String> failWorkNumber = new AtomicReference<>();
         List<List<WorkNumberResult>> requestObjectData = new ArrayList<>();
         taskListRequest.getTasks().forEach(task -> {
             List<WorkNumberResult> objectData = new ArrayList<>();
             task.getWorkNumber().forEach(workNumber -> {
                 WorkNumberResult result = getWToolsInformation(workNumber);
                 if(result == null){
-                    iNull.set(true);
+                    failWorkNumber.set(workNumber);
                 } else {
                     objectData.add(result);
                 }
             });
             requestObjectData.add(objectData);
         });
-        if(iNull.get()){
-            return "工單號碼輸入錯誤";
+        if(failWorkNumber.get() != null){
+            return "工單號碼： ".concat(failWorkNumber.get()).concat("輸入錯誤！");
         }
 
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -142,7 +142,7 @@ public class TaskService {
                             gridManager.setGridStatus(availableGrids.get(index).getGridName(), Grid.Status.BOOKED);
                             taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
                                     Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(i)))),
-                                    Integer.toString(availableGrids.get(index).getStationId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
+                                    Integer.toString(availableGrids.get(index).getId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
                             insertIntoDB(taskListRequest, index, availableGrids, formattedDateTime, requestObjectData);
                         }
 
@@ -168,7 +168,7 @@ public class TaskService {
                     for (int i = 0; i < taskSize; i++) {
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_2, ++step,
                                 Integer.toString(gridManager.getGirdStationId(taskListRequest.getTasks().get(i).getStartGrid())),
-                                Integer.toString(availableGrids.get(i).getStationId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
+                                Integer.toString(availableGrids.get(i).getId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
                         gridManager.setGridStatus(taskListRequest.getTasks().get(i).getStartGrid(), Grid.Status.BOOKED);
                         gridManager.setGridStatus(availableGrids.get(i).getGridName(), Grid.Status.BOOKED);
                     }
@@ -203,7 +203,7 @@ public class TaskService {
                         gridManager.setGridStatus(availableGrids.get(index).getGridName(), Grid.Status.BOOKED);
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_1, ++step,
                                 Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i)))),
-                                Integer.toString(availableGrids.get(index).getStationId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
+                                Integer.toString(availableGrids.get(index).getId()), TaskDetailDao.Mode.DEFAULT);  // TODO: wait confirm
                         insertIntoDB(taskListRequest, index, availableGrids, formattedDateTime, requestObjectData);
                     }
 
@@ -243,15 +243,15 @@ public class TaskService {
     private void insertIntoDB(TaskListRequest taskListRequest, int index, List<Grid> availableGrids, String formattedDateTime, List<List<WorkNumberResult>> requestObjectData){
         List<String> workNumbers = taskListRequest.getTasks().get(index).getWorkNumber();
         switch (workNumbers.size()){
-            case 0 -> gridListDao.updateWorkOrder(availableGrids.get(index).getStationId(), formattedDateTime);
+            case 0 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime);
             case 1 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getStationId(), formattedDateTime,
+                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(0).getObjectNumber(),
                         taskListRequest.getTasks().get(index).getLineCode().get(0));
             }
             case 2 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getStationId(), formattedDateTime,
+                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),
                         requestObjectData.get(index).get(0).getObjectNumber(),
@@ -260,7 +260,7 @@ public class TaskService {
                         taskListRequest.getTasks().get(index).getLineCode().get(1));
             }
             case 3 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getStationId(), formattedDateTime,
+                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), workNumbers.get(2),
                         requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),
@@ -273,7 +273,7 @@ public class TaskService {
                         taskListRequest.getTasks().get(index).getLineCode().get(2));
             }
             case 4 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getStationId(), formattedDateTime,
+                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), workNumbers.get(2), workNumbers.get(3),
                         requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),

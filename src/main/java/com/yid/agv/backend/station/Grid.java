@@ -20,12 +20,12 @@ public class Grid {
     }
 
     private String gridName;
-    private int stationId;
+    private int id;
     private Status status;
 
     public Grid(GridList gridList) {
         this.gridName = gridList.getStation();
-        this.stationId = gridList.getId();
+        this.id = gridList.getId();
         int statusValue = gridList.getStatus();
 
         for (Status statusEnum : Status.values()) {

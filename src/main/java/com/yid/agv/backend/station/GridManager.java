@@ -35,12 +35,12 @@ public class GridManager {
 
 
     public int getGirdStationId(String stationName){
-        return gridMap.get(stationName).getStationId();
+        return gridMap.get(stationName).getId();
     }
 
     public String getGridNameByStationId(int stationId){
         Optional<Map.Entry<String, Grid>> result = gridMap.entrySet().stream()
-                .filter(entry -> entry.getValue().getStationId() == stationId)
+                .filter(entry -> entry.getValue().getId() == stationId)
                 .findFirst();
 
         return result.map(Map.Entry::getKey).orElse(null); // 返回找到的 gridName，或者返回 null
@@ -98,7 +98,7 @@ public class GridManager {
         boolean dbResult = gridListDao.updateStatus(stationId, status);
         if(dbResult){
             gridMap.forEach((name, grid) -> {
-                if (grid.getStationId() == stationId){
+                if (grid.getId() == stationId){
                     grid.setStatus(status);
                 }
             });
