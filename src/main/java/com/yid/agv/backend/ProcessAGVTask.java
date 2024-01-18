@@ -15,6 +15,7 @@ import com.yid.agv.repository.TaskDetailDao;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class ProcessAGVTask {
     }
 
 
-//    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 4000)
     public void dispatchTasks() {
         if(isRetrying)return;
 
@@ -89,8 +90,7 @@ public class ProcessAGVTask {
                     failedTask(agv);
                     // TODO: 刪除任務，可以直接將agv抱著的task -> null
                 }
-
-            } else if (!taskQueueIEmpty && !iAtStandbyStation){  // 派遣回待命點
+            } else if (taskQueueIEmpty && !iAtStandbyStation){  // 派遣回待命點
                 goStandbyTask(agv);
             }
 
@@ -106,7 +106,7 @@ public class ProcessAGVTask {
                 .map(Station::getTag).toList();
 
         for (int standbyTag : standbyTags) {
-            standbyTag = ((standbyTag-1000)%250)+1000;
+            standbyTag = standbyTag/1000*1000 + (standbyTag%250);
             if (standbyTag == placeVal
                     || standbyTag+250 == placeVal
                     || standbyTag+500 == placeVal
@@ -224,11 +224,11 @@ public class ProcessAGVTask {
                     }
                 }
             }
+            taskListManager.setTaskListProgressBySequence(task.getTaskNumber(), task.getSequence());
         }
         System.out.println("Completed task " + task.getTaskNumber() + ":" + task.getSequence() + ".");
         notificationDao.insertMessage(agvTitle, "Completed task " + task.getTaskNumber() + ":" + task.getSequence());
         taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 100);
-        taskListManager.setTaskListProgressBySequence(task.getTaskNumber(), task.getSequence());
         agv.setTaskStatus(AGV.TaskStatus.NO_TASK);
         agv.setTask(null);
     }

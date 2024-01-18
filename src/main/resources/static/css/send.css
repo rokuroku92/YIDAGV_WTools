@@ -1,0 +1,63 @@
+.sendList{
+    padding: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    color: #000000;
+}
+.sendCard{
+    height: 10em;
+    background-color: white;
+    border: 1px black solid;
+    border-radius: 0.6rem!important;
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+.sendCard.station{
+    max-width: 12em;
+}
+.sendCard.mode{
+    background-color: #C9C9C9;
+    width: 10em;
+    height: 3.5em;
+}
+.sendCard .row{
+    height: 100%;
+}
+.cardInfo{
+    height:100%;
+    display: grid;
+    padding-top: 1.5%;
+}
+.cardImg{
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+}
+.modeContent{
+    width: 100%;
+    height: 100%;
+    font-family: NewFont, sans-serif;
+    font-size: 1.5em;
+    color: #000000;
+    letter-spacing: 0.1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn.sendBTN{
+    margin-left: 0.1em;
+    background-color: #40DD4D;
+    --bs-btn-active-bg: #198F23;
+    --bs-btn-active-border-color: #105B16;
+    color: #FFFFFF;
+    font-family: NewFont, sans-serif;
+    letter-spacing: 0.1em;
+    font-size: 3em;
+    height: 1.6em;
+    width: 4em;
+}
+.img-fluid{
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+}

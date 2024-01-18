@@ -1,328 +1,815 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>元創智動系統</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <base id="Base">
-        <script>
-            var baseUrl;
-            if (window.location.href.startsWith('http://127.0.0.1:5500')) {
-                // Live Server 环境
-                console.log('Running on Live Server');
-                baseUrl = "http://localhost:8080/YIDAGV";
-                var baseHref = document.createElement("base");
-                // var baseHref = document.getElementById("Base");
-                baseHref.href = "http://127.0.0.1:5500/static/";
-                document.head.appendChild(baseHref);
+<head>
+  <title>元創智動系統</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <base id="Base" />
+  <script defer>
+    var baseUrl;
+    if (window.location.port != "8080") {
+        // Live Server 环境
+        console.log('Running on Live Server');
+        baseUrl = "http://"+window.location.hostname+":8080/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = window.location.origin + "/";
+        document.head.appendChild(baseHref);
 
-                document.addEventListener("DOMContentLoaded", function() {
-					var _a_ = document.querySelectorAll("a");
-					_a_.forEach(a => {
-						var parts = a.href.split("/");
-						var newHref = parts[parts.length-1] !== "" ? parts[parts.length-1]+".html" : "agv.html";
-						a.href = newHref;
-					});
-				});
-            } else {
-                // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
-                console.log('Running on Spring Boot');
-                baseUrl = window.location.origin + "/YIDAGV";
-                var baseHref = document.createElement("base");
-                // var baseHref = document.getElementById("Base");
-                baseHref.href = "/YIDAGV/";
-                document.head.appendChild(baseHref);
+        document.addEventListener("DOMContentLoaded", function() {
+            var _a_ = document.querySelectorAll("a");
+            _a_.forEach(a => {
+                var parts = a.href.split("/");
+                var newHref = parts[parts.length-1] !== "" ? parts[parts.length-1]+".html" : "agv.html";
+                a.href = newHref;
+            });
+        });
+    } else {
+        // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
+        console.log('Running on Spring Boot');
+        baseUrl = window.location.origin + "/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = "/YIDAGV/";
+        document.head.appendChild(baseHref);
+    }
+
+  </script>
+  <!-- BootStrap框架 -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- YID CSS -->
+  <link rel="stylesheet" href="css/yid.css">
+  <link rel="stylesheet" href="css/agv.css">
+
+  <style>
+            ::-webkit-scrollbar{
+                display:none;
             }
-        </script>
-        <link rel="icon" type="image/ico" href="image/favicon.ico">
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
-        <link rel="stylesheet" href="css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/pure-min.css">
-        <link rel="stylesheet" href="css/yid-basic.css">
-        <link rel="stylesheet" href="css/yid.css">
-        <style>
-                ::-webkit-scrollbar{
-                    display:none;
+            @media screen and (max-width: 1197px) {
+                .AGVTask{display:none;}
+            }
+            @font-face{
+                font-family: NewFont;
+                src: url("css/US101.TTF");
+                font-weight: bold;
+            }
+            @keyframes fade {
+                from {
+                    opacity: 1.0;
                 }
-        </style>
-        <script src="js/jquery-3.3.1.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/bootstrap-table.min.js"></script>
-        <script src="js/bootstrap.bundle.min.js"></script>
-        <script src="js/bootstrap-datepicker.min.js"></script>
-        <script src="js/yidagv.js"></script>
-    </head>
-    <!--<body background="@{/image/bgimg.jpg}" style="padding: 20px;line-height: 10px;">-->
-    <body style="padding: 0px;line-height: 10px; background-color: #f0f1f0;">
-    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <symbol id="trash" viewBox="0 0 16 16" fill="#FF0000">
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-        </symbol>
-    </svg>
-        <div class="row Title">
-            <div class="col-4"></div>
-            <div class="col-4">
-                <img src="image/yidlogo.svg" alt="SVG Image" style="width: 10%;">
-                <img src="image/yidlogotext.svg" alt="SVG Image" style="width: 85%;">
-            </div>
-            <div class="col-4" style="position: relative;">
-                <img style="position: absolute;bottom: 0;right: 0;max-height: 45%;" src="image/yidwww.svg" alt="image error">
-            </div>
-        </div>
-        <hr style="border: none;height: 10px;background-color: #93B955;margin: 0px;margin-top: 3px;opacity: 1;">
-        <br>
-<!--    <div class="container" style=" max-width: 1280px;padding: 60px;padding-top: 0px;">-->
-        <div class="row">
-            <div class="col-1" style="padding: 0px;"></div>
-            <div class="col-10" style="padding: 0px;">
-                <div class="container" style="padding: 2%;padding-top: 0px;">
-                    <div class="row" id="cmap" style="display: none;padding: 5px; padding-top: 10px">
-                        <div class="col card" style="height: 1.6em;justify-content: center;">
-                            <div class="row">
-                                <div class="col-11">MAP(click to expand)</div>
-                                <div class="col-1"><label style="float: right">▼</label></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" id="omap" style="padding: 5px; padding-top: 10px">
-                        <div class="col card">
-                            <div class="mapdiv">
-            <!--                    <img src="image/map.png}" class="img-fluid map" alt="image error">-->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="map" viewBox="0 0 748 113">
-                                    <defs><style>.a{fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:4px;}</style></defs>
-                                    <polyline class="a" points="2 60 2 2 163 2 163 23 341 23 341 31 427 31 427 111 746 111 746 20"/>
-                                </svg>
-                                <img id="agv_car" class="agv" src="image/icon_mp.png"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row justify-content-around">
-                        <div class="col">
-                            <div class="row">
-                                <div class="col-3 agvStatusDiv" style=" text-align: center;font-size: 10px;padding: 5px;">
-                                    <div class="card" style=" height: 21.6em;">
-                                        <fieldset>
-                                            <legend style=" padding: 5px;font-size: 18px;">
-                                                <img src="image/icon_5.png" alt="image error">
-                                                <label id="labelAgvStatus">AGV 狀態</label>
-                                            </legend>
-                                            <div id="agvOnlineStatus">
-                                                <p class="agvstatusp">工作狀態：<input type="text" id="status" readonly style="text-align: center"/></p>
-                                                <p class="agvstatusp">目前任務：<input type="text" id="task" readonly style="text-align: center"/></p>
-                                                <p class="agvstatusp">即時位置：<input type="text" id="place" readonly style="text-align: center"/></p>
-                                                <p class="agvstatusp">目前電壓：<input type="text" id="battery" readonly style="text-align: center"/></p>
-                                                <p class="agvstatusp">信號強度：<input type="text" id="signal" readonly style="text-align: center"/></p>
-                                            </div>
+                50% {
+                    opacity: 0.0;
+                }
+                to {
+                    opacity: 1.0;
+                }
+            }
+  </style>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/bootstrap-table.min.js"></script>
+  <script type="text/javascript" src="js/yid.js"></script>
+  <script type="text/javascript" src="js/agvt.js"></script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="bootstrap" viewBox="0 0 118 94">
+    <title>Bootstrap</title>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+  </symbol>
+  <symbol id="yid" viewBox="0 0 16 16">
+    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
+  </symbol>
+  <symbol id="home" viewBox="0 0 16 16">
+    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+  </symbol>
+  <symbol id="send" viewBox="0 0 16 16">
+    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+  </symbol>
+  <symbol id="return" viewBox="0 0 16 16">
+      <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>
+  </symbol>
+  <symbol id="analysis" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+  </symbol>
+  <symbol id="list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+  </symbol>
+  <symbol id="setting" viewBox="0 0 16 16">
+    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+  </symbol>
+  <symbol id="wifi-unconnect" viewBox="0 0 16 16">
+    <path d="M10.706 3.294A12.545 12.545 0 0 0 8 3C5.259 3 2.723 3.882.663 5.379a.485.485 0 0 0-.048.736.518.518 0 0 0 .668.05A11.448 11.448 0 0 1 8 4c.63 0 1.249.05 1.852.148l.854-.854zM8 6c-1.905 0-3.68.56-5.166 1.526a.48.48 0 0 0-.063.745.525.525 0 0 0 .652.065 8.448 8.448 0 0 1 3.51-1.27L8 6zm2.596 1.404.785-.785c.63.24 1.227.545 1.785.907a.482.482 0 0 1 .063.745.525.525 0 0 1-.652.065 8.462 8.462 0 0 0-1.98-.932zM8 10l.933-.933a6.455 6.455 0 0 1 2.013.637c.285.145.326.524.1.75l-.015.015a.532.532 0 0 1-.611.09A5.478 5.478 0 0 0 8 10zm4.905-4.905.747-.747c.59.3 1.153.645 1.685 1.03a.485.485 0 0 1 .047.737.518.518 0 0 1-.668.05 11.493 11.493 0 0 0-1.811-1.07zM9.02 11.78c.238.14.236.464.04.66l-.707.706a.5.5 0 0 1-.707 0l-.707-.707c-.195-.195-.197-.518.04-.66A1.99 1.99 0 0 1 8 11.5c.374 0 .723.102 1.021.28zm4.355-9.905a.53.53 0 0 1 .75.75l-10.75 10.75a.53.53 0 0 1-.75-.75l10.75-10.75z"/>
+  </symbol>
+  <symbol id="wifi-0" viewBox="0 0 700 700">
+    <defs>
+      <style>.a{fill:#727171;}</style>
+    </defs>
+    <path class="a" d="M123.62,334.19l36.62,36.62a268.06,268.06,0,0,1,379.49,0l36.64-36.62a319.82,319.82,0,0,0-452.75,0Z"/>
+    <path class="a" d="M350,118.68c-121.81,0-232.29,49.55-312.31,129.56l36.62,36.62C144.93,214.23,242.44,170.49,350,170.49S555,214.23,625.69,284.86l36.64-36.62C582.3,168.23,471.82,118.68,350,118.68Z"/>
+    <path class="a" d="M216.43,427l36.62,36.62a137,137,0,0,1,193.9,0L483.57,427a188.72,188.72,0,0,0-267.14,0Z"/>
+    <path class="a" d="M350,501a40.15,40.15,0,1,0,40.14,40.15A40.14,40.14,0,0,0,350,501Z"/>
+  </symbol>
+  <symbol id="wifi-1" viewBox="0 0 700 700">
+    <defs>
+      <style>.a{fill:#727171;}.b{fill:#fff;}</style>
+    </defs>
+    <path class="a" d="M123.62,334.19l36.62,36.62a268.06,268.06,0,0,1,379.49,0l36.64-36.62a319.82,319.82,0,0,0-452.75,0Z"/>
+    <path class="a" d="M350,118.68c-121.81,0-232.29,49.55-312.31,129.56l36.62,36.62C144.93,214.23,242.44,170.49,350,170.49S555,214.23,625.69,284.86l36.64-36.62C582.3,168.23,471.82,118.68,350,118.68Z"/>
+    <path class="a" d="M216.43,427l36.62,36.62a137,137,0,0,1,193.9,0L483.57,427a188.72,188.72,0,0,0-267.14,0Z"/>
+    <path class="b" d="M350,501a40.15,40.15,0,1,0,40.14,40.15A40.14,40.14,0,0,0,350,501Z"/>
+  </symbol>
+  <symbol id="wifi-2" viewBox="0 0 700 700">
+    <path class="a" d="M123.62,334.19l36.62,36.62a268.06,268.06,0,0,1,379.49,0l36.64-36.62a319.82,319.82,0,0,0-452.75,0Z"/>
+    <path class="a" d="M350,118.68c-121.81,0-232.29,49.55-312.31,129.56l36.62,36.62C144.93,214.23,242.44,170.49,350,170.49S555,214.23,625.69,284.86l36.64-36.62C582.3,168.23,471.82,118.68,350,118.68Z"/>
+    <path class="b" d="M216.43,427l36.62,36.62a137,137,0,0,1,193.9,0L483.57,427a188.72,188.72,0,0,0-267.14,0Z"/>
+    <path class="b" d="M350,501a40.15,40.15,0,1,0,40.14,40.15A40.14,40.14,0,0,0,350,501Z"/>
+  </symbol>
+  <symbol id="wifi-3" viewBox="0 0 700 700">
+    <path class="b" d="M123.63,334.19l36.62,36.62a268.06,268.06,0,0,1,379.49,0l36.64-36.62a319.82,319.82,0,0,0-452.75,0Z"/>
+    <path class="a" d="M350,118.68c-121.82,0-232.29,49.55-312.31,129.56L74.3,284.86C144.94,214.23,242.45,170.49,350,170.49s205.06,43.74,275.7,114.37l36.64-36.62C582.31,168.23,471.83,118.68,350,118.68Z"/>
+    <path class="b" d="M216.44,427l36.62,36.62a137,137,0,0,1,193.9,0L483.58,427a188.72,188.72,0,0,0-267.14,0Z"/>
+    <path class="b" d="M350,501a40.15,40.15,0,1,0,40.14,40.15A40.14,40.14,0,0,0,350,501Z"/>
+  </symbol>
 
-                                            <div id="agvOfflineStatus" style="display: none;">
-                                                <h1 style="color: #5C5C5C;">AGV未連線</h1>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="col-3 taskDiv" style=" text-align: center;padding: 5px;">
-                                    <div class="card" style=" height: 13.5em;">
-                                        <fieldset>
-                                            <legend style=" padding: 5px;font-size: 18px;margin: 0px;">
-                                                <img src="image/icon_1.png" alt="image error">
-                                                <label id="labelTask">任務佇列</label>
-                                            </legend>
-                                            <div class="container" style="height: 150px;overflow-y: auto;padding: 2%;">
-                                                <div class="row tasktitle">
-                                                    <div class="col-3" style="padding: 3px;">出發站</div>
-                                                    <div class="col-4" style="padding: 3px;">通知站</div>
-                                                    <div class="col-3" style="padding: 3px;">終點站</div>
-                                                    <div class="col-2"></div>
-                                                </div>
-                                                <hr style="height: 2px;margin: 0px;">
-                                                <div id="task_body">
-                                                    <!-- <div class="row taskcontent">
-                                                        <div class="col-3">2-1</div>
-                                                        <div class="col-4"><nobr>BGA整面A</nobr></div>
-                                                        <div class="col-3">3-2</div>
-                                                        <div class="col-2 removebtncol"><button type="button" class="btn btnt" onclick="removeTaskById(202308010001)"><svg width="16" height="16"><use xlink:href="#trash"/></svg></button></div>
-                                                    </div>
-                                                    <div class="row taskcontent">
-                                                        <div class="col-3">2-2</div>
-                                                        <div class="col-4">FVI</div>
-                                                        <div class="col-3">3-1</div>
-                                                        <div class="col-2 removebtncol"></div>
-                                                    </div> -->
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="col-6 stationDiv" style="text-align: center;padding: 5px;">
-                                    <div class="card" style="align-items: center;height: 13.5em;">
-                                        <fieldset style=" width: 100%;">
-                                            <legend style=" padding-top: 5px;font-size: 18px; margin: 0px;">
-                                                <img src="image/icon_2.png" alt="image error">
-                                                <label id="labelStartStation">出發站</label>
-                                            </legend>
-                                            <div class="container">
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st btn" id="s0" onclick="setStartStationNo(1)"><nobr>1-1</nobr></button><p class="notice" id="1-1b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s1" onclick="setStartStationNo(2)"><nobr>1-2</nobr></button><p class="notice" id="1-2b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s2" onclick="setStartStationNo(3)"><nobr>1-3</nobr></button><p class="notice" id="1-3b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s3" onclick="setStartStationNo(4)"><nobr>1-4</nobr></button><p class="notice" id="1-4b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s4" onclick="setStartStationNo(5)"><nobr>1-5</nobr></button><p class="notice" id="1-5b"></p></div>
-                                                </div>
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st btn" id="s5" onclick="setStartStationNo(6)"><nobr>2-1</nobr></button><p class="notice" id="2-1b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s6" onclick="setStartStationNo(7)"><nobr>2-2</nobr></button><p class="notice" id="2-2b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s7" onclick="setStartStationNo(8)"><nobr>2-3</nobr></button><p class="notice" id="2-3b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s8" onclick="setStartStationNo(9)"><nobr>2-4</nobr></button><p class="notice" id="2-4b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s9" onclick="setStartStationNo(10)"><nobr>2-5</nobr></button><p class="notice" id="2-5b"></p></div>
-                                                </div>
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st btn" id="s10" onclick="setStartStationNo(11)"><nobr>3-1</nobr></button><p class="notice" id="3-1b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s11" onclick="setStartStationNo(12)"><nobr>3-2</nobr></button><p class="notice" id="3-2b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s12" onclick="setStartStationNo(13)"><nobr>3-3</nobr></button><p class="notice" id="3-3b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s13" onclick="setStartStationNo(14)"><nobr>3-4</nobr></button><p class="notice" id="3-4b"></p></div>
-                                                    <div class="col"><button type="button" class="st btn" id="s14" onclick="setStartStationNo(15)"><nobr>3-5</nobr></button><p class="notice" id="3-5b"></p></div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 analysisDiv" style=" text-align: center;padding: 5px;">
-                                    <div class="card" style="height: 13.5em;">
-                                        <fieldset>
-                                            <legend style=" padding: 5px;font-size: 18px;">
-                                                <img src="image/icon_3.png" alt="image error">
-                                                效益分析
-                                                <a href="agv/analysis">
-            <!--                                        <img style="float: right;" src="image/chart.png}" title="統計圖表" border="0" width="40">-->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" style="float: right;" width="26" height="26" fill="#93B955" class="bi bi-clipboard2-data" viewBox="0 0 16 16">
-                                                        <path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5h3Z"/>
-                                                        <path d="M3 2.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 0 0-1h-.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1H12a.5.5 0 0 0 0 1h.5a.5.5 0 0 1 .5.5v12a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5v-12Z"/>
-                                                        <path d="M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7Zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1Zm4-3a1 1 0 0 0-1 1v3a1 1 0 1 0 2 0V9a1 1 0 0 0-1-1Z"/>
-                                                    </svg>
-                                                </a>
-                                            </legend>
-                                            <table class="table table-borderless">
-                                                <thead>
-                                                <tr>
-                                                    <th>總工作時數</th>
-                                                    <th>總開機時數</th>
-                                                    <th>稼動率</th>
-                                                    <th>累積任務數</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr style=" font-size: 25px;">
-                                                    <td><p><input class="parse" id="work_sum" type="text" readonly/></p></td>
-                                                    <td><p><input class="parse" id="open_sum" type="text" readonly/></p></td>
-                                                    <td><p><input class="parse" id="rate" type="text" readonly/></p></td>
-                                                    <td><p><input class="parse" id="task_sum" type="text" readonly/></p></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            <!--<button class="btn btn-link" style=" height: 30px;" onclick='window.open("@{/mvc/agv/analysis.css}");'>查看圖表資訊</button>-->
-                                        </fieldset>
-                                    </div>
-                                </div>
-                                <div class="col-6 stationDiv" style="text-align: center;padding: 5px;">
-                                    <div class="card" style=" align-items: center; height: 13.5em;">
-                                        <fieldset style=" width: 100%;">
-                                            <legend style=" padding-top: 5px;font-size: 18px; margin: 0px;">
-                                                <img src="image/icon_4.png" alt="image error">
-                                                <label id="labelNotificationStation">通知站</label>
-                                            </legend>
-                                            <div class="container">
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st1 btn disabled" id="PCB測試" onclick="setNotification(1)"><nobr>PCB測試</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn disabled" id="PCB外線" onclick="setNotification(2)"><nobr>PCB外線</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn disabled" id="PCB外AOI" onclick="setNotification(3)"><nobr>PCB外AOI</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn disabled" id="PCB網印" onclick="setNotification(4)"><nobr>PCB網印</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn disabled" id="CNC二廠" onclick="setNotification(5)"><nobr>CNC二廠</nobr></button></div>
-                                                </div>
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="FQC" onclick="setNotification(6)"><nobr>FQC</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="BGA整面C" onclick="setNotification(7)"><nobr>BGA整面C</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="棕化" onclick="setNotification(8)"><nobr>棕化</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="內層線路" onclick="setNotification(9)"><nobr>內層線路</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="Suep" onclick="setNotification(10)"><nobr>Suep</nobr></button></div>
-                                                </div>
-                                                <div class="row buttonrow">
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="FVI" onclick="setNotification(11)"><nobr>FVI</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="PCB噴塗" onclick="setNotification(12)"><nobr>PCB噴塗</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="BGA整面A" onclick="setNotification(13)"><nobr>BGA整面A</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="CNC一廠" onclick="setNotification(14)"><nobr>CNC一廠</nobr></button></div>
-                                                    <div class="col"><button type="button" class="st1 btn btn-info" id="Routing" onclick="setNotification(15)"><nobr>Routing</nobr></button></div>
-                                                </div>
-                                            </div>
-                                        </fieldset>
-                                    </div>
-                                </div>
+  <symbol id="wifi-4" viewBox="0 0 700 700">
+    <path class="b" d="M123.63,334.19l36.62,36.62a268.06,268.06,0,0,1,379.49,0l36.64-36.62a319.82,319.82,0,0,0-452.75,0Z"/>
+    <path class="b" d="M350,118.68c-121.82,0-232.29,49.55-312.31,129.56L74.3,284.86C144.94,214.23,242.45,170.49,350,170.49s205.06,43.74,275.7,114.37l36.64-36.62C582.31,168.23,471.83,118.68,350,118.68Z"/>
+    <path class="b" d="M216.44,427l36.62,36.62a137,137,0,0,1,193.9,0L483.58,427a188.72,188.72,0,0,0-267.14,0Z"/>
+    <path class="b" d="M350,501a40.15,40.15,0,1,0,40.14,40.15A40.14,40.14,0,0,0,350,501Z"/>
+  </symbol>
+  <symbol id="stop" viewBox="0 0 16 16">
+    <path d="M3.16 10.08c-.931 0-1.447-.493-1.494-1.132h.653c.065.346.396.583.891.583.524 0 .83-.246.83-.62 0-.303-.203-.467-.637-.572l-.656-.164c-.61-.147-.978-.51-.978-1.078 0-.706.597-1.184 1.444-1.184.853 0 1.386.475 1.436 1.087h-.645c-.064-.32-.352-.542-.797-.542-.472 0-.77.246-.77.6 0 .261.196.437.553.522l.654.161c.673.164 1.06.487 1.06 1.11 0 .736-.574 1.228-1.544 1.228Zm3.427-3.51V10h-.665V6.57H4.753V6h3.006v.568H6.587Z"/>
+    <path fill-rule="evenodd" d="M11.045 7.73v.544c0 1.131-.636 1.805-1.661 1.805-1.026 0-1.664-.674-1.664-1.805V7.73c0-1.136.638-1.807 1.664-1.807 1.025 0 1.66.674 1.66 1.807Zm-.674.547v-.553c0-.827-.422-1.234-.987-1.234-.572 0-.99.407-.99 1.234v.553c0 .83.418 1.237.99 1.237.565 0 .987-.408.987-1.237Zm1.15-2.276h1.535c.82 0 1.316.55 1.316 1.292 0 .747-.501 1.289-1.321 1.289h-.865V10h-.665V6.001Zm1.436 2.036c.463 0 .735-.272.735-.744s-.272-.741-.735-.741h-.774v1.485h.774Z"/>
+    <path fill-rule="evenodd" d="M4.893 0a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353L11.46.146A.5.5 0 0 0 11.107 0H4.893ZM1 5.1 5.1 1h5.8L15 5.1v5.8L10.9 15H5.1L1 10.9V5.1Z"/>
+  </symbol>
+  <symbol id="collision" viewBox="0 0 48 48">
+    <path d="m16.84 22.58-.5 1.87a3.89 3.89 0 0 0-.1 1.4L14.82 27a.37.37 0 0 1-.6-.36l.63-3.1a.37.37 0 0 0-.33-.44l-3.15-.3a.37.37 0 0 1-.17-.67l2.64-1.76a.37.37 0 0 0 .08-.54l-2-2.44a.37.37 0 0 1 .36-.59l3.1.62a.37.37 0 0 0 .44-.32l.3-3.16a.37.37 0 0 1 .67-.16l1.76 2.63a.37.37 0 0 0 .54.08l2.44-2a.37.37 0 0 1 .59.36l-.45 2.27-.33.38L20 19.25l-.43.58a3.91 3.91 0 0 0-2.73 2.75Zm20 5.36-.5 1.88a2.62 2.62 0 0 1-.68 1.18 2.48 2.48 0 0 1-.36.28l-.56 2.12a1.42 1.42 0 0 1-.23.46 1.29 1.29 0 0 1-1.36.45L31.9 34a1.31 1.31 0 0 1-.9-1.6l.34-1.25-10-2.68-.34 1.25a1.3 1.3 0 0 1-1.59.91l-1.25-.33a1.29 1.29 0 0 1-.95-1.07 1.31 1.31 0 0 1 0-.52l.57-2.11a2.26 2.26 0 0 1-.17-.43 2.48 2.48 0 0 1 0-1.38l.5-1.88a2.6 2.6 0 0 1 1.5-1.71 2.76 2.76 0 0 1 .75-.19l.73-1 1.3-1.74a3.8 3.8 0 0 1 .46-.52 4.34 4.34 0 0 1 1.06-.75 4.72 4.72 0 0 1 .61-.27 4.81 4.81 0 0 1 1.3-.24 4.51 4.51 0 0 1 1.36.15l5 1.34a4.51 4.51 0 0 1 1.25.54 4.46 4.46 0 0 1 1.4 1.4 4.56 4.56 0 0 1 .68 1.9l.22 2.18.15 1.21a2.65 2.65 0 0 1 .92 1.22 2.55 2.55 0 0 1 .07 1.55Zm-15.45-4.82a1.29 1.29 0 1 0-.67 2.5c.75.2 1.85.63 2.05-.12a2.5 2.5 0 0 0-1.38-2.38Zm11.77 1.14-.26-2.15a1.85 1.85 0 0 0-.15-.57 2 2 0 0 0-1.27-1.08l-5-1.33a1.92 1.92 0 0 0-2.06.71l-1.3 1.74 7 1.87Zm.75 2.22a2.5 2.5 0 0 0-2.38 1.37c-.2.74 1 .92 1.71 1.12a1.29 1.29 0 1 0 .67-2.49Z"/>
+  </symbol>
+  <symbol id="obstacle" viewBox="0 0 1024 1024">
+    <g>
+      <path d="m271.04,327.6l-81.199,-12.879c-18.48,-2.8008 -35.281,9.5195 -38.078,27.441c-2.8008,18.48 9.5195,35.281 28,38.078l96.32,15.121c1.6797,0 3.3594,0.55859 5.0391,0.55859c7.8398,0 15.68,-2.8008 21.84,-7.8398l26.32,-22.398l-33.602,-59.359l-24.6401,21.27721z"/>
+      <path d="m407.12,308l73.922,-64.961l20.719,29.68c2.2383,3.3594 5.6016,6.7188 9.5195,8.3984l60.48,32.48c3.9219,2.2383 8.9609,3.3594 13.441,3.3594c10.641,0 20.719,-6.1602 25.199,-16.238c6.1602,-13.441 -0.55859,-29.68 -14,-36.961l-53.199,-28.559l-62.164,-88.48c-7.8398,-10.641 -20.16,-17.359 -33.602,-17.922c-13.441,0 -26.32,5.6016 -34.16,16.238c-19.602,25.199 -40.32,49.84 -61.602,73.359l-28.559,31.359c-9.5195,10.641 -11.199,26.32 -4.4805,39.199l53.762,93.527l-20.719,90.16c-3.9219,17.359 5.0391,35.84 21.84,41.441c3.3594,1.1211 6.7188,1.6797 10.078,1.6797c15.121,0 29.121,-10.641 32.48,-25.762l24.078,-104.72c1.6797,-8.3984 0.55859,-16.801 -3.3594,-24.078l-29.6736,-53.1995z"/>
+      <path d="m501.2,446.88l-35.281,0c-9.5195,0 -17.359,7.8398 -17.359,17.359l0,35.281c0,9.5195 7.8398,17.359 17.359,17.359l35.281,0c9.5195,0 17.359,-7.8398 17.359,-17.359l0,-35.281c0,-9.5195 -7.8398,-17.359 -17.359,-17.359z"/>
+      <path d="m616,123.2c0,32.477 -26.324,58.801 -58.801,58.801c-32.473,0 -58.801,-26.324 -58.801,-58.801c0,-32.473 26.328,-58.801 58.801,-58.801c32.477,0 58.801,26.328 58.801,58.801"/>
+      <path d="m273.84,245.28c3.9219,-6.7188 4.4805,-15.121 0.55859,-22.398l-74.477,-136.08c-3.9219,-7.2812 -11.199,-11.762 -19.602,-11.762c-8.3984,0 -15.68,4.4805 -19.602,11.762l-73.918,136.64c-3.9219,7.2812 -3.3594,15.121 0.55859,22.398c3.9219,6.7188 11.199,11.199 19.602,11.199l147.84,0c7.8398,-0.55859 15.121,-4.4805 19.039,-11.758l0.00082,-0.001zm-103.6,-112.56c2.8008,-2.8008 6.1602,-4.4805 10.078,-4.4805c7.2812,0 13.441,6.1602 13.441,13.441l0,1.6797l-5.6016,45.359c-2.2383,-0.55859 -5.0391,-1.1211 -7.8398,-1.1211c-2.8008,0 -5.0391,0.55859 -7.8398,1.1211l-5.6016,-45.359c-0.55469,-3.918 0.56641,-7.8398 3.3633,-10.641l0.0005,0.0008zm10.082,95.203c-7.2812,0 -13.441,-6.1602 -13.441,-14c0,-7.2812 6.1602,-14 13.441,-14c7.8398,0 14,6.1602 14,14s-6.1602,14 -14,14z"/>
+      <path d="m304.64,70.559c43.68,12.32 69.441,42 70,43.121c2.8008,3.3594 6.7188,5.0391 10.641,5.0391c3.3594,0 6.1602,-1.1211 8.9609,-3.3594c6.1602,-5.0391 6.7188,-13.441 1.6797,-19.602c-1.1211,-1.6797 -30.801,-36.961 -84,-52.078c-7.2812,-2.2383 -15.121,2.2383 -17.359,9.5195c-1.6836,7.8398 2.7969,15.121 10.078,17.359l-0.0006,0.0008z"/>
+      <path d="m290.08,120.96c31.922,14 50.398,35.84 50.961,36.398c2.8008,3.3594 6.7188,5.0391 10.641,5.0391c3.3594,0 6.1602,-1.1211 8.9609,-3.3594c6.1602,-5.0391 6.7188,-13.441 1.6797,-19.602c-1.1211,-1.1211 -22.398,-26.879 -61.039,-43.68c-7.2812,-2.8008 -15.121,0 -18.48,7.2812c-2.8008,6.7227 0.55859,14.562 7.2773,17.922l-0.0009,0.0011z"/>
+      <path d="m518,353.36c-7.2812,-2.8008 -15.121,0.55859 -17.922,7.2812l-13.438,31.359c-2.8008,7.2812 0.55859,15.121 7.2812,17.922c1.6797,0.55859 3.3594,1.1211 5.6016,1.1211c5.6016,0 10.641,-3.3594 12.879,-8.3984l12.879,-30.801c2.7969,-7.2852 -0.5625,-15.125 -7.2812,-18.484l0.0004,0.0001z"/>
+      <path d="m595.28,441.84l-30.801,12.879c-7.2812,2.8008 -10.641,11.199 -7.2812,17.922c2.2383,5.6016 7.2812,8.3984 12.879,8.3984c1.6797,0 3.3594,-0.55859 5.0391,-1.1211l30.801,-12.879c7.2812,-2.8008 10.641,-11.199 7.2812,-17.922c-2.2383,-6.7188 -10.641,-10.078 -17.918,-7.2773l-0.0001,0z"/>
+      <path d="m575.12,392c-5.6016,-5.6016 -14,-5.6016 -19.602,0l-23.52,23.52c-5.6016,5.6016 -5.6016,14 0,19.602c2.8008,2.8008 6.1602,3.9219 10.078,3.9219c3.3594,0 7.2812,-1.1211 10.078,-3.9219l23.52,-23.52c5.043,-5.6016 5.043,-14 -0.55469,-19.602l0.00069,0z"/>
+    </g>
+  </symbol>
+  <symbol id="trash" viewBox="0 0 16 16">
+    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+  </symbol>
+  <symbol id="station" viewBox="0 0 16 16">
+    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
+  </symbol>
+  <symbol id="agv" viewBox="0 0 1792 1792">
+    <path d="M187.8,1659L896,132.9L1604.2,1659L896,1285.5L187.8,1659z"/>
+  </symbol>
+  <symbol id="battery-error" viewBox="0 0 640 512">
+    <g class="layer">
+      <path d="m544,160l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_1" stroke-width="38"></path>
+      <line stroke="#FFFFFF" id="svg_2" stroke-width="50" x1="81.5" x2="553.5" y1="34" y2="483"></line>
+    </g>
+  </symbol>
+  <symbol id="battery-charging" viewBox="0 0 200 160">
+    <defs>
+      <symbol height="512" id="svg_5" width="640" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+        <g class="layer">
+          <path d="m937,146l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_3"></path>
+          <rect fill="#7CBD42" height="0" id="svg_2" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+        </g>
+      </symbol>
+      <symbol height="512" id="svg_9" width="640" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+        <g class="layer">
+          <path d="m161,124l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_8"></path>
+          <rect fill="#7CBD42" height="0" id="svg_7" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+        </g>
+      </symbol>
+    </defs>
+    <g>
+      <rect fill="#7CBD42" height="0" id="svg_4" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+      <use id="svg_6" transform="matrix(0.266667 0 0 0.266667 0 -1)" x="-390" xlink:href="#svg_5" y="52.5"></use>
+      <use id="svg_10" transform="matrix(0.266667 0 0 0.266667 -32 -159)" x="611.25" xlink:href="#svg_9" y="667.5"></use>
+      <path d="m83.37,10.07l23.95,34.96l-9.88,4.12l30.17,29.96l-9.88,5l37.29,50.16l-63.25,-38.44l12.06,-5.34l-39.3,-24.62l14.08,-7.61l-41.49,-25.83l46.24,-22.37z" fill="#7CBD42" id="svg_13" transform="rotate(31.3162 96.0725 72.1675)"></path>
+    </g>
+  </symbol>
+  <symbol id="battery-error" viewBox="0 0 640 512">
+    <g class="layer">
+      <path d="m544,160l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_1" stroke-width="38"></path>
+      <line stroke="#FFFFFF" id="svg_2" stroke-width="50" x1="81.5" x2="553.5" y1="34" y2="483"></line>
+    </g>
+  </symbol>
+  <symbol id="battery-charging" viewBox="0 0 200 160">
+    <defs>
+      <symbol height="512" id="svg_5" width="640" xmlns="http://www.w3.org/2000/svg">
+        <g class="layer">
+          <path d="m937,146l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_3"></path>
+          <rect fill="#7CBD42" height="0" id="svg_2" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+        </g>
+      </symbol>
+      <symbol height="512" id="svg_9" width="640" xmlns="http://www.w3.org/2000/svg">
+        <g class="layer">
+          <path d="m161,124l0,64l32,0l0,64l-32,0l0,64l-480,0l0,-192l480,0m16,-64l-512,0c-26.51,0 -48,21.49 -48,48l0,224c0,26.51 21.49,48 48,48l512,0c26.51,0 48,-21.49 48,-48l0,-16l8,0c13.25,0 24,-10.75 24,-24l0,-144c0,-13.25 -10.75,-24 -24,-24l-8,0l0,-16c0,-26.51 -21.49,-48 -48,-48z" id="svg_8"></path>
+          <rect fill="#7CBD42" height="0" id="svg_7" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+        </g>
+      </symbol>
+    </defs>
+    <g>
+      <rect fill="#7CBD42" height="0" id="svg_4" stroke="#7CBD42" width="0" x="-180.5" y="99.5"></rect>
+      <use id="svg_6" transform="matrix(0.266667 0 0 0.266667 0 -1)" x="-390" xlink:href="#svg_5" y="52.5"></use>
+      <use id="svg_10" transform="matrix(0.266667 0 0 0.266667 -32 -159)" x="611.25" xlink:href="#svg_9" y="667.5"></use>
+      <path d="m83.37,10.07l23.95,34.96l-9.88,4.12l30.17,29.96l-9.88,5l37.29,50.16l-63.25,-38.44l12.06,-5.34l-39.3,-24.62l14.08,-7.61l-41.49,-25.83l46.24,-22.37z" fill="#7CBD42" id="svg_13" transform="rotate(31.3162 96.0725 72.1675)"></path>
+    </g>
+  </symbol>
+  <symbol id="battery-0" viewBox="0 0 850 600">
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.45,79.45,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.3,17.3,0,0,1,720,341Z"/>
+  </symbol>
+  <symbol id="battery-1" viewBox="0 0 850 600">
+    <defs>
+      <style>.c{fill:#f92333;}</style>
+    </defs>
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.45,79.45,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.3,17.3,0,0,1,720,341Z"/>
+    <path class="c" d="M101.79,412.73V185.58a36,36,0,0,1,36-36h38.08V448.74H137.8A36,36,0,0,1,101.79,412.73Z"/>
+  </symbol>
+  <symbol id="battery-2" viewBox="0 0 850 600">
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.28,17.28,0,0,1,720,341Z"/>
+    <path class="c" d="M101.79,412.72V185.57a36,36,0,0,1,36-36h38.08V448.74H137.8A36,36,0,0,1,101.79,412.72Z"/>
+    <rect class="c" x="203.67" y="149.56" width="74.1" height="299.18"/>
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.46,79.46,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+  </symbol>
+  <symbol id="battery-3" viewBox="0 0 850 600">
+    <defs>
+      <style>.d{fill:#ddb33a;}</style>
+    </defs>
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.45,79.45,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.28,17.28,0,0,1,720,341Z"/>
+    <path class="d" d="M101.79,412.73V185.58a36,36,0,0,1,36-36h38.08V448.75H137.8A36,36,0,0,1,101.79,412.73Z"/>
+    <rect class="d" x="203.66" y="149.57" width="74.1" height="299.18"/>
+    <rect class="d" x="305.55" y="149.57" width="74.1" height="299.18"/>
+  </symbol>
+  <symbol id="battery-4" viewBox="0 0 850 600">
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.46,79.46,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.28,17.28,0,0,1,720,341Z"/>
+    <path class="d" d="M101.79,412.73V185.58a36,36,0,0,1,36-36h38.08V448.75H137.8A36,36,0,0,1,101.79,412.73Z"/>
+    <rect class="d" x="203.67" y="149.56" width="74.1" height="299.18"/>
+    <rect class="d" x="305.55" y="149.57" width="74.1" height="299.18"/>
+    <rect class="d" x="410.32" y="151.26" width="74.1" height="299.18"/>
+  </symbol>
+  <symbol id="battery-5" viewBox="0 0 850 600">
+    <defs>
+      <style>.e{fill:#38e053;}</style>
+    </defs>
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.45,79.45,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.28,17.28,0,0,1,720,341Z"/>
+    <path class="e" d="M101.79,412.73V185.58a36,36,0,0,1,36-36h38.08V448.75H137.8A36,36,0,0,1,101.79,412.73Z"/>
+    <rect class="e" x="203.66" y="149.57" width="74.1" height="299.18"/>
+    <rect class="e" x="305.55" y="149.57" width="74.1" height="299.18"/>
+    <rect class="e" x="410.33" y="151.27" width="74.1" height="299.18"/>
+    <rect class="e" x="512.21" y="151.26" width="74.1" height="299.18"/>
+  </symbol>
+  <symbol id="battery-6" viewBox="0 0 850 600">
+    <path class="b" d="M58.89,411.14V188.86a79.46,79.46,0,0,1,79.37-79.37H655.2a79.46,79.46,0,0,1,79.37,79.37V411.14a79.46,79.46,0,0,1-79.37,79.37H138.26A79.45,79.45,0,0,1,58.89,411.14ZM714.25,188.86a59.12,59.12,0,0,0-59-59.05H138.26a59.12,59.12,0,0,0-59,59.05V411.14a59.12,59.12,0,0,0,59.05,59.05H655.2a59.12,59.12,0,0,0,59-59.05Z"/>
+    <path class="b" d="M720,341V259a17.3,17.3,0,0,1,17.25-17.25h17.25a36.75,36.75,0,0,1,36.64,36.65v43.12a36.75,36.75,0,0,1-36.64,36.65H737.22A17.3,17.3,0,0,1,720,341Z"/>
+    <path class="e" d="M101.79,412.73V185.58a36,36,0,0,1,36-36h38.08V448.75H137.8A36,36,0,0,1,101.79,412.73Z"/>
+    <rect class="e" x="203.66" y="149.56" width="74.1" height="299.18"/>
+    <rect class="e" x="305.54" y="149.57" width="74.1" height="299.18"/>
+    <rect class="e" x="410.33" y="151.26" width="74.1" height="299.18"/>
+    <rect class="e" x="512.21" y="151.26" width="74.1" height="299.18"/>
+    <path class="e" d="M617.58,450.44V151.26h33.51a40.59,40.59,0,0,1,40.59,40.59v218a40.59,40.59,0,0,1-40.59,40.59Z"/>
+  </symbol>
+  <symbol id="elevator" viewBox="0 0 122.88 122.88">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M56.73,71.74c-2.03,1.17-4.66,0.47-5.83-1.56L47,63.44c0,10.93,0.14,20.96,0.14,31.9c0,2.69-2.2,4.9-4.9,4.9 c-2.69,0-4.9-2.2-4.9-4.9V73.25h-2.75v22.09c0,2.69-2.2,4.9-4.9,4.9c-2.69,0-4.9-2.2-4.9-4.9c0-10.89,0.13-20.86,0.13-31.74 l-3.8,6.58c-1.17,2.03-3.8,2.74-5.83,1.56c-2.03-1.17-2.74-3.8-1.56-5.83l9.93-17.2c3.54-6.14,20.72-6.89,24.54-0.27l10.09,17.47 C59.46,67.95,58.76,70.57,56.73,71.74L56.73,71.74L56.73,71.74z M97.19,21.62v16.67c0,0.66-0.27,1.26-0.7,1.7 c-0.43,0.43-1.04,0.7-1.7,0.7c-0.66,0-1.26-0.27-1.7-0.7c-0.43-0.43-0.7-1.03-0.7-1.7V21.62l-8.53,7.45 c-0.49,0.43-1.12,0.62-1.72,0.59c-0.61-0.04-1.21-0.3-1.65-0.8c-0.44-0.49-0.63-1.12-0.6-1.72c0.04-0.61,0.31-1.2,0.8-1.64 l12.53-10.94c0.46-0.41,1.04-0.6,1.61-0.6c0.57,0,1.14,0.22,1.58,0.62l12.52,10.93c0.48,0.44,0.74,1.02,0.78,1.62 c0.03,0.61-0.16,1.23-0.6,1.72l-0.02,0.02c-0.44,0.48-1.03,0.75-1.63,0.78h-0.01c-0.61,0.03-1.23-0.17-1.72-0.6L97.19,21.62 L97.19,21.62L97.19,21.62z M94.79,53.5c4.38,0,7.94,3.55,7.94,7.94c0,4.38-3.55,7.94-7.94,7.94c-4.38,0-7.94-3.55-7.94-7.94 C86.86,57.06,90.41,53.5,94.79,53.5L94.79,53.5z M97.19,101.26V84.59c0-0.66-0.27-1.26-0.7-1.7c-0.43-0.43-1.04-0.7-1.7-0.7 c-0.66,0-1.26,0.27-1.7,0.7c-0.43,0.43-0.7,1.03-0.7,1.7v16.67l-8.53-7.45c-0.49-0.43-1.12-0.62-1.72-0.59 c-0.61,0.04-1.21,0.3-1.65,0.8c-0.44,0.49-0.63,1.12-0.6,1.72c0.04,0.61,0.31,1.2,0.8,1.64l12.53,10.94 c0.46,0.41,1.04,0.6,1.61,0.6c0.57,0,1.14-0.22,1.58-0.62l12.52-10.93c0.48-0.44,0.74-1.02,0.78-1.62c0.03-0.61-0.16-1.23-0.6-1.72 l-0.02-0.02c-0.44-0.48-1.03-0.75-1.63-0.78h-0.01c-0.61-0.03-1.23,0.17-1.72,0.6L97.19,101.26L97.19,101.26L97.19,101.26z M19.2,0 h50.89h33.59c5.28,0,10.09,2.16,13.56,5.64c3.48,3.48,5.64,8.28,5.64,13.56v84.48c0,5.28-2.16,10.09-5.64,13.56 c-3.48,3.48-8.28,5.64-13.56,5.64H70.09H19.2c-5.28,0-10.09-2.16-13.56-5.64C2.16,113.76,0,108.96,0,103.68V19.2 C0,13.92,2.16,9.12,5.64,5.64C9.12,2.16,13.92,0,19.2,0L19.2,0z M66.71,116.11V6.77H19.2c-3.42,0-6.52,1.4-8.78,3.65 c-2.25,2.25-3.66,5.36-3.66,8.78v84.48c0,3.42,1.4,6.52,3.66,8.78c2.25,2.25,5.36,3.66,8.78,3.66H66.71L66.71,116.11z M36.01,22.64 c5.4,0,9.77,4.37,9.77,9.77s-4.37,9.77-9.77,9.77c-5.4,0-9.77-4.37-9.77-9.77S30.62,22.64,36.01,22.64L36.01,22.64z"/>
+  </symbol>
+  <!-- <symbol id="agv" viewBox="0 0 24 24">
+          <path d="M20,10h-.341L17.18,4.214A2,2,0,0,0,15.341,3H4.754A2.008,2.008,0,0,0,2.831,4.451L1.038,10.726a1.019,1.019,0,0,0-.005.111A.889.889,0,0,0,1,11v5a2,2,0,0,0,2,2h.142a3.981,3.981,0,0,0,7.716,0h2.284a3.981,3.981,0,0,0,7.716,0H21a2,2,0,0,0,2-2V13A3,3,0,0,0,20,10ZM12,5h3.341l2.142,5H12ZM4.754,5H10v5H3.325ZM7,19a2,2,0,1,1,2-2A2,2,0,0,1,7,19Zm10,0a2,2,0,1,1,2-2A2,2,0,0,1,17,19Zm4-3h-.142a3.981,3.981,0,0,0-7.716,0H10.858a3.981,3.981,0,0,0-7.716,0H3V12H20a1,1,0,0,1,1,1Z"/>
+  </symbol> -->
+</svg>
+<main>
+  <div class="d-flex flex-column flex-shrink-0 navtool" style="width: 5em;min-height: 100%;position: fixed;">
+    <a href="https://www.yid.com.tw/" class="d-block p-3 link-dark text-center">
+      <svg class="bi" width="32" height="32"><use xlink:href="#yid"/></svg>
+      <span class="visually-hidden">Icon-only</span>
+    </a>
+    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li>
+        <a href="agv/send" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#send"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/grid" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#return"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/" class="nav-link active py-3">
+          <svg class="bi" width="24" height="24" role="img" style="fill: #2F2725"><use xlink:href="#home"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/analysis" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#analysis"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/history" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#list"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/setting" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#setting"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <div id="elevatorDiv" class="elevator active">
+      <div class="nav-link py-3">
+        <svg width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
+      </div>
+
+      <div>
+        <p>06:33</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col Title">
+        <label class="title page">Information</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col Title">
+        <label class="title">AGV List</label>
+      </div>
+    </div>
+    <div id="agvList" class="row agvList">
+      <div class="col-4 agvCard">
+        <div class="row center" style="width:100%; height: 100%;">
+          <!-- <div class="dstatus normal" id="AGVStatusDiv1"></div> -->
+          <div class="dstatus error" id="AGVStatusDiv1"></div>
+          <div class="col">
+            <div class="row cardTop">
+              <div class="col-6 cardInfo">
+                  <div class="row" style="padding-top: 1.5%;">
+                      <div class="col" style=" display: inline-flex;align-items: center;">
+                          <p class="title AGVTitle" id="AGVName1">AMR#1</p>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col">
+                          <label class="AGVMemo" id="AGVMemo1">500公斤無軌式拖板型</label>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col AGVstatus">
+                      <!-- <label class="agvStatus normal" id="AGVStatus1">Working</label> -->
+                      <label class="agvStatus error" id="AGVStatus1">OFFLINE</label>
+                    </div>
+                  </div>
+              </div>
+              <div class="col-3 center AGVImg">
+                <img id="AGVImg1" class="img-fluid" style="width: 100%;" src="image/amr_500.png" alt="image error">
+              </div>
+              <div class="col-3" style="min-width: 100px;">
+                <div class="row">
+                  <div class="col center" style="padding-top: 1rem;padding-bottom: 1rem;">
+                    <svg style="fill: #FFFFFF;" width="40" height="40">
+                      <use id="AGVSignalSvg1" xlink:href="#wifi-0"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col center">
+                    <div class="row cardBattery">
+                      <div class="col-12 center">
+                        <svg fill="white" width="50" height="30">
+                          <use id="AGVBatterySvg1" xlink:href="#battery-0"/>
+                        </svg>
+                      </div>
+                      <div class="col center">
+                        <label id="AGVBattery1">0%</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+            <div class="row cardBottom">
+              <div class="col-12">
+                <div class="agvTask nowTask">
+                  <div class="row agvTask-row">
+                    <div class="col-12">
+                      <div class="row taskTitle">
+                        <div class="col">
+                          <!-- <p id="AGVTaskNumber1">#NE202308230002</p> -->
+                          <p id="AGVTaskNumber1"></p>
+                        </div>
+                      </div>
+                      <div class="row taskContent">
+                        <div class="col">
+                          <!-- <nobr><p id="AGVTaskST1">START: A-1 | TERMINAL: B-3</p></nobr> -->
+                          <nobr><p id="AGVTaskST1"></p></nobr>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+      <!-- <div class="col-4">
+        <div class="row">
+            <div class="col agvCard">
+                <div class="row cardTop">
+                    <div class="col cardInfo">
+                        <div class="row" style="padding-top: 1.5%;">
+                            <div class="col" style=" display: inline-flex;align-items: center;">
+                                <p class="title AGVTitle" id="AGV1Title">AMR#1</p>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col">
+                                <p class="AGVName" id="AGV1Name">500公斤拖板型</p>
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="row" style="border: 20px;">
-                        <div class="col-6 messageDiv" style=" padding: 5px;">
-                            <div id="messagebg" class="card" style="padding-top: 2px;">
-                                <div class="row">
-                                    <div class="col-10" style="padding-left: 4%;display: flex;align-items: center;">
-                                        <label>系統訊息:</label>
-                                        <label id="message">無異常</label>
-                                    </div>
-                                    <div class="col-2" style="padding-right: 5.5%;">
-                                        <a href="agv/message">
-                                            <svg xmlns="http://www.w3.org/2000/svg" style="float: right;" width="20" height="20" fill="#93B955" class="bi bi-chat-right-text-fill" viewBox="0 0 16 16">
-                                                <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h9.586a1 1 0 0 1 .707.293l2.853 2.853a.5.5 0 0 0 .854-.353V2zM3.5 3h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm0 2.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1 0-1zm0 2.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"/>
+                    <div class="col-3 cardImg">
+                        <img class="img-fluid" style="width: 100%;" src="image/amr_500.png" alt="image error">
+                    </div>
+                </div>
+                <div class="row cardBottom">
+                    <div id="agvStatus1" class="col AGVstatus normal">
+                        <div class="dstatus working"></div>
+                        <p class="agvStatus working">Working</p>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col signal">
+                                <svg style="fill: #FFFFFF;" width="40" height="40">
+                                    <use id="agvSignal1" xlink:href="#wifi-3"/>
+                                </svg>
+                            </div>
+                            <div class="col">
+                                <div class="row cardBattery">
+                                    <div class="col-6 canvas-wrap">
+                                        <div>
+                                            <svg fill="white" width="40" height="32">
+                                                <use xlink:href="#battery-4"/>
                                             </svg>
-                                        </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                            <p class="col" id="battery1"></p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-4 sendDiv" style=" padding: 5px;padding-left: 1.5%;">
-                            <div class="row" style=" display: flex;align-items: center">
-                                <div class="col-3" style="padding-left: 7%;padding-right: 0px;">
-                                    出發站：
-                                </div>
-                                <div class="col-3" style="padding: 0px;">
-                                    <div class="card" style=" width: 100%;height: 1.8em;padding-top: 2px;">
-                                        <input id="ststationText" type="text" readonly size="11" style="text-align: center; border: none;"/>
-                                    </div>
-                                    <input id="ststation" type="hidden"/>
-                                </div>
-                                <div class="col-3" style="padding-left: 7%;padding-right: 0px;">
-                                    通知站：
-                                </div>
-                                <div class="col-3" style="padding: 0px;">
-                                    <div class="card" style=" width: 100%;height: 1.8em;padding-top: 2px;">
-                                        <input id="notificationstationText" type="text" readonly size="11" style="text-align: center; border: none;"/>
-                                    </div>
-                                    <input id="notificationstation" type="hidden" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-2 confirmDiv" style=" padding: 5px;padding-left: 2%;">
-                            <input type="button" class="btn btn-yid" value="確認" onclick="subm()">
-                            &nbsp;
-                            <input type="button" class="btn btn-yid" value="清除" onclick="cn()">
                         </div>
                     </div>
-                    <br>
-                    <footer style="text-align: center">
-                        元創智動股份有限公司版權所有  TEL:02-26087894 Email:sales@yid.com.tw
-                    </footer>
                 </div>
             </div>
-            <div class="col-1" style="padding: 0px;">
-                <!-- <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="lanTaiwan" checked>
-                    <label class="btn btn-outline-secondary btn-sm" for="lanTaiwan">中文</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="lanThai">
-                    <label class="btn btn-outline-secondary btn-sm" for="lanThai">泰文</label>
-                </div> -->
-            </div>
         </div>
-    </body>
+      </div> -->
+
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-8">
+        <div class="row">
+          <div class="col Title">
+            <label class="title">Task Queue</label>
+          </div>
+        </div>
+        <div class="row">
+          <div id="taskListQueue" class="col taskQueue">
+
+            <!-- <div class="row task">
+              <div class="col agvTask">
+                <div class="row agvTask-row">
+                  <div class="col-4">
+                    <div class="row taskTitle">
+                      <div class="col">
+                        <p>#202308230002</p>
+                      </div>
+                    </div>
+                    <div class="row taskContent">
+                      <div class="col">
+                        <p>Progress: 第三階段(三樓轉載)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 center">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: 75%;">75%</div>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="row taskTB">
+                      <div id="progress20230823" class="col-7 taskBar"></div>
+                      <div class="col-5 datetime">
+                        <div class="row">
+                          <div class="col">
+                            <labe class="right">2023/08/23</label>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <label class="right">11:22:47</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-2 center">
+                    <button type="button" class="btn btn-secondary show-details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="row task">
+              <div class="col agvTask">
+                <div class="row agvTask-row">
+                  <div class="col-4">
+                    <div class="row taskTitle">
+                      <div class="col">
+                        <label>#YE202308230003</label>
+                      </div>
+                    </div>
+                    <div class="row taskContent">
+                      <div class="col">
+                        <label>任務階段: 第三階段(三樓轉載)</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 center">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: 75%;">75%</div>
+                    </div>
+                  </div>
+                  <div class="col-2 steps">
+                    <label>總任務數量: 16
+                    </label>
+                  </div>
+                  <div class="col-2 center">
+                    <button type="button" class="btn btn-secondary task-btn" onclick="getDetails('YE202308230003')">Details</button>
+                  </div>
+                </div>
+
+                <div class="row task-detail-row" id="taskdetail#YE202308230003">
+                  <div class="col-12 center task-detail-content">
+                    <table class="table" style="color: #FFFFFF;">
+                      <thead>
+                        <tr>
+                          <th>Sequence</th>
+                          <th>Title</th>
+                          <th>Start</th>
+                          <th>Terminal</th>
+                          <th>Mode</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="taskDetailTable#YE202308230003">
+                          <tr>
+                              <th>1</td>
+                              <td>Elevator</td>
+                              <td></td>
+                              <td></td>
+                              <td>電梯呼叫</td>
+                              <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>2</td>
+                            <td>AMR#1</td>
+                            <td>1-T-1</td>
+                            <td>E-1</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>3</td>
+                            <td>AMR#1</td>
+                            <td>1-T-2</td>
+                            <td>E-3</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>4</td>
+                            <td>AMR#1</td>
+                            <td>1-T-3</td>
+                            <td>E-3</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>5</td>
+                            <td>Elevator</td>
+                            <td></td>
+                            <td></td>
+                            <td>電梯轉送</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>6</td>
+                            <td>AMR#3</td>
+                            <td>E-3</td>
+                            <td>3-T-1</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>7</td>
+                            <td>AMR#3</td>
+                            <td>E-2</td>
+                            <td>3-T-2</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          <tr>
+                            <th>8</td>
+                            <td>AMR#3</td>
+                            <td>E-1</td>
+                            <td>3-T-3</td>
+                            <td>物件轉載</td>
+                            <td>100</td>
+                          </tr>
+                          
+        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+
+              </div>
+            </div>
+            <div class="row task">
+              <div class="col agvTask">
+                <div class="row agvTask-row">
+                  <div class="col-4">
+                    <div class="row taskTitle">
+                      <div class="col">
+                        <label>#YE202308230003</label>
+                      </div>
+                    </div>
+                    <div class="row taskContent">
+                      <div class="col">
+                        <label>任務階段: 第三階段(三樓轉載)</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 center">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: 75%;">75%</div>
+                    </div>
+                  </div>
+                  <div class="col-2 steps">
+                    <label>總任務數量: 16
+                    </label>
+                  </div>
+                  <div class="col-2 center">
+                    <button type="button" class="btn btn-secondary show-details" onclick="getDetails('YE202308230003')">Details</button>
+                  </div>
+                </div>
+
+                <div class="row task-detail-row" style="display: none;" id="taskdetail#YE202308230003">
+                  <div class="col-12 center task-detail-content">
+                    <table class="table" style="color: #FFFFFF;">
+                      <thead>
+                        <tr>
+                          <th>Sequence</th>
+                          <th>Title</th>
+                          <th>Start</th>
+                          <th>Terminal</th>
+                          <th>Mode</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="taskDetailTable#YE202308230003"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- <div class="row task">
+              <div class="col agvTask">
+                <div class="row agvTask-row">
+                  <div class="col-4">
+                    <div class="row taskTitle">
+                      <div class="col">
+                        <p>#202308230003</p>
+                      </div>
+                    </div>
+                    <div class="row taskContent">
+                      <div class="col">
+                        <p>Progress: 第一階段(一樓轉載)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 center">
+                    <div class="progress">
+                      <div class="progress-bar" role="progressbar" style="width: 23%;">23%</div>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="row taskTB">
+                      <div id="progress20230823" class="col-7 taskBar"></div>
+                      <div class="col-5 datetime">
+                        <div class="row">
+                          <div class="col">
+                            <labe class="right">2023/08/23</label>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col">
+                            <label class="right">11:25:33</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-2 center">
+                    <button type="button" class="btn btn-secondary show-details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="col Title">
+            <label class="title">Notification</label>
+          </div>
+        </div>
+        <div class="row">
+          <div id="notification" class="col">
+
+            <div class="row">
+              <div class="col message">
+                <div class="nfStatus warning"></div>
+                <div class="messageContent">
+                  <label>System</label>
+                  <p>beeper offline</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col message">
+                <div class="nfStatus danger"></div>
+                <div class="messageContent">
+                  <label>AMR#3</label>
+                  <p>amr error</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col message">
+                <div class="nfStatus normal"></div>
+                <div class="messageContent">
+                  <label>AMR#1</label>
+                  <p>completed #202308230001</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col message">
+                <div class="nfStatus info"></div>
+                <div class="messageContent">
+                  <label>AMR#1</label>
+                  <p>amr online</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>元創智動股份有限公司版權所有 TEL:02-26087894 Email:sales@yid.com.tw</footer>
+  </div>
+</main>
+
+</body>
 </html>

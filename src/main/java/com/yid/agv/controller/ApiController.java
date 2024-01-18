@@ -98,67 +98,67 @@ public class ApiController {
     }
     @GetMapping(value = "/homepage/agv", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getAGVJson() {
-        return """
-                [
-                  {
-                    "id": 1,
-                    "status": "ONLINE",
-                    "battery": 90,
-                    "signal": 100,
-                    "taskStatus": "PRE_TERMINAL_STATION",
-                    "task": {
-                        "taskNumber": "#YE202310310002",
-                        "agvId": 1,
-                        "sequence": 3,
-                        "startStation": "1-T-1",
-                        "terminalStation": "E-1",
-                        "startStationId": 48,
-                        "terminalStationId": 88,
-                        "modeId": 0,
-                        "status": 2
-                    },
-                    "iLowBattery": false,
-                    "lowBatteryCount": 0,
-                    "reDispatchCount": 0,
-                    "tagError": false,
-                    "fixAgvTagErrorCompleted": false,
-                    "tagErrorDispatchCompleted": false,
-                    "lastTaskBuffer": false,
-                    "obstacleCount": 0
-                  },
-                  {
-                    "id": 2,
-                    "status": "OBSTACLE",
-                    "battery": 60,
-                    "signal": 30,
-                    "taskStatus": "PRE_START_STATION",
-                    "iLowBattery": false,
-                    "lowBatteryCount": 0,
-                    "reDispatchCount": 0,
-                    "tagError": false,
-                    "fixAgvTagErrorCompleted": false,
-                    "tagErrorDispatchCompleted": false,
-                    "lastTaskBuffer": false,
-                    "obstacleCount": 0
-                  },
-                  {
-                    "id": 3,
-                    "status": "ONLINE",
-                    "battery": 40,
-                    "signal": 60,
-                    "taskStatus": "NO_TASK",
-                    "iLowBattery": false,
-                    "lowBatteryCount": 0,
-                    "reDispatchCount": 0,
-                    "tagError": false,
-                    "fixAgvTagErrorCompleted": false,
-                    "tagErrorDispatchCompleted": false,
-                    "lastTaskBuffer": false,
-                    "obstacleCount": 0
-                  }
-                ]
-                """;
-//        return new Gson().toJson(homePageService.getAgv());
+//        return """
+//                [
+//                  {
+//                    "id": 1,
+//                    "status": "ONLINE",
+//                    "battery": 90,
+//                    "signal": 100,
+//                    "taskStatus": "PRE_TERMINAL_STATION",
+//                    "task": {
+//                        "taskNumber": "#YE202310310002",
+//                        "agvId": 1,
+//                        "sequence": 3,
+//                        "startStation": "1-T-1",
+//                        "terminalStation": "E-1",
+//                        "startStationId": 48,
+//                        "terminalStationId": 88,
+//                        "modeId": 0,
+//                        "status": 2
+//                    },
+//                    "iLowBattery": false,
+//                    "lowBatteryCount": 0,
+//                    "reDispatchCount": 0,
+//                    "tagError": false,
+//                    "fixAgvTagErrorCompleted": false,
+//                    "tagErrorDispatchCompleted": false,
+//                    "lastTaskBuffer": false,
+//                    "obstacleCount": 0
+//                  },
+//                  {
+//                    "id": 2,
+//                    "status": "OBSTACLE",
+//                    "battery": 60,
+//                    "signal": 30,
+//                    "taskStatus": "PRE_START_STATION",
+//                    "iLowBattery": false,
+//                    "lowBatteryCount": 0,
+//                    "reDispatchCount": 0,
+//                    "tagError": false,
+//                    "fixAgvTagErrorCompleted": false,
+//                    "tagErrorDispatchCompleted": false,
+//                    "lastTaskBuffer": false,
+//                    "obstacleCount": 0
+//                  },
+//                  {
+//                    "id": 3,
+//                    "status": "ONLINE",
+//                    "battery": 40,
+//                    "signal": 60,
+//                    "taskStatus": "NO_TASK",
+//                    "iLowBattery": false,
+//                    "lowBatteryCount": 0,
+//                    "reDispatchCount": 0,
+//                    "tagError": false,
+//                    "fixAgvTagErrorCompleted": false,
+//                    "tagErrorDispatchCompleted": false,
+//                    "lastTaskBuffer": false,
+//                    "obstacleCount": 0
+//                  }
+//                ]
+//                """;
+        return new Gson().toJson(homePageService.getAgv());
     }
 
     @GetMapping(value = "/analysis/yyyymm", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -200,7 +200,7 @@ public class ApiController {
     public String cancelTask(@RequestParam("taskNumber") String taskNumber){
         taskNumber = "#" + taskNumber;
         System.out.println("taskNumber: "+taskNumber);
-        return taskService.cancelTask(taskNumber) ? "OK" : "FAIL";
+        return taskService.cancelTask(taskNumber);
     }
 
     @PostMapping(value = "/sendtasklist")

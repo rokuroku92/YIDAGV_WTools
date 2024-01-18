@@ -1,7 +1,6 @@
 package com.yid.agv.backend.agvtask;
 
 
-import com.yid.agv.backend.agv.AGV;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.repository.AGVIdDao;
 import jakarta.annotation.PostConstruct;
@@ -43,15 +42,11 @@ public class AGVTaskManager {
         return taskQueueMap.get(agvId).isEmpty();
     }
 
-
-
     public boolean addTaskToQueue(AGVQTask task) {
 //        if(taskQueue.size() >= 5)
 //            return false;
         Queue<AGVQTask> taskQueue = taskQueueMap.get(task.getAgvId());
         taskQueue.offer(task);
-//        bookedStation[task.getStartStationId()-1] = 1;
-//        bookedStation[task.getTerminalStationId()-1] = 2;
         return true;
     }
 

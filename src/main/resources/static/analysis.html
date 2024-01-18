@@ -1,173 +1,282 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>元創智動AGV效益分析</title>
-		<script>
-            var baseUrl;
-            if (window.location.href.startsWith('http://127.0.0.1:5500')) {
-                // Live Server 环境
-                console.log('Running on Live Server');
-                baseUrl = "http://localhost:8080/YIDAGV";
-                var baseHref = document.createElement("base");
-                baseHref.href = "http://127.0.0.1:5500/static/";
-                document.head.appendChild(baseHref);
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>元創智動系統 | 分析頁面</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <base id="Base" />
+  <script defer>
+    var baseUrl;
+    if (window.location.port != "8080") {
+        // Live Server 环境
+        console.log('Running on Live Server');
+        baseUrl = "http://"+window.location.hostname+":8080/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = window.location.origin + "/";
+        document.head.appendChild(baseHref);
 
-				document.addEventListener("DOMContentLoaded", function() {
-					var _a_ = document.querySelectorAll("a");
-					_a_.forEach(a => {
-						var parts = a.href.split("/");
-						var newHref = parts[parts.length-1] !== "" ? parts[parts.length-1]+".html" : "agv.html";
-						a.href = newHref;
-					});
-				});
-            } else {
-                // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
-                console.log('Running on Spring Boot');
-                baseUrl = window.location.origin + "/YIDAGV";
-                var baseHref = document.createElement("base");
-                baseHref.href = "/YIDAGV/";
-                document.head.appendChild(baseHref);
+        document.addEventListener("DOMContentLoaded", function() {
+            var _a_ = document.querySelectorAll("a");
+            _a_.forEach(a => {
+                var parts = a.href.split("/");
+                var newHref = parts[parts.length-1] !== "" ? parts[parts.length-1]+".html" : "agv.html";
+                a.href = newHref;
+            });
+        });
+    } else {
+        // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
+        console.log('Running on Spring Boot');
+        baseUrl = window.location.origin + "/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = "/YIDAGV/";
+        document.head.appendChild(baseHref);
+    }
+
+  </script>
+  <!-- BootStrap框架 -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- YID CSS -->
+  <link rel="stylesheet" href="css/yid.css">
+  <link rel="stylesheet" href="css/yiddemoroomanalysis.css">
+
+  <style>
+            @font-face{
+                font-family: NewFont;
+                src: url("css/US101.TTF");
+                font-weight: bold;
             }
-        </script>
-		<link rel="icon" type="image/ico" href="image/favicon.ico">
-		<!-- Bootstrap core CSS -->
-		<link href="css/bootstrap.min.css" rel="stylesheet">
-		<link href="css/yid-basic.css" rel="stylesheet">
-		<link href="css/analysis.css" rel="stylesheet">
+            @media print {
+                .container-fluid{
+                    display: none;
+                }
+                .printt{
+                    display: flow;
+                }
+            }
+        </style>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-table.min.js"></script>
+  <script src="js/chart.js@4.3.0"></script>
+  <script src="js/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script type="text/javascript" src="js/yid.js"></script>
+  <script type="text/javascript" src="js/analysis.js"></script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="bootstrap" viewBox="0 0 118 94">
+    <title>Bootstrap</title>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+  </symbol>
+  <symbol id="yid" viewBox="0 0 16 16">
+    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
+  </symbol>
+  <symbol id="home" viewBox="0 0 16 16">
+    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+  </symbol>
+  <symbol id="send" viewBox="0 0 16 16">
+    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+  </symbol>
+  <symbol id="return" viewBox="0 0 16 16">
+    <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>
+  </symbol>
+  <symbol id="analysis" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+  </symbol>
+  <symbol id="list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+  </symbol>
+  <symbol id="setting" viewBox="0 0 16 16">
+    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+  </symbol>
+  <symbol id="elevator" viewBox="0 0 122.88 122.88">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M56.73,71.74c-2.03,1.17-4.66,0.47-5.83-1.56L47,63.44c0,10.93,0.14,20.96,0.14,31.9c0,2.69-2.2,4.9-4.9,4.9 c-2.69,0-4.9-2.2-4.9-4.9V73.25h-2.75v22.09c0,2.69-2.2,4.9-4.9,4.9c-2.69,0-4.9-2.2-4.9-4.9c0-10.89,0.13-20.86,0.13-31.74 l-3.8,6.58c-1.17,2.03-3.8,2.74-5.83,1.56c-2.03-1.17-2.74-3.8-1.56-5.83l9.93-17.2c3.54-6.14,20.72-6.89,24.54-0.27l10.09,17.47 C59.46,67.95,58.76,70.57,56.73,71.74L56.73,71.74L56.73,71.74z M97.19,21.62v16.67c0,0.66-0.27,1.26-0.7,1.7 c-0.43,0.43-1.04,0.7-1.7,0.7c-0.66,0-1.26-0.27-1.7-0.7c-0.43-0.43-0.7-1.03-0.7-1.7V21.62l-8.53,7.45 c-0.49,0.43-1.12,0.62-1.72,0.59c-0.61-0.04-1.21-0.3-1.65-0.8c-0.44-0.49-0.63-1.12-0.6-1.72c0.04-0.61,0.31-1.2,0.8-1.64 l12.53-10.94c0.46-0.41,1.04-0.6,1.61-0.6c0.57,0,1.14,0.22,1.58,0.62l12.52,10.93c0.48,0.44,0.74,1.02,0.78,1.62 c0.03,0.61-0.16,1.23-0.6,1.72l-0.02,0.02c-0.44,0.48-1.03,0.75-1.63,0.78h-0.01c-0.61,0.03-1.23-0.17-1.72-0.6L97.19,21.62 L97.19,21.62L97.19,21.62z M94.79,53.5c4.38,0,7.94,3.55,7.94,7.94c0,4.38-3.55,7.94-7.94,7.94c-4.38,0-7.94-3.55-7.94-7.94 C86.86,57.06,90.41,53.5,94.79,53.5L94.79,53.5z M97.19,101.26V84.59c0-0.66-0.27-1.26-0.7-1.7c-0.43-0.43-1.04-0.7-1.7-0.7 c-0.66,0-1.26,0.27-1.7,0.7c-0.43,0.43-0.7,1.03-0.7,1.7v16.67l-8.53-7.45c-0.49-0.43-1.12-0.62-1.72-0.59 c-0.61,0.04-1.21,0.3-1.65,0.8c-0.44,0.49-0.63,1.12-0.6,1.72c0.04,0.61,0.31,1.2,0.8,1.64l12.53,10.94 c0.46,0.41,1.04,0.6,1.61,0.6c0.57,0,1.14-0.22,1.58-0.62l12.52-10.93c0.48-0.44,0.74-1.02,0.78-1.62c0.03-0.61-0.16-1.23-0.6-1.72 l-0.02-0.02c-0.44-0.48-1.03-0.75-1.63-0.78h-0.01c-0.61-0.03-1.23,0.17-1.72,0.6L97.19,101.26L97.19,101.26L97.19,101.26z M19.2,0 h50.89h33.59c5.28,0,10.09,2.16,13.56,5.64c3.48,3.48,5.64,8.28,5.64,13.56v84.48c0,5.28-2.16,10.09-5.64,13.56 c-3.48,3.48-8.28,5.64-13.56,5.64H70.09H19.2c-5.28,0-10.09-2.16-13.56-5.64C2.16,113.76,0,108.96,0,103.68V19.2 C0,13.92,2.16,9.12,5.64,5.64C9.12,2.16,13.92,0,19.2,0L19.2,0z M66.71,116.11V6.77H19.2c-3.42,0-6.52,1.4-8.78,3.65 c-2.25,2.25-3.66,5.36-3.66,8.78v84.48c0,3.42,1.4,6.52,3.66,8.78c2.25,2.25,5.36,3.66,8.78,3.66H66.71L66.71,116.11z M36.01,22.64 c5.4,0,9.77,4.37,9.77,9.77s-4.37,9.77-9.77,9.77c-5.4,0-9.77-4.37-9.77-9.77S30.62,22.64,36.01,22.64L36.01,22.64z"/>
+  </symbol>
+</svg>
+<main>
+  <div class="d-flex flex-column flex-shrink-0 navtool" style="width: 5em;min-height: 100%;position: fixed;">
+    <a href="https://www.yid.com.tw/" class="d-block p-3 link-dark text-center">
+      <svg class="bi" width="32" height="32"><use xlink:href="#yid"/></svg>
+      <span class="visually-hidden">Icon-only</span>
+    </a>
+    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li>
+        <a href="agv/send" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#send"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/grid" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#return"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#home"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/analysis" class="nav-link py-3 active">
+          <svg class="bi" width="24" height="24" style="fill: #2F2725" role="img"><use xlink:href="#analysis"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/history" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#list"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/setting" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#setting"/></svg>
+        </a>
+      </li>
+    </ul>
 
-		<script src="js/jquery-3.3.1.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/bootstrap.bundle.min.js"></script>
-		<script src="js/popper.min.js"></script>
-		<script src="js/chart.js@4.3.0"></script>
-		<script src="js/bootstrap-table.min.js"></script>
-		<script src="js/yidagvanalysis.js"></script>
+    <div id="elevatorDiv" class="elevator active error">
+      <div class="nav-link py-3">
+        <svg width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
+      </div>
 
-	</head>
-	<body style="padding: 0px;line-height: 10px;">
-<!--		<img src="image/2023AGVS_UI_1280_800_top_20230223.png}" alt="image error" style="max-width:100%;">-->
-		<div class="row Title">
-			<div class="col-4"></div>
-			<div class="col-4">
-                <img src="image/yidlogo.svg" alt="SVG Image" style="width: 10%;">
-                <img src="image/yidlogotext.svg" alt="SVG Image" style="width: 85%;">
+      <div>
+        <p>30:01</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col Title">
+        <label class="title page">Analysis</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col" style="text-align: left;">
+        <div id="agvOption" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off" onclick="setOrder()" checked>
+          <label class="btn btn-outline-warning" for="btnradio4">工單分析</label>
+
+          <!-- <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" onclick="agvReset(this)"> -->
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" onclick="setAGV()">
+          <label class="btn btn-outline-warning" for="btnradio1">AGV#1</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" onclick="agvReset(this)">
+          <label class="btn btn-outline-warning" for="btnradio2">AGV#2</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" onclick="agvReset(this)">
+          <label class="btn btn-outline-warning" for="btnradio3">AGV#3</label>
+        </div>
+        &nbsp;
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-outline-primary active" onclick="reSet('recently')">最近兩週</button>
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              月
+            </button>
+            <ul id="yearsandmonths" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            </ul>
+          </div>
+        </div>
+        &nbsp;
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">列印表單</button>
+        <button type="button" class="btn btn-primary" onclick="myexcel()">匯出成Excel</button>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">確認列印表單</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div id="printt">
+                  <img src="image/logo.png" alt="image error" id="logog">
+                  <h1 id="printOutAGV">AGV#1</h1>
+                  <table id="va" class="table">
+                    <thead>
+                    <tr>
+                      <th scope="col">日期</th>
+                      <th scope="col">任務數</th>
+                      <th scope="col">稼動率</th>
+                      <th scope="col">工作時數</th>
+                      <th scope="col">開機時數</th>
+                      <th>
+                        <input type="checkbox" id="checkAll" checked/>
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody id="pt">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <input type="checkbox" id="cancelweekend">
+                  <label for="cancelweekend">
+                    取消選取六日
+                  </label>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-primary" onclick="printOut()">列印</button>
+              </div>
             </div>
-            <div class="col-4" style="position: relative;">
-                <img style="position: absolute;bottom: 0;right: 0;max-height: 45%;" src="image/yidwww.svg" alt="image error">
-            </div>
-		</div>
-		<hr style="border: none;height: 10px;background-color: #93B955;margin: 0px;margin-top: 3px;opacity: 1;">
-		<div class="container-fluid" style="padding: 20px;padding-left: 40px;padding-right: 40px;padding-bottom: 0px;">
-			<div class="row">
-				<div class="col">
-					<img src="image/icon_3.png" alt="image error">
-					<font size="4">效益分析</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<div class="btn-group" role="group" aria-label="Basic example">
-						<button type="button" class="btn btn-outline-primary" onclick="reSet('recently')">最近兩週</button>
-						<div class="btn-group" role="group">
-							<button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-								月
-							</button>
-							<ul id="yearsandmonths" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-							</ul>
-						</div>
-					</div>
-					<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-						列印表單
-					</button>
-					<button type="button" class="btn btn-primary" onclick="myexcel()">
-						匯出成Excel
-					</button>
-					<!-- Modal -->
-					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-						<div class="modal-dialog">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h5 class="modal-title" id="exampleModalLabel">確認列印表單</h5>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<div id="printt">
-										<img src="image/logo.png" alt="image error" border="0" id="logog">
-										<table id="va" class="table">
-											<thead>
-											<tr>
-												<th scope="col">日期</th>
-												<th scope="col">任務數</th>
-												<th scope="col">稼動率</th>
-												<th scope="col">工作時數</th>
-												<th scope="col">開機時數</th>
-												<th>
-													<input type="checkbox" id="checkAll" checked/>
-												</th>
-											</tr>
-											</thead>
-											<tbody id="pt">
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<div>
-										<input type="checkbox" id="cancelweekend">
-										<label for="cancelweekend">
-											取消選取六日
-										</label>
-									</div>
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
-									<button type="button" class="btn btn-primary" onclick="printOut()">列印</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<a href="agv/" style=" float: right;">
-						<input type="button" class="btn btn-yid" value="返回主畫面">
-					</a>
-					<a href="agv/equipment" style=" float: right; margin-right: 0.5em;">
-						<input type="button" class="btn btn-yid" value="返回設備保全部">
-					</a>
-				</div>
-			</div>
-			<div class="row" style=" justify-content: center">
-				<div class="col-10">
-					<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-				</div>
-			</div>
-			<hr size="4px" align="center" width="100%">
-			<div class="row" style=" justify-content: center">
-				<div class="col">
-					<div id="summ" class="col-12" style="background-color: #ffffff;opacity: .8;">
-						<table class="table table-borderless" style=" align-items: center;text-align: center;">
-							<thead>
-							<tr>
-								<th>總任務數量</th>
-								<th>平均任務數</th>
-								<th>總開機時數</th>
-								<th>總工作時數</th>
-								<th>平均工作時數</th>
-								<th>平均稼動率</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr style=" font-size: 1.5em">
-								<td><p><input class="parse" type="text" id="task_sum" readonly/></p></td>
-								<td><p><input class="parse" type="text" id="task" readonly/></p></td>
-								<td><p><input class="parse" type="text" id="open_sum" readonly/></p></td>
-								<td><p><input class="parse" type="text" id="work_sum" readonly/></p></td>
-								<td><p><input class="parse" type="text" id="work" readonly/></p></td>
-								<td><p><input class="parse" type="text" id="rate" readonly/></p></td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-		<footer style="text-align: center">
-			元創智動股份有限公司版權所有  TEL:02-26087894 Email:sales@yid.com.tw
-		</footer>
-
-	</body>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="agvAnalysis" style="display: none;">
+    <!-- <div id="agvAnalysis"> -->
+      <div class="row" style=" justify-content: center;padding-top: 1.5em;">
+        <div class="col-11" style="background-color: #3E3A39;border-radius: 0.6rem!important;">
+          <div id="legend-container"></div>
+          <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+        </div>
+      </div>
+      <hr size="4px" width="100%" color="white">
+      <div class="row" style="justify-content: center;">
+        <div id="summ" class="col-11" style="background-color: #3E3A39;border-radius: 0.6rem!important;">
+          <table class="table table-borderless" style=" align-items: center;text-align: center;color: #9E9E9E;">
+            <thead>
+            <tr>
+              <th>總任務數量</th>
+              <th>平均任務數</th>
+              <th>總開機時數</th>
+              <th>總工作時數</th>
+              <th>平均工作時數</th>
+              <th>平均稼動率</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr style=" font-size: 1.5em">
+              <td><input class="parse" type="text" id="task_sum" readonly/></td>
+              <td><input class="parse" type="text" id="task" readonly/></td>
+              <td><input class="parse" type="text" id="open_sum" readonly/></td>
+              <td><input class="parse" type="text" id="work_sum" readonly/></td>
+              <td><input class="parse" type="text" id="work" readonly/></td>
+              <td><input class="parse" type="text" id="rate" readonly/></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="orderAnalysis">
+      <div class="row" style=" justify-content: center;padding-top: 1.5em;height: 40em;">
+        <div class="col-11" style="background-color: #3E3A39;border-radius: 0.6rem!important;height: 100%;padding-bottom: 2em;">
+          <div id="legend-container1"></div>
+          <canvas class="my-4 w-100" id="orderChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <footer>
+      元創智動股份有限公司版權所有  TEL:02-26087894 Email:sales@yid.com.tw
+    </footer>
+  </div>
+</main>
+</body>
 </html>

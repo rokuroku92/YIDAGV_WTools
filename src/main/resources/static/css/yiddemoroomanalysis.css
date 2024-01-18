@@ -1,0 +1,40 @@
+.Title{
+    margin-left: 1em;
+    padding-left: 0px;
+    padding-bottom: 0.5em;
+}
+.title{
+    font-family: NewFont, sans-serif;
+    font-size: 1.1em;
+    color: #FFFFFF;
+    letter-spacing: 0.1em;
+    float: left;
+}
+.title.page{
+    font-size: 2em;
+}
+.parse{
+    width:87%;
+    height: 70px;
+    color: #FFFFFF;
+    background-color: #5C5C5C;
+    text-align: center;
+    border: 0;
+    border-radius: 0.6rem!important;
+}
+.btnt{
+    color: white;
+}
+.btnt:hover{
+    color: red;
+}
+.btn-yid{
+    --bs-btn-disabled-opacity:1;
+    --bs-btn-bg:#93ba55;
+    --bs-btn-border-color:#93ba55;
+    --bs-btn-hover-bg:#89b04b;
+    --bs-btn-hover-border-color:#89b04b;
+    --bs-btn-active-bg:#6b922d;
+    --bs-btn-active-border-color:#6b922d;
+    color: white;
+}

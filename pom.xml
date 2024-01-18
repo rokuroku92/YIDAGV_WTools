@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.yid</groupId>
 	<artifactId>agv</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.4</version>
 	<name>agv</name>
-	<description>WTools agv project with Spring Boot</description>
+	<description>WTools agv project</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,19 +52,20 @@ public class TaskListManager {
                 if (unCompletedTaskList.getProgress() != 0){
                     List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
                     unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
-                        if(unCompletedTaskDetail.getStatus() != 100) {
+                        if(unCompletedTaskDetail.getStatus() != 100 && unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101) {
+                            System.out.println("cancel： " + unCompletedTaskDetail.getTaskNumber() + " : " + unCompletedTaskDetail.getSequence());
                             gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
                             gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
                         }
                     });
                     nowTaskListDao.deleteNowTaskList(unCompletedTaskList.getTaskNumber());
-                    taskListDao.updateTaskListStatus(unCompletedTaskList.getTaskNumber(), -1);
+                    taskListDao.cancelTaskList(unCompletedTaskList.getTaskNumber());
                 }
             });
         });
     }
 
-//    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 2000)
     public synchronized void refreshTaskList(){
         taskListMap.forEach((taskProcessId, taskList) -> {
             if(taskList == null) {
@@ -81,6 +83,19 @@ public class TaskListManager {
 
     public NowTaskList getNowTaskListByTaskProcessId(int taskProcessId){
         return taskListMap.get(taskProcessId);
+    }
+
+    public List<NowTaskList> getNowAllTaskList(){
+        List<NowTaskList> allTaskLists = new ArrayList<>();
+
+        // 遍歷所有任務處理ID，取得非空任務列表
+        taskListMap.forEach((taskProcessId, taskList) -> {
+            if (taskList != null) {
+                allTaskLists.add(taskList);
+            }
+        });
+
+        return allTaskLists;
     }
 
     public List<TaskDetail> getTaskDetailByTaskNumber(String taskNumber){
@@ -105,8 +120,9 @@ public class TaskListManager {
 
     public void setTaskListProgressBySequence(String taskNumber, int sequence){
         int steps = getTaskDetailLengthByTaskNumber(taskNumber);
-        nowTaskListDao.updateNowTaskListProgress(taskNumber, (sequence/steps)*99);
-        taskListDao.updateTaskListProgress(taskNumber, (sequence/steps)*99);
+        int progress = (int)(((double)sequence/(double)steps)*(double)99);
+        nowTaskListDao.updateNowTaskListProgress(taskNumber, progress);
+        taskListDao.updateTaskListProgress(taskNumber, progress);
     }
 
     public void completedTaskList(int taskProcessId){

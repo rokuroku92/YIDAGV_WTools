@@ -4,6 +4,7 @@ package com.yid.agv.service;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
+import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.dto.TaskListRequest;
 import com.yid.agv.model.*;
 import com.yid.agv.repository.GridListDao;
@@ -12,6 +13,7 @@ import com.yid.agv.repository.TaskDetailDao;
 import com.yid.agv.repository.TaskListDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,13 @@ public class TaskService {
     @Autowired
     private TaskDetailDao taskDetailDao;
     @Autowired
+    private TaskListManager taskListManager;
+    @Autowired
     private GridListDao gridListDao;
     @Autowired
     private GridManager gridManager;
     @Autowired
-    private AGVTaskManager taskQueue;
+    private AGVTaskManager agvTaskManager;
 
     @Autowired
     @Qualifier("WToolsJdbcTemplate")
@@ -45,12 +49,15 @@ public class TaskService {
     
     private String lastDate;
 
-    public WorkNumberResult getWToolsInformation(String workNumber){
+    private WorkNumberResult getWToolsInformation(String workNumber){
         if(workNumber.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
             String[] TA = workNumber.split("-");
             String sql = "SELECT `TA006` AS `object_number`, `TA034` AS `object_name` FROM `V_MOCTA` WHERE `TA001` = ? AND `TA002` = ?";
-            System.out.println(jdbcTemplate);
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
+            WorkNumberResult result = null;
+            try {
+                result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
+            } catch (EmptyResultDataAccessException ignore){}
+            return result;
         } else {
             return null;
         }
@@ -74,10 +81,24 @@ public class TaskService {
         return taskDetailDao.queryTaskDetailsByTaskNumber(taskNumber);
     }
 
-    public boolean cancelTask(String taskNumber){
-        // TODO: com
-        return true;
-//        return taskQueue.removeTaskByTaskNumber(taskNumber) && taskListDao.cancelTaskList(taskNumber);
+    public String cancelTask(String taskNumber){
+        for (NowTaskList nowTaskList : taskListManager.getNowAllTaskList()) {
+            if(nowTaskList.getTaskNumber().equals(taskNumber)){
+                if(nowTaskList.getProgress() != 0){
+                    return "取消任務失敗： 任務已開始";
+                }
+            }
+        }
+        nowTaskListDao.deleteNowTaskList(taskNumber);
+        taskListDao.cancelTaskList(taskNumber);
+        List<TaskDetail> taskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(taskNumber);
+        taskDetails.forEach(taskDetail -> {
+            if(taskDetail.getStatus() != 100 && taskDetail.getMode()!=100 && taskDetail.getMode()!=101) {
+                gridManager.setGridStatus(taskDetail.getStartId(), Grid.Status.FREE);
+                gridManager.setGridStatus(taskDetail.getTerminalId(), Grid.Status.FREE);
+            }
+        });
+        return "取消任務 ".concat(taskNumber).concat(" 成功！");
     }
 
     public String addTaskList(TaskListRequest taskListRequest){

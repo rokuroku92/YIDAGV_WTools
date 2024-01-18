@@ -69,7 +69,7 @@ public class AGVInstantStatus {
                 .collect(Collectors.toMap(Station::getId, Station::getTag));
     }
 
-//    @Scheduled(fixedRate = 1000) // 每秒執行
+    @Scheduled(fixedRate = 1000) // 每秒執行
     public void updateAgvStatuses() {
         // 抓取AGV狀態，並更新到agvStatuses
         String[] agvStatusData = crawlAGVStatus().orElse(new String[0]);
@@ -250,7 +250,7 @@ public class AGVInstantStatus {
         if(agv.getTask().getStatus() == 1){
             agv.getTask().setStatus(2);
             AGVQTask task = agv.getTask();
-            taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), -1);
+            taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 2);
         }
         if(!agv.getTask().getTaskNumber().matches("#(SB|LB).*")){
             CountUtilizationRate.isWorking[agv.getId()-1] = true;
@@ -273,9 +273,14 @@ public class AGVInstantStatus {
                 switch (Integer.parseInt(data) % 10) {
                     case 0 -> {
                         // AGV 重新啟動
-                        if(agv.getStatus() != AGV.Status.REBOOT){
-                            agv.setStatus(AGV.Status.REBOOT);
-                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.REBOOT);
+//                        if(agv.getStatus() != AGV.Status.REBOOT){
+//                            agv.setStatus(AGV.Status.REBOOT);
+//                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.REBOOT);
+//                            homePageService.setIAlarm(0);
+//                        }
+                        if(agv.getStatus() != AGV.Status.ONLINE){
+                            agv.setStatus(AGV.Status.ONLINE);
+                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.ONLINE);
                             homePageService.setIAlarm(0);
                         }
                     }

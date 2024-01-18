@@ -37,7 +37,7 @@ public class ProcessTaskList {
     private ElevatorManager elevatorManager;
 
 
-//    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 4000)
     public void checkTaskList() {
 
         for(int i = 1; i <= taskListManager.getTaskListMapSize(); i++){
@@ -77,7 +77,9 @@ public class ProcessTaskList {
                             task.setTaskNumber(taskDetail.getTaskNumber());
                             task.setSequence(taskDetail.getSequence());
                             task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
                             task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
                             task.setTerminalStationId(taskDetail.getTerminalId());
                             task.setStatus(0);
                             agvTaskManager.addTaskToQueue(task);
@@ -107,7 +109,9 @@ public class ProcessTaskList {
                             task.setTaskNumber(taskDetail.getTaskNumber());
                             task.setSequence(taskDetail.getSequence());
                             task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
                             task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
                             task.setTerminalStationId(taskDetail.getTerminalId());
                             task.setStatus(0);
                             agvTaskManager.addTaskToQueue(task);
@@ -134,7 +138,9 @@ public class ProcessTaskList {
                             task.setTaskNumber(taskDetail.getTaskNumber());
                             task.setSequence(taskDetail.getSequence());
                             task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
                             task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
                             task.setTerminalStationId(taskDetail.getTerminalId());
                             task.setStatus(0);
                             agvTaskManager.addTaskToQueue(task);
@@ -170,7 +176,9 @@ public class ProcessTaskList {
                             task.setTaskNumber(taskDetail.getTaskNumber());
                             task.setSequence(taskDetail.getSequence());
                             task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
                             task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
                             task.setTerminalStationId(taskDetail.getTerminalId());
                             task.setStatus(0);
                             agvTaskManager.addTaskToQueue(task);
@@ -200,7 +208,9 @@ public class ProcessTaskList {
                             task.setTaskNumber(taskDetail.getTaskNumber());
                             task.setSequence(taskDetail.getSequence());
                             task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
                             task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
                             task.setTerminalStationId(taskDetail.getTerminalId());
                             task.setStatus(0);
                             agvTaskManager.addTaskToQueue(task);
@@ -244,7 +254,9 @@ public class ProcessTaskList {
                         task.setTaskNumber(taskDetail.getTaskNumber());
                         task.setSequence(taskDetail.getSequence());
                         task.setModeId(taskDetail.getMode());
+                        task.setStartStation(taskDetail.getStart());
                         task.setStartStationId(taskDetail.getStartId());
+                        task.setTerminalStation(taskDetail.getTerminal());
                         task.setTerminalStationId(taskDetail.getTerminalId());
                         task.setStatus(0);
                         agvTaskManager.addTaskToQueue(task);
@@ -253,7 +265,7 @@ public class ProcessTaskList {
                 taskListManager.setTaskListPhase(nowTaskList, Phase.TRANSFER);
             }
             case TRANSFER -> {
-                if (agvManager.getAgv(2).getTask().getTaskNumber().startsWith("#SB")){
+                if (agvTaskManager.isEmpty(2) && agvManager.getAgv(2).getTask() == null){
                     taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                 }
             }

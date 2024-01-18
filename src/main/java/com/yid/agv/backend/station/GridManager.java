@@ -26,7 +26,7 @@ public class GridManager {
         System.out.println("Initialize gridMap: " + gridMap);
     }
 
-//    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 3000)
     public void synchronizeDB() {
         gridListDao.queryAllGrids().forEach(grid -> gridMap.put(grid.getStation(), new Grid(grid)));
 //        gridMap.forEach((index, grid) -> System.out.println(index + grid.getStatus()));

@@ -42,7 +42,7 @@ public class TaskListDaoImpl implements TaskListDao {
     }
     @Override
     public String selectLastTaskListNumber(){
-        String sql = "SELECT task_number FROM task_list WHERE `task_number` LIKE '#%E%' ORDER BY task_number DESC LIMIT 1";
+        String sql = "SELECT task_number FROM task_list WHERE `task_number` LIKE '#%E%' ORDER BY `id` DESC LIMIT 1";
         return jdbcTemplate.queryForObject(sql, String.class);
     }
     @Override

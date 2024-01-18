@@ -3,9 +3,9 @@ CREATE DATABASE `AGV_WTools`;
 CREATE TABLE `agv_data`( -- 建造agv_data TABLE
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `name` varchar(20) NOT NULL, -- AGV名稱
+    `img` varchar(30), -- AGV圖片名稱
     `memo` varchar(50) NOT NULL -- 備忘錄
 );
-
 CREATE TABLE `station_data`( -- 建造station_data TABLE 車站
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `tag` int NOT NULL, -- tag
@@ -17,9 +17,10 @@ CREATE TABLE `grid_list`( -- 建造station_data TABLE 車站
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `station_id` int NOT NULL UNIQUE,FOREIGN KEY (`station_id`) REFERENCES `station_data`(`id`)ON DELETE CASCADE, -- 車站ID
     `status` int NOT NULL, -- 格位狀態 0:free|1:booked|2:occupied|3:over time|6:disable
-    `work_number_1` varchar(50),`work_number_2` varchar(50),`work_number_3` varchar(50),`work_number_4` varchar(50), -- 工單號碼
-    `object_name_1` varchar(50),`object_name_2` varchar(50),`object_name_3` varchar(50),`object_name_4` varchar(50), -- 品名
+    `work_number_1` varchar(20),`work_number_2` varchar(20),`work_number_3` varchar(20),`work_number_4` varchar(20), -- 工單號碼
+    `object_name_1` varchar(120),`object_name_2` varchar(120),`object_name_3` varchar(120),`object_name_4` varchar(120), -- 品名
     `object_number_1` varchar(50),`object_number_2` varchar(50),`object_number_3` varchar(50),`object_number_4` varchar(50), -- 物料號碼
+    `line_code_1` varchar(20),`line_code_2` varchar(20),`line_code_3` varchar(20),`line_code_4` varchar(20), -- 線別代號
     `create_time` varchar(20) -- 創建時間 20231026141155
 );
 
@@ -74,12 +75,6 @@ CREATE TABLE `now_task_list`( -- 建造task_list TABLE
 CREATE INDEX idx_task_number ON now_task_list (task_number);
 
 
-CREATE TABLE `notification_history_message_data`( -- 建造message_data TABLE for notification_history
-	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
-    `level` int NOT NULL, -- 通知等級
-    `content` varchar(50) NOT NULL -- 通知訊息
-);
-
 CREATE TABLE `notification_history_title_data`( -- 建造notification_title_data TABLE for notification_history
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `name` varchar(20) NOT NULL, -- 名稱
@@ -89,7 +84,8 @@ CREATE TABLE `notification_history_title_data`( -- 建造notification_title_data
 CREATE TABLE `notification_history`( -- 建造notify_history TABLE
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `title_id` int NOT NULL,FOREIGN KEY (`title_id`) REFERENCES `notification_history_title_data`(`id`)ON DELETE CASCADE, -- 標題
-    `message_id` int NOT NULL,FOREIGN KEY (`message_id`) REFERENCES `notification_history_message_data`(`id`)ON DELETE CASCADE, -- 內容
+    `level` int NOT NULL, -- 通知等級
+    `message` varchar(50) NOT NULL, -- 內容
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP, INDEX `idx_create_time` (`create_time`) -- 創建時間
 );
 

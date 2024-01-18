@@ -10,8 +10,8 @@ jdbc:
 
 agvControl:
 #  url: http://192.168.0.100:20100
-  url: http://10.11.33.232:20100
-#  url: http://localhost:20101
+#  url: http://10.11.33.199:20100
+  url: http://localhost:20100
 
 agv:
   low_battery: 70  # AGV電量低於多少算低電量

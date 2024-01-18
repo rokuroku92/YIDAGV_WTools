@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>元創智動系統 | 格位回報</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <base id="Base" />
+  <script defer>
+    var baseUrl;
+    if (window.location.port != "8080") {
+        // Live Server 环境
+        console.log('Running on Live Server');
+        baseUrl = "http://"+window.location.hostname+":8080/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = window.location.origin + "/";
+        document.head.appendChild(baseHref);
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var _a_ = document.querySelectorAll("a");
+            _a_.forEach(a => {
+                var parts = a.href.split("/");
+                var newHref = parts[parts.length-1] !== "" ? parts[parts.length-1]+".html" : "agv.html";
+                a.href = newHref;
+            });
+        });
+    } else {
+        // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
+        console.log('Running on Spring Boot');
+        baseUrl = window.location.origin + "/YIDAGV";
+        // var baseHref = document.createElement("base");
+        var baseHref = document.getElementById("Base");
+        baseHref.href = "/YIDAGV/";
+        document.head.appendChild(baseHref);
+    }
+
+  </script>
+  <!-- BootStrap框架 -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- YID CSS -->
+  <link rel="stylesheet" href="css/yid.css">
+  <link rel="stylesheet" href="css/grid.css">
+
+  <style>
+            @font-face{
+                font-family: NewFont;
+                src: url("css/US101.TTF");
+                font-weight: bold;
+            }
+        </style>
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap-table.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="js/yid.js"></script>
+  <script type="text/javascript" src="js/gridt.js"></script>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="bootstrap" viewBox="0 0 118 94">
+    <title>Bootstrap</title>
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284.214 6.14-.064 14.092-2.066 20.577C8.943 39.365 5.547 43.485 0 44.014v5.972c5.547.529 8.943 4.649 10.951 11.153 2.002 6.485 2.28 14.437 2.066 20.577C12.794 88.106 17.776 94 24.51 94H93.5c6.733 0 11.714-5.893 11.491-12.284-.214-6.14.064-14.092 2.066-20.577 2.009-6.504 5.396-10.624 10.943-11.153v-5.972c-5.547-.529-8.934-4.649-10.943-11.153-2.002-6.484-2.28-14.437-2.066-20.577C105.214 5.894 100.233 0 93.5 0H24.508zM80 57.863C80 66.663 73.436 72 62.543 72H44a2 2 0 01-2-2V24a2 2 0 012-2h18.437c9.083 0 15.044 4.92 15.044 12.474 0 5.302-4.01 10.049-9.119 10.88v.277C75.317 46.394 80 51.21 80 57.863zM60.521 28.34H49.948v14.934h8.905c6.884 0 10.68-2.772 10.68-7.727 0-4.643-3.264-7.207-9.012-7.207zM49.948 49.2v16.458H60.91c7.167 0 10.964-2.876 10.964-8.281 0-5.406-3.903-8.178-11.425-8.178H49.948z"></path>
+  </symbol>
+  <symbol id="yid" viewBox="0 0 16 16">
+    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
+  </symbol>
+  <symbol id="home" viewBox="0 0 16 16">
+    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+  </symbol>
+  <symbol id="send" viewBox="0 0 16 16">
+    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+  </symbol>
+  <symbol id="return" viewBox="0 0 16 16">
+    <path d="M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2z"/>
+  </symbol>
+  <symbol id="analysis" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0Zm14.817 3.113a.5.5 0 0 1 .07.704l-4.5 5.5a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61 4.15-5.073a.5.5 0 0 1 .704-.07Z"/>
+  </symbol>
+  <symbol id="list" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+  </symbol>
+  <symbol id="setting" viewBox="0 0 16 16">
+    <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+    <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+  </symbol>
+  <symbol id="elevator" viewBox="0 0 122.88 122.88">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M56.73,71.74c-2.03,1.17-4.66,0.47-5.83-1.56L47,63.44c0,10.93,0.14,20.96,0.14,31.9c0,2.69-2.2,4.9-4.9,4.9 c-2.69,0-4.9-2.2-4.9-4.9V73.25h-2.75v22.09c0,2.69-2.2,4.9-4.9,4.9c-2.69,0-4.9-2.2-4.9-4.9c0-10.89,0.13-20.86,0.13-31.74 l-3.8,6.58c-1.17,2.03-3.8,2.74-5.83,1.56c-2.03-1.17-2.74-3.8-1.56-5.83l9.93-17.2c3.54-6.14,20.72-6.89,24.54-0.27l10.09,17.47 C59.46,67.95,58.76,70.57,56.73,71.74L56.73,71.74L56.73,71.74z M97.19,21.62v16.67c0,0.66-0.27,1.26-0.7,1.7 c-0.43,0.43-1.04,0.7-1.7,0.7c-0.66,0-1.26-0.27-1.7-0.7c-0.43-0.43-0.7-1.03-0.7-1.7V21.62l-8.53,7.45 c-0.49,0.43-1.12,0.62-1.72,0.59c-0.61-0.04-1.21-0.3-1.65-0.8c-0.44-0.49-0.63-1.12-0.6-1.72c0.04-0.61,0.31-1.2,0.8-1.64 l12.53-10.94c0.46-0.41,1.04-0.6,1.61-0.6c0.57,0,1.14,0.22,1.58,0.62l12.52,10.93c0.48,0.44,0.74,1.02,0.78,1.62 c0.03,0.61-0.16,1.23-0.6,1.72l-0.02,0.02c-0.44,0.48-1.03,0.75-1.63,0.78h-0.01c-0.61,0.03-1.23-0.17-1.72-0.6L97.19,21.62 L97.19,21.62L97.19,21.62z M94.79,53.5c4.38,0,7.94,3.55,7.94,7.94c0,4.38-3.55,7.94-7.94,7.94c-4.38,0-7.94-3.55-7.94-7.94 C86.86,57.06,90.41,53.5,94.79,53.5L94.79,53.5z M97.19,101.26V84.59c0-0.66-0.27-1.26-0.7-1.7c-0.43-0.43-1.04-0.7-1.7-0.7 c-0.66,0-1.26,0.27-1.7,0.7c-0.43,0.43-0.7,1.03-0.7,1.7v16.67l-8.53-7.45c-0.49-0.43-1.12-0.62-1.72-0.59 c-0.61,0.04-1.21,0.3-1.65,0.8c-0.44,0.49-0.63,1.12-0.6,1.72c0.04,0.61,0.31,1.2,0.8,1.64l12.53,10.94 c0.46,0.41,1.04,0.6,1.61,0.6c0.57,0,1.14-0.22,1.58-0.62l12.52-10.93c0.48-0.44,0.74-1.02,0.78-1.62c0.03-0.61-0.16-1.23-0.6-1.72 l-0.02-0.02c-0.44-0.48-1.03-0.75-1.63-0.78h-0.01c-0.61-0.03-1.23,0.17-1.72,0.6L97.19,101.26L97.19,101.26L97.19,101.26z M19.2,0 h50.89h33.59c5.28,0,10.09,2.16,13.56,5.64c3.48,3.48,5.64,8.28,5.64,13.56v84.48c0,5.28-2.16,10.09-5.64,13.56 c-3.48,3.48-8.28,5.64-13.56,5.64H70.09H19.2c-5.28,0-10.09-2.16-13.56-5.64C2.16,113.76,0,108.96,0,103.68V19.2 C0,13.92,2.16,9.12,5.64,5.64C9.12,2.16,13.92,0,19.2,0L19.2,0z M66.71,116.11V6.77H19.2c-3.42,0-6.52,1.4-8.78,3.65 c-2.25,2.25-3.66,5.36-3.66,8.78v84.48c0,3.42,1.4,6.52,3.66,8.78c2.25,2.25,5.36,3.66,8.78,3.66H66.71L66.71,116.11z M36.01,22.64 c5.4,0,9.77,4.37,9.77,9.77s-4.37,9.77-9.77,9.77c-5.4,0-9.77-4.37-9.77-9.77S30.62,22.64,36.01,22.64L36.01,22.64z"/>
+  </symbol>
+</svg>
+<main>
+  <div class="d-flex flex-column flex-shrink-0 navtool" style="width: 5em;min-height: 100%;position: fixed;">
+    <a href="https://www.yid.com.tw/" class="d-block p-3 link-dark text-center">
+      <svg class="bi" width="32" height="32"><use xlink:href="#yid"/></svg>
+      <span class="visually-hidden">Icon-only</span>
+    </a>
+    <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+      <li>
+        <a href="agv/send" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#send"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/grid" class="nav-link py-3 active">
+          <svg class="bi" width="24" height="24" style="fill: #2F2725" role="img"><use xlink:href="#return"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#home"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/analysis" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#analysis"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/history" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#list"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="agv/setting" class="nav-link py-3">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#setting"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <div id="elevatorDiv" class="elevator active">
+      <div class="nav-link py-3">
+        <svg width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
+      </div>
+
+      <div>
+        <p>02:33</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col Title">
+        <label class="title page">Grid Returns</label>
+        <div id="modeOption" class="btn-group" role="group" aria-label="Basic radio toggle button group">
+          <input type="radio" class="btn-check" name="btnradio" id="mode1" checked>
+          <label class="btn btn-outline-warning" for="mode1">&nbsp;1F&nbsp;</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="mode2">
+          <label class="btn btn-outline-warning" for="mode2">&nbsp;2F&nbsp;</label>
+
+          <input type="radio" class="btn-check" name="btnradio" id="mode3">
+          <label class="btn btn-outline-warning" for="mode3">&nbsp;3F&nbsp;</label>
+        </div>
+        <button id="showOption" type="button" class="btn btn-secondary" data-bs-toggle="button" style="display: flex;justify-content: center; align-items: center;">
+          <svg class="bi" width="24" height="24" role="img"><use xlink:href="#list"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col Title">
+        <label class="title">Grids</label>
+      </div>
+    </div>
+
+    <div id="gridBlock" class="row grid-container">
+      <!-- <div class="col grid">
+        <div class="row grid-row">
+          <div class="col flex-wrap table-container grid-btns">
+            <table class="grid-table" id="btns1">
+              <tbody>
+                <tr>
+                    <td data-val="3-A-2" class="grid-btn">2</td>
+                    <td data-val="3-A-4" class="grid-btn">4</td>
+                    <td data-val="3-A-6" class="grid-btn">6</td>
+                    <td data-val="3-A-8" class="grid-btn">8</td>
+                </tr>
+                <tr>
+                    <td data-val="3-A-1" class="grid-btn">1</td>
+                    <td data-val="3-A-3" class="grid-btn">3</td>
+                    <td data-val="3-A-5" class="grid-btn">5</td>
+                    <td data-val="3-A-7" class="grid-btn">7</td>
+                </tr>
+            </tbody>
+            </table>
+
+            <table class="grid-table" id="btns2" data-val="B">
+            <tbody>
+                <tr>
+                <td data-val="3-B-2" class="grid-btn">2</td>
+                <td data-val="3-B-4" class="grid-btn">4</td>
+                <td data-val="3-B-6" class="grid-btn">6</td>
+                <td data-val="3-B-8" class="grid-btn">8</td>
+                </tr>
+                <tr>
+                <td data-val="3-B-1" class="grid-btn">1</td>
+                <td data-val="3-B-3" class="grid-btn">3</td>
+                <td data-val="3-B-5" class="grid-btn">5</td>
+                <td data-val="3-B-7" class="grid-btn">7</td>
+                </tr>
+            </tbody>
+            </table>
+
+            <table class="grid-table" id="btns3" data-val="C">
+            <tbody>
+                <tr>
+                <td data-val="3-C-3" class="grid-btn">3</td>
+                <td data-val="3-C-6" class="grid-btn">6</td>
+                <td data-val="3-C-9" class="grid-btn">9</td>
+                <td data-val="3-C-12" class="grid-btn">12</td>
+                <td data-val="3-C-15" class="grid-btn">15</td>
+                <td data-val="3-C-18" class="grid-btn">18</td>
+                <td data-val="3-C-21" class="grid-btn">21</td>
+                <td data-val="3-C-24" class="grid-btn">24</td>
+                </tr>
+                <tr>
+                <td data-val="3-C-2" class="grid-btn">2</td>
+                <td data-val="3-C-5" class="grid-btn">5</td>
+                <td data-val="3-C-8" class="grid-btn">8</td>
+                <td data-val="3-C-11" class="grid-btn">11</td>
+                <td data-val="3-C-14" class="grid-btn">14</td>
+                <td data-val="3-C-17" class="grid-btn">17</td>
+                <td data-val="3-C-20" class="grid-btn">20</td>
+                <td data-val="3-C-23" class="grid-btn">23</td>
+                </tr>
+                <tr>
+                <td data-val="3-C-1" class="grid-btn">1</td>
+                <td data-val="3-C-4" class="grid-btn">4</td>
+                <td data-val="3-C-7" class="grid-btn">7</td>
+                <td data-val="3-C-10" class="grid-btn">10</td>
+                <td data-val="3-C-13" class="grid-btn">13</td>
+                <td data-val="3-C-16" class="grid-btn">16</td>
+                <td data-val="3-C-19" class="grid-btn">19</td>
+                <td data-val="3-C-22" class="grid-btn">22</td>
+                </tr>
+            </tbody>
+            </table>
+            <table class="grid-table" id="btns4" data-val="D">
+            <tbody>
+                <tr>
+                    <td data-val="3-D-2" class="grid-btn">2</td>
+                    <td data-val="3-D-4" class="grid-btn">4</td>
+                    <td data-val="3-D-6" class="grid-btn">6</td>
+                    <td data-val="3-D-8" class="grid-btn">8</td>
+                </tr>
+                <tr>
+                    <td data-val="3-D-1" class="grid-btn">1</td>
+                    <td data-val="3-D-3" class="grid-btn">3</td>
+                    <td data-val="3-D-5" class="grid-btn">5</td>
+                    <td data-val="3-D-7" class="grid-btn">7</td>
+                </tr>
+            </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- <div class="col grid">
+        <div class="row grid-row">
+            <div class="col flex-wrap table-container grid-btns">
+              <table class="grid-table" id="btns1">
+                <tbody>
+                  <tr>
+                    <td data-val="2-A-19" class="grid-btn">19</td>
+                    <td data-val="2-A-17" class="grid-btn">17</td>
+                    <td data-val="2-A-15" class="grid-btn">15</td>
+                    <td data-val="2-A-13" class="grid-btn">13</td>
+                    <td data-val="2-A-11" class="grid-btn">11</td>
+                    <td data-val="2-A-9" class="grid-btn">9</td>
+                    <td data-val="2-A-7" class="grid-btn">7</td>
+                    <td data-val="2-A-5" class="grid-btn">5</td>
+                    <td data-val="2-A-3" class="grid-btn">3</td>
+                    <td data-val="2-A-1" class="grid-btn">1</td>
+                  </tr>
+                  <tr>
+                      <td data-val="2-A-20" class="grid-btn">20</td>
+                      <td data-val="2-A-18" class="grid-btn">18</td>
+                      <td data-val="2-A-16" class="grid-btn">16</td>
+                      <td data-val="2-A-14" class="grid-btn">14</td>
+                      <td data-val="2-A-12" class="grid-btn">12</td>
+                      <td data-val="2-A-10" class="grid-btn">10</td>
+                      <td data-val="2-A-8" class="grid-btn">8</td>
+                      <td data-val="2-A-6" class="grid-btn">6</td>
+                      <td data-val="2-A-4" class="grid-btn">4</td>
+                      <td data-val="2-A-2" class="grid-btn">2</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+      </div> -->
+    
+
+      <div class="col grid">
+        <div class="row grid-row">
+          <div class="col flex-wrap table-container grid-btns">
+            <table class="grid-table" id="btns9">
+              <tbody>
+                  <tr>
+                      <td data-val="1-R-1" class="grid-btn">1</td>
+                      <td data-val="1-R-2" class="grid-btn">2</td>
+                  </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gridList" class="row grid-container" style="display: none;">
+      <div class="col grid">
+        <div class="row grid-row">
+          <div class="col flex-wrap table-container grid-lists">
+            <table class="table table-dark table-striped grid-table" id="lists1">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Status</th>
+                  <th>Work Number</th>
+                  <th>Object Name</th>
+                  <th>Object Number</th>
+                  <th>Line Code</th>
+                </tr>
+              </thead>
+              <tbody id="gridListContent">
+                  <tr>
+                      <th>A-1</td>
+                      <td>Occupied</td>
+                      <td>WCDS003-AJ-S2</td>
+                      <td>WCDS004-AJ-S2</td>
+                      <td></td>
+                      <td></td>
+                  </tr>
+
+                  <tr>
+                    <th>A-2</td>
+                    <td>Occupied</td>
+                    <td>WCDS003-AJ-S2</td>
+                    <td>WCDS004-AJ-S2</td>
+                    <td>WCDS005-AJ-S2</td>
+                    <td>WCDS006-AJ-S2</td>
+                  </tr>
+                  
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      元創智動股份有限公司版權所有  TEL:02-26087894 Email:sales@yid.com.tw
+    </footer>
+  </div>
+</main>
+</body>
+</html>

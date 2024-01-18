@@ -5,6 +5,7 @@ import com.yid.agv.model.AnalysisId;
 import com.yid.agv.model.YearMonthDay;
 import com.yid.agv.repository.AGVIdDao;
 import com.yid.agv.repository.AnalysisDao;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,13 @@ public class CountUtilizationRate {
     public static boolean[] isPoweredOn; // AGV是否開機(由InstantStatus控制)
     public static boolean[] isWorking; // AGV是否工作(由InstantStatus控制)
 
-//    @Scheduled(fixedRate = 60000) // 每分鐘執行一次
+    @PostConstruct
+    public void initialize() {
+        isPoweredOn = new boolean[agvIdDao.queryAGVList().size()];
+        isWorking = new boolean[agvIdDao.queryAGVList().size()];
+    }
+
+    @Scheduled(fixedRate = 60000) // 每分鐘執行一次
     public void checkAgvStatus() {
         if (isPoweredOn == null) isPoweredOn = new boolean[agvIdDao.queryAGVList().size()];
         if (isWorking == null) isWorking = new boolean[agvIdDao.queryAGVList().size()];

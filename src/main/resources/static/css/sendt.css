@@ -1,0 +1,171 @@
+.start-grid{
+    /* height: 10em; */
+    background-color: #504745;
+    border-radius: 0.6rem!important;
+    margin-bottom: 1em;
+}
+.start-grid-row{
+    height: 100%;
+    width: 100%;
+}
+.grid-title{
+    font-size: 2.4em;
+    color: #b6a2a2;
+}
+.grid-btns{
+    height: 100%;
+    /* width: 100%; */
+    /* position: relative; */
+}
+/* .grid-btns #start{
+    position: absolute;
+    top: 10%;
+    left: 40%;
+}
+.grid-btns #btns1{
+    position: absolute;
+    top: 6%;
+    left: 29%;
+}
+.grid-btns #btns2{
+    position: absolute;
+    top: 53%;
+    left: 20%;
+}
+.grid-btns #btns3{
+    position: absolute;
+    top: 53%;
+    left: 46%;
+} */
+.grid-btns #btns1::before{
+    content: "Ａ"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 6em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #btns2::before{
+    content: "B"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 6em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #btns3::before{
+    content: "C"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 6em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #btns4::before{
+    content: "D"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 6em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #btns9::before{
+    content: "R"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 4em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btn{
+    background-color: #cab8b2;
+    border: 1px black solid;
+    height: 4em;
+    width: 4em;
+    margin: 0px;
+}
+.grid-table{
+    position: relative;
+    margin: 1%;
+}
+.grid-table-start{
+    margin: 1%;
+}
+.grid-btn.booked{
+    background-color: #0985a7;
+}
+.grid-btn.mark{
+    background-color: #dc0000;
+}
+.grid-btn.occupied{
+    background-color: #b6993a;
+}
+.grid-btn.start{
+    height: 4em;
+    width: 4em;
+}
+.grid-btn.terminal{
+    height: 3em;
+    width: 3em;
+}
+.terminal-grid{
+    /* height: 15em; */
+    background-color: #504745;
+    border-radius: 0.6rem!important;
+    margin-bottom: 1em;
+}
+.terminal-grid-row{
+    height: 100%;
+    width: 100%;
+}
+.terminal-grid-row .col-1,.col-10{
+    height: 100%;
+}
+.list{
+    background-color: #504745;
+    border-radius: 0.6rem!important;
+    margin-bottom: 1em;
+}
+.list-title{
+    height: 4em;
+    background-color: #867976;
+    border-radius: 0.6rem 0.6rem 0 0!important;
+}
+.list-content{
+    padding-top: 1em;
+    padding-left: 1em;
+    padding-right: 1em;
+    min-height: 10em;
+    background-color: #504745;
+    border-radius: 0.6rem!important;
+}
+.list-task{
+    height: 2.4em;
+    background-color: #786b68;
+    border-radius: 0.6rem!important;
+    margin-bottom: 0.5em;
+}
+#modeOption{
+    padding-top: 0.5%;
+    padding-left: 3%;
+    float:left;
+}
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-remove{
+    height: 80%;
+    font-size: 0.8em;
+}
