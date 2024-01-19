@@ -52,10 +52,13 @@ public class TaskListManager {
                 if (unCompletedTaskList.getProgress() != 0){
                     List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
                     unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
-                        if(unCompletedTaskDetail.getStatus() != 100 && unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101) {
+                        if(unCompletedTaskDetail.getStatus() != 100) {
                             System.out.println("cancel： " + unCompletedTaskDetail.getTaskNumber() + " : " + unCompletedTaskDetail.getSequence());
-                            gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
-                            gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
+                            if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
+                                gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
+                                gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
+                            }
+                            taskDetailDao.updateStatusByTaskNumberAndSequence(unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence(), -1);
                         }
                     });
                     nowTaskListDao.deleteNowTaskList(unCompletedTaskList.getTaskNumber());

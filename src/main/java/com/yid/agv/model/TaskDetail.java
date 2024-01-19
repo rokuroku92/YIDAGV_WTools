@@ -15,5 +15,6 @@ public class TaskDetail {
     private int mode;
     private String modeMemo;
     private int status;
+    private String createTaskTime;
 
 }

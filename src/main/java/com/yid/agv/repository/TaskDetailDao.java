@@ -30,9 +30,9 @@ public interface TaskDetailDao {
 
     List<TaskDetail> queryAllTaskDetails();
 
-    boolean insertTaskDetail(String taskNumber, Title title, int sequence, String startId, String terminalId, Mode mode);
+    boolean insertTaskDetail(String taskNumber, Title title, int sequence, String startId, String terminalId, Mode mode, String time);
 
-    boolean insertTaskDetail(String taskNumber, Title title, int sequence, Mode mode);
+    boolean insertTaskDetail(String taskNumber, Title title, int sequence, Mode mode, String time);
 
     boolean updateStatusByTaskNumberAndSequence(String taskNumber, int sequence, int status);
 

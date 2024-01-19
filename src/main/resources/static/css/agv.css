@@ -1,3 +1,11 @@
+@font-face{
+    font-family: NewFont;
+    src: url("US101.TTF");
+    font-weight: bold;
+}
+::-webkit-scrollbar {
+    display: none;
+}
 .taskQueue{
     overflow: auto;
     min-height: 25em;

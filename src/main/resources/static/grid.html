@@ -40,13 +40,6 @@
   <link rel="stylesheet" href="css/yid.css">
   <link rel="stylesheet" href="css/grid.css">
 
-  <style>
-            @font-face{
-                font-family: NewFont;
-                src: url("css/US101.TTF");
-                font-weight: bold;
-            }
-        </style>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap-table.min.js"></script>
@@ -88,7 +81,7 @@
 </svg>
 <main>
   <div class="d-flex flex-column flex-shrink-0 navtool" style="width: 5em;min-height: 100%;position: fixed;">
-    <a href="https://www.yid.com.tw/" class="d-block p-3 link-dark text-center">
+    <a href="#" class="d-block p-3 link-dark text-center">
       <svg class="bi" width="32" height="32"><use xlink:href="#yid"/></svg>
       <span class="visually-hidden">Icon-only</span>
     </a>
@@ -125,13 +118,22 @@
       </li>
     </ul>
 
-    <div id="elevatorDiv" class="elevator active">
+    <!-- <div id="elevatorDiv" class="elevator active">
       <div class="nav-link py-3">
         <svg width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
       </div>
 
       <div>
         <p>02:33</p>
+      </div>
+    </div> -->
+    <div id="elevatorDiv" class="elevator">
+      <div class="nav-link py-3">
+        <svg class="bi" width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
+      </div>
+
+      <div style="color: white; display: none;">
+        <p>00:00</p>
       </div>
     </div>
   </div>

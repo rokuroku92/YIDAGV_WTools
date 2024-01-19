@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 public class ProcessAGVTask {
     @Value("${agvControl.url}")
     private String agvUrl;
+    @Value("${http.timeout}")
+    private int HTTP_TIMEOUT;
     @Value("${http.max_retry}")
     private int MAX_RETRY;
     @Autowired
@@ -140,10 +143,12 @@ public class ProcessAGVTask {
 
                 System.out.println("URL: " + url);
 
+                Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
                 HttpClient httpClient = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(url))
                         .GET()
+                        .timeout(timeout)
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -254,7 +259,7 @@ public class ProcessAGVTask {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String formattedDateTime = now.format(formatter);
 
-        String taskNumber = agv.isILowBattery() ? "#LB" + agv.getId() + formattedDateTime : "#SB" + agv.getId() + formattedDateTime;
+        String taskNumber = agv.isILowBattery() ? "#LB" + formattedDateTime + agv.getId() : "#SB" + formattedDateTime + agv.getId();
 
         AGVQTask toStandbyTask = new AGVQTask();
         toStandbyTask.setAgvId(agv.getId());
@@ -280,7 +285,7 @@ public class ProcessAGVTask {
 
         taskDetailDao.insertTaskDetail(toStandbyTask.getTaskNumber(), title, toStandbyTask.getSequence(),
                 Integer.toString(toStandbyTask.getStartStationId()), Integer.toString(toStandbyTask.getTerminalStationId()),
-                TaskDetailDao.Mode.DEFAULT);
+                TaskDetailDao.Mode.DEFAULT, formattedDateTime);
         dispatchTaskToAGV(agv);
     }
     public boolean getIsRetrying(){

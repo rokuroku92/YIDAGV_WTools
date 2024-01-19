@@ -343,7 +343,7 @@ function taskListsUpdate(taskLists) {
 
 function getDetails(taskNumber){
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', baseUrl + "/api/task/taskdetail?taskNumber=" + taskNumber, true);
+    xhr.open('GET', baseUrl + "/api/task/taskDetail?taskNumber=" + taskNumber, true);
     xhr.send();
     xhr.onload = function(){
         if(xhr.status == 200){

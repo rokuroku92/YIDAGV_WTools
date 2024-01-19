@@ -261,30 +261,31 @@ INSERT INTO `task_phase`(`name`) VALUES('第二階段派遣中(一樓)');
 INSERT INTO `task_phase`(`name`) VALUES('任務已取消');
 
 
-INSERT INTO `task_list`(`task_number`, `create_task_time`, `steps`) VALUES('#202310260001', '20231026160422', 8);
-INSERT INTO `now_task_list`(`task_number`, `steps`) VALUES('#202311020001', 8);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`) VALUES('#202310260001', 4, 1, 3);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 1, 2, 1, 108, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 1, 3, 2, 109, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`) VALUES('#202310260001', 4, 4, 4);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 3, 5, 109, 12, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 3, 6, 108, 13, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 3, 7, 13, 21, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260001', 3, 8, 12, 20, 2);
+INSERT INTO `task_list`(`task_number`, `create_task_time`, `steps`) VALUES('#YE202310260001', '20231026160422', 8);
+INSERT INTO `now_task_list`(`task_number`, `steps`) VALUES('#YE202310260001', 8);
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 4, 1, 3, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 1, 2, 1, 108, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 1, 3, 2, 109, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 4, 4, 4, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 3, 5, 109, 12, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 3, 6, 108, 13, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 3, 7, 13, 21, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260001', 3, 8, 12, 20, 2, "20231026135233");
 
-INSERT INTO `task_list`(`task_number`, `create_task_time`, `steps`) VALUES('#202310260002', '20231026170422', 11);
-INSERT INTO `now_task_list`(`task_number`, `steps`) VALUES('#202310260002', 11);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`) VALUES('#202310260002', 4, 1, 3);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 1, 2, 1, 108, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 1, 3, 2, 109, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 1, 4, 3, 110, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`) VALUES('#202310260002', 4, 5, 4);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 6, 110, 12, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 7, 109, 13, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 8, 108, 14, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 9, 14, 21, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 10, 13, 20, 2);
-INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`) VALUES('#202310260002', 3, 11, 12, 23, 2);
+INSERT INTO `task_list`(`task_number`, `create_task_time`, `steps`) VALUES('#YE202310260002', '20231026170422', 11);
+INSERT INTO `now_task_list`(`task_number`, `steps`) VALUES('#YE202310260002', 11);
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 4, 1, 3, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 1, 2, 1, 108, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 1, 3, 2, 109, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 1, 4, 3, 110, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 4, 5, 4, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 6, 110, 12, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 7, 109, 13, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 8, 108, 14, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 9, 14, 21, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 10, 13, 20, 2, "20231026135233");
+INSERT INTO `task_detail`(`task_number`, `title_id`, `sequence`, `start_id`, `terminal_id`, `mode_id`, `create_task_time`) VALUES('#YE202310260002', 3, 11, 12, 23, 2, "20231026135233");
+
 
 
 INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('AGV System', 'AGV System');

@@ -1,19 +1,17 @@
 package com.yid.agv.controller;
 
 import com.google.gson.Gson;
-import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
+import com.yid.agv.dto.SettingRequest;
 import com.yid.agv.dto.TaskListRequest;
 import com.yid.agv.model.Analysis;
-import com.yid.agv.service.AnalysisService;
+import com.yid.agv.service.*;
 
-import com.yid.agv.service.GridService;
-import com.yid.agv.service.HomePageService;
-import com.yid.agv.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -35,6 +33,8 @@ public class ApiController {
     private TaskService taskService;
 
     @Autowired
+    private SettingService settingService;
+    @Autowired
     private GridManager gridManager;
 
     @GetMapping(value = "/homepage/agvlist", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
@@ -46,10 +46,14 @@ public class ApiController {
     public String getTasksJson() {
         return gson.toJson(taskService.queryNowTaskLists());
     }
-    @RequestMapping(value = "/task/taskdetail", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    @RequestMapping(value = "/task/taskDetail", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getTaskDetails(@RequestParam("taskNumber") String taskNumber) {
         taskNumber = "#" + taskNumber;
         return gson.toJson(taskService.queryTaskDetailsByTaskNumber(taskNumber));
+    }
+    @RequestMapping(value = "/task/allTaskDetails", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
+    public String getAllTaskDetails() {
+        return gson.toJson(taskService.queryAllTaskDetails());
     }
 
     @GetMapping(value = "/task/tasks", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
@@ -220,5 +224,14 @@ public class ApiController {
 //        }
 //        return "YES";
         return taskService.addTaskList(jsonData);
+    }
+
+    @GetMapping(value = "/getConfig")
+    public String getConfig() throws IOException {
+        return gson.toJson(settingService.getConfig());
+    }
+    @PostMapping(value = "/setConfig")
+    public String setConfig(@RequestBody SettingRequest settingRequest){
+        return settingService.updateConfig(settingRequest);
     }
 }

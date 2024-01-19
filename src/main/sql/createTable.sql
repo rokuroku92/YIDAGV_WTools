@@ -56,6 +56,7 @@ CREATE TABLE `task_detail_title`( -- 建造task_detail TABLE
 CREATE TABLE `task_detail`( -- 建造task_detail TABLE
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
     `task_number` varchar(20), -- 任務ID
+    `create_task_time` varchar(20), -- 創建時間 20231026141155
     `title_id` int NOT NULL,FOREIGN KEY (`title_id`) REFERENCES `task_detail_title`(`id`)ON DELETE CASCADE, -- title ID
     `sequence` int NOT NULL, -- 順序
     `start_id` int,FOREIGN KEY (`start_id`) REFERENCES `station_data`(`id`)ON DELETE CASCADE, -- 車站ID
@@ -64,6 +65,8 @@ CREATE TABLE `task_detail`( -- 建造task_detail TABLE
     `status` int NOT NULL default 0 -- 是否完成
 );
 CREATE INDEX idx_task_number ON task_detail (task_number);
+ALTER TABLE `task_detail`
+ADD COLUMN `create_task_time` varchar(20);
 
 CREATE TABLE `now_task_list`( -- 建造task_list TABLE
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
