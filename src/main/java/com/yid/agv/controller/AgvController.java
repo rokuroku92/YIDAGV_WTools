@@ -31,9 +31,9 @@ public class AgvController {
     public String pageHistory() {
         return "history";
     }
-//    @GetMapping(value = "/setting")
-//    public String pageSetting() {
-//        return "setting";
-//    }
+    @GetMapping(value = "/setting")
+    public String pageSetting() {
+        return "setting";
+    }
 
 }

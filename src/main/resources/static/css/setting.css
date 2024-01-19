@@ -1,0 +1,46 @@
+@font-face{
+    font-family: NewFont;
+    src: url("US101.TTF");
+    font-weight: bold;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.Title{
+    margin-left: 1em;
+    padding-left: 0px;
+    padding-bottom: 0.5em;
+}
+.title{
+    font-family: NewFont, sans-serif;
+    font-size: 1.1em;
+    color: #FFFFFF;
+    letter-spacing: 0.1em;
+    float: left;
+}
+.title.page{
+    font-size: 2em;
+}
+.settingDiv{
+    overflow: auto;
+    min-height: 30em;
+    max-height: 55em;
+    margin-left: 1.6em;
+    margin-right: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    border-radius: 0.6rem!important;
+    padding: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #3E3A39;
+}
+.setting-label{
+    display: flex;
+    justify-content: left;
+    color: #FFFFFF;
+}
+.btn-success{
+    font-family: NewFont, sans-serif;
+    font-size: 2em;
+}
