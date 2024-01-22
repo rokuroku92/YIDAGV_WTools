@@ -76,7 +76,7 @@ public class TaskListDaoImpl implements TaskListDao {
     }
     @Override
     public boolean cancelTaskList(String taskNumber){
-        String sql = "UPDATE `task_list` SET `status` -1 WHERE `task_number` = ?";
+        String sql = "UPDATE `task_list` SET `status` = -1 WHERE `task_number` = ?";
         // 使用 JdbcTemplate 的 update 方法執行 SQL 語句
         int rowsAffected = jdbcTemplate.update(sql, taskNumber);
         return (rowsAffected > 0);

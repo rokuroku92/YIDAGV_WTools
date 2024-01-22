@@ -246,23 +246,25 @@ public class ProcessTaskList {
     private void handleNETask(NowTaskList nowTaskList, List<TaskDetail> taskDetails, int taskProcessId){
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
-                taskListManager.setTaskListProgress(nowTaskList, 1);
-                taskDetails.forEach(taskDetail -> {
-                    if (taskDetail.getTitle().equals("AMR#2")) {
-                        AGVQTask task = new AGVQTask();
-                        task.setAgvId(2);
-                        task.setTaskNumber(taskDetail.getTaskNumber());
-                        task.setSequence(taskDetail.getSequence());
-                        task.setModeId(taskDetail.getMode());
-                        task.setStartStation(taskDetail.getStart());
-                        task.setStartStationId(taskDetail.getStartId());
-                        task.setTerminalStation(taskDetail.getTerminal());
-                        task.setTerminalStationId(taskDetail.getTerminalId());
-                        task.setStatus(0);
-                        agvTaskManager.addTaskToQueue(task);
-                    }
-                });
-                taskListManager.setTaskListPhase(nowTaskList, Phase.TRANSFER);
+                if (agvManager.getAgv(2).getStatus() == AGV.Status.ONLINE){
+                    taskListManager.setTaskListProgress(nowTaskList, 1);
+                    taskDetails.forEach(taskDetail -> {
+                        if (taskDetail.getTitle().equals("AMR#2")) {
+                            AGVQTask task = new AGVQTask();
+                            task.setAgvId(2);
+                            task.setTaskNumber(taskDetail.getTaskNumber());
+                            task.setSequence(taskDetail.getSequence());
+                            task.setModeId(taskDetail.getMode());
+                            task.setStartStation(taskDetail.getStart());
+                            task.setStartStationId(taskDetail.getStartId());
+                            task.setTerminalStation(taskDetail.getTerminal());
+                            task.setTerminalStationId(taskDetail.getTerminalId());
+                            task.setStatus(0);
+                            agvTaskManager.addTaskToQueue(task);
+                        }
+                    });
+                    taskListManager.setTaskListPhase(nowTaskList, Phase.TRANSFER);
+                }
             }
             case TRANSFER -> {
                 if (agvTaskManager.isEmpty(2) && agvManager.getAgv(2).getTask() == null){
