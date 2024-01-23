@@ -190,6 +190,15 @@ public class ApiController {
         return gson.toJson(list);
     }
 
+    @RequestMapping(value = "/analysis/workNumber", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getWorkNumberAnalysis(@RequestParam("month") int numberOfMonths){
+        return gson.toJson(analysisService.getWorkNumberAnalysis(numberOfMonths));
+    }
+    @RequestMapping(value = "/analysis/workNumberTA001", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getWorkNumberTA001Analysis(@RequestParam("month") int numberOfMonths){
+        return gson.toJson(analysisService.getWorkNumberTA001Analysis(numberOfMonths));
+    }
+
     @RequestMapping(value = "/grid/updateLineCode", produces = MediaType.TEXT_PLAIN_VALUE)
     public String updateLineCode(@RequestParam("gridName") String gridName, @RequestParam("lineNumber") String lineNumber, @RequestParam("lineCode") String lineCode){
         return gridService.updateLineCode(gridName, lineNumber, lineCode)? "OK" : "FAIL";

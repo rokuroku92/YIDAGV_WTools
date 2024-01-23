@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface GridListDao {
     List<GridList> queryAllGrids();
+    GridList queryGridByGridName(String gridName);
     boolean updateStatus(int stationId, Grid.Status status);
     boolean updateWorkOrder(int stationId, String createTime);
     boolean updateWorkOrder(int stationId, String createTime, String workNumber, String objectName, String objectNumber, String lineCode);

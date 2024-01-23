@@ -57,8 +57,8 @@
   <script src="js/chartjs-plugin-datalabels@2.0.0"></script>
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/popper.min.js"></script>
-  <script type="text/javascript" src="js/yid.js"></script>
   <script type="text/javascript" src="js/analysis.js"></script>
+  <script type="text/javascript" src="js/yid.js"></script>
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -164,20 +164,21 @@
           <label class="btn btn-outline-warning" for="btnradio4">工單分析</label>
 
           <!-- <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" onclick="agvReset(this)"> -->
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" onclick="setAGV()">
-          <label class="btn btn-outline-warning" for="btnradio1">AGV#1</label>
+          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" onclick="agvReset(this)">
+          <label class="btn btn-outline-warning" for="btnradio1">AMR#1</label>
 
           <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" onclick="agvReset(this)">
-          <label class="btn btn-outline-warning" for="btnradio2">AGV#2</label>
+          <label class="btn btn-outline-warning" for="btnradio2">AMR#2</label>
 
           <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off" onclick="agvReset(this)">
-          <label class="btn btn-outline-warning" for="btnradio3">AGV#3</label>
+          <label class="btn btn-outline-warning" for="btnradio3">AMR#3</label>
         </div>
         &nbsp;
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <button type="button" class="btn btn-outline-primary active" onclick="reSet('recently')">最近兩週</button>
+        <button id="TA001BTN" type="button" class="btn btn-primary" onclick="getWorkNumbersTA001()">TA001</button>
+        <div id="agvTimeOption" class="btn-group" role="group" aria-label="Basic example" style="display: none;">
+          <button type="button" class="btn btn-outline-primary active" onclick="reSet('recently')" data-time="recently">最近兩週</button>
           <div class="btn-group" role="group">
-            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle" data-time="month" data-bs-toggle="dropdown" aria-expanded="false">
               月
             </button>
             <ul id="yearsandmonths" class="dropdown-menu" aria-labelledby="btnGroupDrop1">
@@ -186,8 +187,8 @@
         </div>
         &nbsp;
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">列印表單</button>
-        <button type="button" class="btn btn-primary" onclick="myexcel()">匯出成Excel</button>
+        <button id="printBTN" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="display: none;">列印表單</button>
+        <button id="exportExcelBTN" type="button" class="btn btn-primary" onclick="myexcel()" style="display: none;">匯出成Excel</button>
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -270,10 +271,12 @@
       </div>
     </div>
     <div id="orderAnalysis">
-      <div class="row" style=" justify-content: center;padding-top: 1.5em;height: 40em;">
-        <div class="col-11" style="background-color: #3E3A39;border-radius: 0.6rem!important;height: 100%;padding-bottom: 2em;">
-          <div id="legend-container1"></div>
-          <canvas class="my-4 w-100" id="orderChart"></canvas>
+      <div class="row" style=" justify-content: center;padding-top: 1.5em;">
+        <div class="col-11" style="background-color: #3E3A39;border-radius: 0.6rem!important;height: 100%;">
+          <div class="w-100" id="legend-container1"></div>
+          <div style="height: 40em;margin-top: 2em;margin-bottom: 2em;">
+            <canvas class="w-100" id="workNumberChart"></canvas>
+          </div>
         </div>
       </div>
     </div>

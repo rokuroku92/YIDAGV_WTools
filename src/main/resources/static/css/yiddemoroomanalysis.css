@@ -46,3 +46,8 @@
     --bs-btn-active-border-color:#6b922d;
     color: white;
 }
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

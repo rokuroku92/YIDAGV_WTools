@@ -273,14 +273,9 @@ public class AGVInstantStatus {
                 switch (Integer.parseInt(data) % 10) {
                     case 0 -> {
                         // AGV 重新啟動
-//                        if(agv.getStatus() != AGV.Status.REBOOT){
-//                            agv.setStatus(AGV.Status.REBOOT);
-//                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.REBOOT);
-//                            homePageService.setIAlarm(0);
-//                        }
-                        if(agv.getStatus() != AGV.Status.ONLINE){
-                            agv.setStatus(AGV.Status.ONLINE);
-                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.ONLINE);
+                        if(agv.getStatus() != AGV.Status.REBOOT){
+                            agv.setStatus(AGV.Status.REBOOT);
+                            notificationDao.insertMessage(agvTitle, NotificationDao.Status.REBOOT);
                             homePageService.setIAlarm(0);
                         }
                     }

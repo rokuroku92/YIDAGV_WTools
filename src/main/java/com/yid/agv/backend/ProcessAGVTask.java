@@ -7,11 +7,9 @@ import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.backend.agvtask.AGVQTask;
 import com.yid.agv.backend.tasklist.TaskListManager;
+import com.yid.agv.model.GridList;
 import com.yid.agv.model.Station;
-import com.yid.agv.repository.AnalysisDao;
-import com.yid.agv.repository.NotificationDao;
-import com.yid.agv.repository.StationDao;
-import com.yid.agv.repository.TaskDetailDao;
+import com.yid.agv.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +43,10 @@ public class ProcessAGVTask {
     private TaskDetailDao taskDetailDao;
     @Autowired
     private NotificationDao notificationDao;
+    @Autowired
+    private GridListDao gridListDao;
+    @Autowired
+    private WorkNumberDao workNumberDao;
     @Autowired
     private AGVTaskManager AGVTaskManager;
     @Autowired
@@ -129,6 +131,9 @@ public class ProcessAGVTask {
                 AGVQTask task = agv.getTask();
                 if (task == null) return false;
                 String nowPlace = agv.getPlace();
+                if(nowPlace.equals(task.getTerminalStation())){  // 主要是為了防止派遣回待命點時，出現無限輪迴。
+                    return true;
+                }
                 String url;
                 if (task.getTaskNumber().matches("#(SB|LB).*") || agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION){
                     url = agvUrl + "/task0=" + task.getAgvId() + "&" + task.getModeId() + "&" + nowPlace +
@@ -227,6 +232,25 @@ public class ProcessAGVTask {
                     } else if (!taskStartStation.startsWith("E-")){
                         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                     }
+                }
+            }
+            if(!taskTerminalStation.startsWith("E-")){
+                GridList completedTaskGrid = gridListDao.queryGridByGridName(taskTerminalStation);
+                String workNumber1 = completedTaskGrid.getWorkNumber_1();
+                String workNumber2 = completedTaskGrid.getWorkNumber_2();
+                String workNumber3 = completedTaskGrid.getWorkNumber_3();
+                String workNumber4 = completedTaskGrid.getWorkNumber_4();
+                if(workNumber1!=null && workNumber1.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
+                    workNumberDao.insertWorkNumber(workNumber1);
+                }
+                if(workNumber2!=null && workNumber2.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
+                    workNumberDao.insertWorkNumber(workNumber2);
+                }
+                if(workNumber3!=null && workNumber3.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
+                    workNumberDao.insertWorkNumber(workNumber3);
+                }
+                if(workNumber4!=null && workNumber4.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
+                    workNumberDao.insertWorkNumber(workNumber4);
                 }
             }
             taskListManager.setTaskListProgressBySequence(task.getTaskNumber(), task.getSequence());

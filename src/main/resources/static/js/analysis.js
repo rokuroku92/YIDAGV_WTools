@@ -1,17 +1,16 @@
 
 Chart.register(ChartDataLabels); // 注册插件
 
-var xhr = new XMLHttpRequest();
-var baseUrl = window.location.origin + "/YIDDemoRoom";
 var option;
 var myChart = null;
-
+var myChart1 = null;
 
 document.addEventListener("DOMContentLoaded", function() {
     init();
 });
 
 function getStatusData() {
+    var xhr = new XMLHttpRequest();
     xhr.open('GET', baseUrl + "/agv/json", true);
     xhr.send();
     xhr.onload = function(){
@@ -22,15 +21,13 @@ function getStatusData() {
         }
     };
 }
-
 function update(dataStatus){  // 更新資料
-   
 
 }
 async function init(){
     // await setAGVBtn();
     ctx = document.getElementById("myChart");
-    ctx1 = document.getElementById("orderChart");
+    ctx1 = document.getElementById("workNumberChart");
 
 
     const getOrCreateLegendList = (chart, id) => {
@@ -181,6 +178,7 @@ async function init(){
         id: 'htmlLegend',
         afterUpdate(chart, args, options) {
           const ul = getOrCreateLegendList(chart, options.containerID);
+          ul.style.flexWrap = 'wrap';
       
           // Remove old legend items
           while (ul.firstChild) {
@@ -254,11 +252,11 @@ async function init(){
           plugins: {
             datalabels: {
                 display: true,
-                color: 'black', // 标签文本颜色
-                anchor: 'center', // 锚点位置
+                color: '#FFFFFF', // 标签文本颜色
+                anchor: 'end', // 锚点位置
                 clamp: true,
                 align: 'end', // 文本对齐方式
-                offset: 80, // 偏移量
+                offset: 10, // 偏移量
                 font: {
                   size: 12, // 字体大小
                   weight: 1 // 字体粗细
@@ -276,48 +274,57 @@ async function init(){
                     color: '#FFFFFF'
                 }
             }
-          }
+          },
+          layout: {
+            padding: {
+                top: 30,
+                bottom: 30
+            }
+          },
         },
         plugins: [htmlLegendPlugin1]
     });
     
-    // getYearsAndMonths();
-    let fake = '[{"analysisId":31,"agvId":1,"year":2022,"month":12,"day":1,"week":4,"workingMinute":600,"openMinute":840,"task":42}'+
-                ',{"analysisId":32,"agvId":1,"year":2022,"month":12,"day":2,"week":5,"workingMinute":600,"openMinute":840,"task":40},'+
-                '{"analysisId":33,"agvId":1,"year":2022,"month":12,"day":3,"week":6,"workingMinute":480,"openMinute":840,"task":33},'+
-                '{"analysisId":34,"agvId":1,"year":2022,"month":12,"day":4,"week":7,"workingMinute":360,"openMinute":840,"task":22},'+
-                '{"analysisId":35,"agvId":1,"year":2022,"month":12,"day":5,"week":1,"workingMinute":540,"openMinute":840,"task":34},'+
-                '{"analysisId":36,"agvId":1,"year":2022,"month":12,"day":6,"week":2,"workingMinute":720,"openMinute":840,"task":41},'+
-                '{"analysisId":37,"agvId":1,"year":2022,"month":12,"day":7,"week":3,"workingMinute":720,"openMinute":840,"task":49},'+
-                '{"analysisId":38,"agvId":1,"year":2022,"month":12,"day":8,"week":4,"workingMinute":360,"openMinute":840,"task":28},'+
-                '{"analysisId":39,"agvId":1,"year":2022,"month":12,"day":9,"week":5,"workingMinute":480,"openMinute":840,"task":35},'+
-                '{"analysisId":40,"agvId":1,"year":2022,"month":12,"day":10,"week":6,"workingMinute":540,"openMinute":840,"task":34},'+
-                '{"analysisId":41,"agvId":1,"year":2022,"month":12,"day":11,"week":7,"workingMinute":660,"openMinute":840,"task":42},'+
-                '{"analysisId":42,"agvId":1,"year":2022,"month":12,"day":12,"week":1,"workingMinute":720,"openMinute":840,"task":44},'+
-                '{"analysisId":43,"agvId":1,"year":2022,"month":12,"day":13,"week":2,"workingMinute":600,"openMinute":840,"task":38},'+
-                '{"analysisId":44,"agvId":1,"year":2022,"month":12,"day":14,"week":3,"workingMinute":360,"openMinute":840,"task":22},'+
-                '{"analysisId":45,"agvId":1,"year":2022,"month":12,"day":15,"week":4,"workingMinute":420,"openMinute":840,"task":29},'+
-                '{"analysisId":46,"agvId":1,"year":2022,"month":12,"day":16,"week":5,"workingMinute":480,"openMinute":840,"task":32},'+
-                '{"analysisId":47,"agvId":1,"year":2022,"month":12,"day":17,"week":6,"workingMinute":429,"openMinute":840,"task":34},'+
-                '{"analysisId":48,"agvId":1,"year":2022,"month":12,"day":18,"week":7,"workingMinute":432,"openMinute":840,"task":38},'+
-                '{"analysisId":49,"agvId":1,"year":2022,"month":12,"day":19,"week":1,"workingMinute":733,"openMinute":840,"task":23},'+
-                '{"analysisId":50,"agvId":1,"year":2022,"month":12,"day":20,"week":2,"workingMinute":344,"openMinute":840,"task":40},'+
-                '{"analysisId":51,"agvId":1,"year":2022,"month":12,"day":21,"week":3,"workingMinute":544,"openMinute":840,"task":38},'+
-                '{"analysisId":52,"agvId":1,"year":2022,"month":12,"day":22,"week":4,"workingMinute":433,"openMinute":840,"task":55},'+
-                '{"analysisId":53,"agvId":1,"year":2022,"month":12,"day":23,"week":5,"workingMinute":733,"openMinute":840,"task":45},'+
-                '{"analysisId":54,"agvId":1,"year":2022,"month":12,"day":24,"week":6,"workingMinute":293,"openMinute":840,"task":32},'+
-                '{"analysisId":55,"agvId":1,"year":2022,"month":12,"day":25,"week":7,"workingMinute":530,"openMinute":840,"task":29},'+
-                '{"analysisId":56,"agvId":1,"year":2022,"month":12,"day":26,"week":1,"workingMinute":649,"openMinute":840,"task":34},'+
-                '{"analysisId":57,"agvId":1,"year":2022,"month":12,"day":27,"week":2,"workingMinute":740,"openMinute":840,"task":38},'+
-                '{"analysisId":58,"agvId":1,"year":2022,"month":12,"day":28,"week":3,"workingMinute":623,"openMinute":840,"task":42},'+
-                '{"analysisId":59,"agvId":1,"year":2022,"month":12,"day":29,"week":4,"workingMinute":720,"openMinute":840,"task":48},'+
-                '{"analysisId":60,"agvId":1,"year":2022,"month":12,"day":30,"week":5,"workingMinute":532,"openMinute":840,"task":33},'+
-                '{"analysisId":61,"agvId":1,"year":2022,"month":12,"day":31,"week":6,"workingMinute":666,"openMinute":840,"task":40}]';
-    let fakedata = JSON.parse(fake);
-    test(fakedata);
+    getYearsAndMonths();
+    getWorkNumbers();
+    // getWorkNumbersTA001();
+    // let fake = '[{"analysisId":31,"agvId":1,"year":2022,"month":12,"day":1,"week":4,"workingMinute":600,"openMinute":840,"task":42}'+
+    //             ',{"analysisId":32,"agvId":1,"year":2022,"month":12,"day":2,"week":5,"workingMinute":600,"openMinute":840,"task":40},'+
+    //             '{"analysisId":33,"agvId":1,"year":2022,"month":12,"day":3,"week":6,"workingMinute":480,"openMinute":840,"task":33},'+
+    //             '{"analysisId":34,"agvId":1,"year":2022,"month":12,"day":4,"week":7,"workingMinute":360,"openMinute":840,"task":22},'+
+    //             '{"analysisId":35,"agvId":1,"year":2022,"month":12,"day":5,"week":1,"workingMinute":540,"openMinute":840,"task":34},'+
+    //             '{"analysisId":36,"agvId":1,"year":2022,"month":12,"day":6,"week":2,"workingMinute":720,"openMinute":840,"task":41},'+
+    //             '{"analysisId":37,"agvId":1,"year":2022,"month":12,"day":7,"week":3,"workingMinute":720,"openMinute":840,"task":49},'+
+    //             '{"analysisId":38,"agvId":1,"year":2022,"month":12,"day":8,"week":4,"workingMinute":360,"openMinute":840,"task":28},'+
+    //             '{"analysisId":39,"agvId":1,"year":2022,"month":12,"day":9,"week":5,"workingMinute":480,"openMinute":840,"task":35},'+
+    //             '{"analysisId":40,"agvId":1,"year":2022,"month":12,"day":10,"week":6,"workingMinute":540,"openMinute":840,"task":34},'+
+    //             '{"analysisId":41,"agvId":1,"year":2022,"month":12,"day":11,"week":7,"workingMinute":660,"openMinute":840,"task":42},'+
+    //             '{"analysisId":42,"agvId":1,"year":2022,"month":12,"day":12,"week":1,"workingMinute":720,"openMinute":840,"task":44},'+
+    //             '{"analysisId":43,"agvId":1,"year":2022,"month":12,"day":13,"week":2,"workingMinute":600,"openMinute":840,"task":38},'+
+    //             '{"analysisId":44,"agvId":1,"year":2022,"month":12,"day":14,"week":3,"workingMinute":360,"openMinute":840,"task":22},'+
+    //             '{"analysisId":45,"agvId":1,"year":2022,"month":12,"day":15,"week":4,"workingMinute":420,"openMinute":840,"task":29},'+
+    //             '{"analysisId":46,"agvId":1,"year":2022,"month":12,"day":16,"week":5,"workingMinute":480,"openMinute":840,"task":32},'+
+    //             '{"analysisId":47,"agvId":1,"year":2022,"month":12,"day":17,"week":6,"workingMinute":429,"openMinute":840,"task":34},'+
+    //             '{"analysisId":48,"agvId":1,"year":2022,"month":12,"day":18,"week":7,"workingMinute":432,"openMinute":840,"task":38},'+
+    //             '{"analysisId":49,"agvId":1,"year":2022,"month":12,"day":19,"week":1,"workingMinute":733,"openMinute":840,"task":23},'+
+    //             '{"analysisId":50,"agvId":1,"year":2022,"month":12,"day":20,"week":2,"workingMinute":344,"openMinute":840,"task":40},'+
+    //             '{"analysisId":51,"agvId":1,"year":2022,"month":12,"day":21,"week":3,"workingMinute":544,"openMinute":840,"task":38},'+
+    //             '{"analysisId":52,"agvId":1,"year":2022,"month":12,"day":22,"week":4,"workingMinute":433,"openMinute":840,"task":55},'+
+    //             '{"analysisId":53,"agvId":1,"year":2022,"month":12,"day":23,"week":5,"workingMinute":733,"openMinute":840,"task":45},'+
+    //             '{"analysisId":54,"agvId":1,"year":2022,"month":12,"day":24,"week":6,"workingMinute":293,"openMinute":840,"task":32},'+
+    //             '{"analysisId":55,"agvId":1,"year":2022,"month":12,"day":25,"week":7,"workingMinute":530,"openMinute":840,"task":29},'+
+    //             '{"analysisId":56,"agvId":1,"year":2022,"month":12,"day":26,"week":1,"workingMinute":649,"openMinute":840,"task":34},'+
+    //             '{"analysisId":57,"agvId":1,"year":2022,"month":12,"day":27,"week":2,"workingMinute":740,"openMinute":840,"task":38},'+
+    //             '{"analysisId":58,"agvId":1,"year":2022,"month":12,"day":28,"week":3,"workingMinute":623,"openMinute":840,"task":42},'+
+    //             '{"analysisId":59,"agvId":1,"year":2022,"month":12,"day":29,"week":4,"workingMinute":720,"openMinute":840,"task":48},'+
+    //             '{"analysisId":60,"agvId":1,"year":2022,"month":12,"day":30,"week":5,"workingMinute":532,"openMinute":840,"task":33},'+
+    //             '{"analysisId":61,"agvId":1,"year":2022,"month":12,"day":31,"week":6,"workingMinute":666,"openMinute":840,"task":40}]';
+    // let fakedata = JSON.parse(fake);
+    // test(fakedata);
 }
 
 function getYearsAndMonths(){
+    var xhr = new XMLHttpRequest();
     xhr.open('GET', baseUrl + "/api/analysis/yyyymm", true);
     xhr.send();
     xhr.onload = function(){
@@ -337,8 +344,53 @@ function getYearsAndMonths(){
     };
 }
 
+function getWorkNumbers(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', baseUrl + "/api/analysis/workNumber?month=2", true);
+    xhr.send();
+    xhr.onload = function(){
+        if(xhr.status == 200){
+            var data = JSON.parse(this.responseText);
+            updateWorknumbers(data);
+        }
+    };
+}
+
+function updateWorknumbers(data){
+    myChart1.data.labels = [];
+    myChart1.data.datasets[0].data = [];
+    data.forEach(workNumberData => {
+        myChart1.data.labels.push(workNumberData.workNumber);
+        myChart1.data.datasets[0].data.push(workNumberData.count);
+    });
+    myChart1.update();
+}
+
+function getWorkNumbersTA001(){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', baseUrl + "/api/analysis/workNumberTA001?month=2", true);
+    xhr.send();
+    xhr.onload = function(){
+        if(xhr.status == 200){
+            var data = JSON.parse(this.responseText);
+            updateWorknumbersTA001(data);
+        }
+    };
+}
+
+function updateWorknumbersTA001(data){
+    myChart1.data.labels = [];
+    myChart1.data.datasets[0].data = [];
+    data.forEach(workNumberData => {
+        myChart1.data.labels.push(workNumberData.TA001);
+        myChart1.data.datasets[0].data.push(workNumberData.count);
+    });
+    myChart1.update();
+}
+
 function setAGVBtn() {
     return new Promise((resolve, reject) => {
+        var xhr = new XMLHttpRequest();
         xhr.open('GET', baseUrl + "/api/homepage/agvlist", true);
         xhr.send();
         xhr.onload = function(){
@@ -364,6 +416,15 @@ function addAGVBtn(agvList){  // 更新資料
 }
 
 function reSet(x){
+    // 先移除所有按鈕的 active 類
+    $(".btn-group .btn").removeClass("active");
+
+    // 根據選擇的值添加相應按鈕的 active 類
+    if (x === 'recently') {
+        $(".btn-group .btn[data-time='recently']").addClass("active");
+    } else {
+        $(".btn-group .btn[data-time='month']").addClass("active");
+    }
     // 取得哪台AGV被選中
     var btnGroup = document.querySelector('#agvOption');
     var radioButtons = btnGroup.querySelectorAll('input[type="radio"]');
@@ -381,12 +442,13 @@ function reSet(x){
     // console.log("IDDDD: ", selectedId);
     // xhr.open('GET', baseUrl + "/api/analysis/mode?value=" + x, true);
     option = x;
-    xhr.open('GET', baseUrl + "/api/analysis/mode?agvId="+ selectedId.slice(-1) +"&value=" + option, true);
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', baseUrl + "/api/analysis/mode?agvId="+ (selectedId.slice(-1) == 4 ? 1 : selectedId.slice(-1)) +"&value=" + option, true);
     xhr.send();
     xhr.onload = function(){
         if(xhr.status == 200){
             var data = JSON.parse(this.responseText);
-            console.log(data);
+            // console.log(data);
             test(data);
         }
     };
@@ -395,19 +457,8 @@ function reSet(x){
 function agvReset(el){
     document.getElementById("printOutAGV").innerHTML = el.nextElementSibling.innerHTML;
     const mode = el.id.slice(-1);
-    if(mode != 4){
-        xhr.open('GET', baseUrl + "/api/analysis/mode?agvId="+ mode +"&value=" + option, true);
-        xhr.send();
-        xhr.onload = function(){
-            if(xhr.status == 200){
-                var data = JSON.parse(this.responseText);
-                console.log(data);
-                test(data);
-            }
-        };
-    } else {
-
-    }
+    setAGV();
+    reSet('recently');
 }
 
 function test(data) {
@@ -473,7 +524,7 @@ function test(data) {
     document.getElementById("work").value = String(Math.round(work_sum/x))+"hr";
     document.getElementById("rate").value = String((work_sum/open_sum)*100).substring(0,2)+"%";
     document.getElementById("pt").innerHTML = html;
-    console.log(myChart.data);
+    // console.log(myChart.data);
     // 選取方塊
     $(function(){
         // 全選 or 全取消
@@ -507,6 +558,7 @@ function test(data) {
 
     });
 }
+
 //  列印
 function printOut() {
     $('.hh').each(function(index, elem) {
@@ -572,6 +624,14 @@ function setAGV(){
     order.style.display = "none";
     const agv = document.getElementById("agvAnalysis");
     agv.style.display = "block";
+    const agvTimeOption = document.getElementById("agvTimeOption");
+    agvTimeOption.style.display = "inline-flex";
+    const printBTN = document.getElementById("printBTN");
+    printBTN.style.display = "inline-block";
+    const exportExcelBTN = document.getElementById("exportExcelBTN");
+    exportExcelBTN.style.display = "inline-block";
+    const TA001BTN = document.getElementById("TA001BTN");
+    TA001BTN.style.display = "none";
 }
 
 function setOrder(){
@@ -579,4 +639,12 @@ function setOrder(){
     agv.style.display = "none";
     const order = document.getElementById("orderAnalysis");
     order.style.display = "block";
+    const agvTimeOption = document.getElementById("agvTimeOption");
+    agvTimeOption.style.display = "none";
+    const printBTN = document.getElementById("printBTN");
+    printBTN.style.display = "none";
+    const exportExcelBTN = document.getElementById("exportExcelBTN");
+    exportExcelBTN.style.display = "none";
+    const TA001BTN = document.getElementById("TA001BTN");
+    TA001BTN.style.display = "inline-block";
 }

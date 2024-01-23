@@ -1,6 +1,7 @@
 package com.yid.agv.repository.impls;
 
 import com.yid.agv.backend.station.Grid;
+import com.yid.agv.model.Analysis;
 import com.yid.agv.model.GridList;
 import com.yid.agv.repository.GridListDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,37 @@ public class GridListDaoImpl implements GridListDao {
                 "gl.object_name_1, gl.object_name_2, gl.object_name_3, gl.object_name_4, gl.object_number_1, gl.object_number_2, gl.object_number_3, gl.object_number_4, " +
                 "gl.line_code_1, gl.line_code_2, gl.line_code_3, gl.line_code_4, gl.create_time FROM grid_list gl INNER JOIN station_data sd ON gl.station_id = sd.id ORDER BY id";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(GridList.class));
+    }
+
+    @Override
+    public GridList queryGridByGridName(String gridName){
+        String sql = "SELECT gl.id, sd.name AS station, gl.status, gl.work_number_1, gl.work_number_2, gl.work_number_3, gl.work_number_4, " +
+                "gl.object_name_1, gl.object_name_2, gl.object_name_3, gl.object_name_4, gl.object_number_1, gl.object_number_2, gl.object_number_3, gl.object_number_4, " +
+                "gl.line_code_1, gl.line_code_2, gl.line_code_3, gl.line_code_4, gl.create_time FROM grid_list gl INNER JOIN station_data sd ON gl.station_id = sd.id WHERE sd.name = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            GridList a = new GridList();
+            a.setId(rs.getInt("id"));
+            a.setStation(rs.getString("station"));
+            a.setStatus(rs.getInt("status"));
+            a.setWorkNumber_1(rs.getString("work_number_1"));
+            a.setWorkNumber_2(rs.getString("work_number_2"));
+            a.setWorkNumber_3(rs.getString("work_number_3"));
+            a.setWorkNumber_4(rs.getString("work_number_4"));
+            a.setObjectNumber_1(rs.getString("object_number_1"));
+            a.setObjectNumber_2(rs.getString("object_number_2"));
+            a.setObjectNumber_3(rs.getString("object_number_3"));
+            a.setObjectNumber_4(rs.getString("object_number_4"));
+            a.setObjectName_1(rs.getString("object_name_1"));
+            a.setObjectName_2(rs.getString("object_name_2"));
+            a.setObjectName_3(rs.getString("object_name_3"));
+            a.setObjectName_4(rs.getString("object_name_4"));
+            a.setLineCode_1(rs.getString("line_code_1"));
+            a.setLineCode_2(rs.getString("line_code_2"));
+            a.setLineCode_3(rs.getString("line_code_3"));
+            a.setLineCode_4(rs.getString("line_code_4"));
+            a.setCreateTime(rs.getString("create_time"));
+            return a;
+        }, gridName);
     }
 
     @Override
