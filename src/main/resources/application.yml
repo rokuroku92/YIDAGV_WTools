@@ -4,9 +4,9 @@ jdbc:
     username: root
     password: 12345678
   WTools:
-    url: jdbc:mysql://localhost:3306/WTools_simulation?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
+    url: jdbc:sqlserver://192.168.0.20:1433;databaseName=WTOOLS
     username: AgvYidUser
-    password: 12345678
+    password: Yid8789402
 
 agvControl:
   #  url: http://192.168.0.100:20100

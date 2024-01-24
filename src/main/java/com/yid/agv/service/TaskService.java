@@ -52,7 +52,7 @@ public class TaskService {
     private WorkNumberResult getWToolsInformation(String workNumber){
         if(workNumber.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
             String[] TA = workNumber.split("-");
-            String sql = "SELECT `TA006` AS `object_number`, `TA034` AS `object_name` FROM `V_MOCTA` WHERE `TA001` = ? AND `TA002` = ?";
+            String sql = "SELECT TA006 AS object_number, TA034 AS object_name FROM V_MOCTA WHERE TA001 = ? AND TA002 = ?";
             WorkNumberResult result = null;
             try {
                 result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);

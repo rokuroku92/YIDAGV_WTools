@@ -53,7 +53,7 @@ public class DataSourceConfig {
     @Bean(name = "WToolsDataSource")
     public DataSource WToolsDataSource() throws PropertyVetoException {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass("com.mysql.cj.jdbc.Driver");
+        dataSource.setDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"); // MSSQL
         dataSource.setJdbcUrl(WToolsJdbcUrl);
         dataSource.setUser(WToolsUsername);
         dataSource.setPassword(WToolsPassword);
