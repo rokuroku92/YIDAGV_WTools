@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -49,14 +50,21 @@ public class TaskService {
     
     private String lastDate;
 
+//    @Scheduled(fixedRate = 3000)
+//    public void test(){
+//        System.out.println(getWToolsInformation("MO01-20200907001"));
+//    }
+
     private WorkNumberResult getWToolsInformation(String workNumber){
         if(workNumber.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
             String[] TA = workNumber.split("-");
             String sql = "SELECT TA006 AS object_number, TA034 AS object_name FROM V_MOCTA WHERE TA001 = ? AND TA002 = ?";
-            WorkNumberResult result = null;
-            try {
-                result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
-            } catch (EmptyResultDataAccessException ignore){}
+            WorkNumberResult result = new WorkNumberResult();
+//            try {
+//                result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
+//            } catch (EmptyResultDataAccessException ignore){}
+            result.setObjectName("1/2\"72T電金全拋八角葫蘆柄軟打 KINCROME"); // TODO: remove
+            result.setObjectNumber("0254780011");  // TODO: remove
             return result;
         } else {
             return null;
@@ -96,9 +104,11 @@ public class TaskService {
         taskListDao.cancelTaskList(taskNumber);
         List<TaskDetail> taskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(taskNumber);
         taskDetails.forEach(taskDetail -> {
+            taskDetailDao.updateStatusByTaskNumberAndSequence(taskDetail.getTaskNumber(), taskDetail.getSequence(), -1);
             if(taskDetail.getStatus() != 100 && taskDetail.getMode()!=100 && taskDetail.getMode()!=101) {
                 gridManager.setGridStatus(taskDetail.getStartId(), Grid.Status.FREE);
                 gridManager.setGridStatus(taskDetail.getTerminalId(), Grid.Status.FREE);
+                gridListDao.clearWorkOrder(taskDetail.getTerminalId());
             }
         });
         return "取消任務 ".concat(taskNumber).concat(" 成功！");
@@ -144,7 +154,7 @@ public class TaskService {
                         String area = "3-" + taskListRequest.getTerminal();
                         List<Grid> availableGrids = gridManager.getAvailableGrids(area);
 
-                        if(availableGrids.size() <= taskSize){
+                        if(availableGrids.size() < taskSize){
                             return "終點區域格位已滿";
                         }
 
@@ -187,7 +197,7 @@ public class TaskService {
                     String area = "2-" + taskListRequest.getTerminal();
                     List<Grid> availableGrids = gridManager.getAvailableGrids(area);
 
-                    if (availableGrids.size() <= taskSize) {
+                    if (availableGrids.size() < taskSize) {
                         return "終點區域格位已滿";
                     }
 
@@ -214,7 +224,7 @@ public class TaskService {
                     String area = "1-" + taskListRequest.getTerminal();
                     List<Grid> availableGrids = gridManager.getAvailableGrids(area);
 
-                    if(availableGrids.size() <= taskSize){
+                    if(availableGrids.size() < taskSize){
                         return "終點區域格位已滿";
                     }
 

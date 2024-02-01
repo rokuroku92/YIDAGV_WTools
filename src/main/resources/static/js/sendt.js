@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     updateGridStatus();  //  取得狀態資料
-    setInterval(updateGridStatus, 2000);  //  每秒更新
+    setInterval(updateGridStatus, 1000);  //  每秒更新
 });
 
 function updateGridStatus() {
@@ -98,6 +98,7 @@ function sendJSON(){
     }).then(response => {
         // 处理后端的响应
         alert(response);
+        window.location.reload();
     }).catch(error => {
         // 处理错误
         alert("任務發送失敗: ", error);
@@ -427,18 +428,18 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table-start" id="start">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="2-T-10" class="grid-btn start">10</td>
-                                                                        <td data-val="2-T-8" class="grid-btn start">8</td>
-                                                                        <td data-val="2-T-6" class="grid-btn start">6</td>
-                                                                        <td data-val="2-T-4" class="grid-btn start">4</td>
-                                                                        <td data-val="2-T-2" class="grid-btn start">2</td>
-                                                                        </tr>
-                                                                        <tr>
                                                                         <td data-val="2-T-9" class="grid-btn start">9</td>
                                                                         <td data-val="2-T-7" class="grid-btn start">7</td>
                                                                         <td data-val="2-T-5" class="grid-btn start">5</td>
                                                                         <td data-val="2-T-3" class="grid-btn start">3</td>
                                                                         <td data-val="2-T-1" class="grid-btn start">1</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                        <td data-val="2-T-10" class="grid-btn start">10</td>
+                                                                        <td data-val="2-T-8" class="grid-btn start">8</td>
+                                                                        <td data-val="2-T-6" class="grid-btn start">6</td>
+                                                                        <td data-val="2-T-4" class="grid-btn start">4</td>
+                                                                        <td data-val="2-T-2" class="grid-btn start">2</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>

@@ -1,6 +1,7 @@
 package com.yid.agv.controller;
 
 import com.google.gson.Gson;
+import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.dto.SettingRequest;
 import com.yid.agv.dto.TaskListRequest;
@@ -212,7 +213,6 @@ public class ApiController {
     @RequestMapping(value = "/cancelTask", produces = MediaType.TEXT_PLAIN_VALUE)
     public String cancelTask(@RequestParam("taskNumber") String taskNumber){
         taskNumber = "#" + taskNumber;
-        System.out.println("taskNumber: "+taskNumber);
         return taskService.cancelTask(taskNumber);
     }
 

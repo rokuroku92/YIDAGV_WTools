@@ -52,8 +52,8 @@
 .grid-btn{
     background-color: #cab8b2;
     border: 1px black solid;
-    height: 4em;
-    width: 4em;
+    height: 6em;
+    width: 6em;
     margin: 0px;
 }
 .grid-btn.booked{

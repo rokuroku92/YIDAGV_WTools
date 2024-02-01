@@ -646,5 +646,6 @@ function setOrder(){
     const exportExcelBTN = document.getElementById("exportExcelBTN");
     exportExcelBTN.style.display = "none";
     const TA001BTN = document.getElementById("TA001BTN");
-    TA001BTN.style.display = "inline-block";
+    // TA001BTN.style.display = "inline-block";
+    TA001BTN.style.display = "none";
 }

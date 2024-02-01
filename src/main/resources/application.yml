@@ -4,7 +4,7 @@ jdbc:
     username: root
     password: 12345678
   WTools:
-    url: jdbc:sqlserver://192.168.0.20:1433;databaseName=WTOOLS
+    url: jdbc:sqlserver://192.168.0.20:1433;databaseName=WTOOLS;encrypt=false;
     username: AgvYidUser
     password: Yid8789402
 

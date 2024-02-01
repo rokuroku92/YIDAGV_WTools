@@ -5,10 +5,7 @@ import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
 import com.yid.agv.model.TaskList;
-import com.yid.agv.repository.NowTaskListDao;
-import com.yid.agv.repository.Phase;
-import com.yid.agv.repository.TaskDetailDao;
-import com.yid.agv.repository.TaskListDao;
+import com.yid.agv.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,6 +24,8 @@ public class TaskListManager {
     private TaskListDao taskListDao;
     @Autowired
     private TaskDetailDao taskDetailDao;
+    @Autowired
+    private GridListDao gridListDao;
     @Autowired
     private GridManager gridManager;
 
@@ -57,6 +56,7 @@ public class TaskListManager {
                             if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
                                 gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
                                 gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
+                                gridListDao.clearWorkOrder(unCompletedTaskDetail.getTerminalId());
                             }
                             taskDetailDao.updateStatusByTaskNumberAndSequence(unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence(), -1);
                         }

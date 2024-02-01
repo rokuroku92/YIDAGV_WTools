@@ -310,7 +310,7 @@ function taskListsUpdate(taskLists) {
                                 <div class="col-2 center">
                                 <button id="taskDetailBtn${taskLists[i].taskNumber.substring(1)}" type="button" class="btn btn-secondary task-btn" onclick="getDetails('${taskLists[i].taskNumber.substring(1)}')">Details</button>
                                 <button id="taskDetailHideBtn${taskLists[i].taskNumber.substring(1)}" type="button" class="btn btn-secondary task-btn" style="display: none;" onclick="hideDetails('${taskLists[i].taskNumber.substring(1)}')">Hide</button>
-                                ${taskLists[i].progress == 0 ? `<button type="button" class="btn btn-danger task-btn" onclick="cancelTask('YE202308230003')">Remove</button>` : ``}
+                                ${taskLists[i].progress == 0 ? `<button type="button" class="btn btn-danger task-btn" onclick="cancelTask('${taskLists[i].taskNumber.substring(1)}')">Remove</button>` : ``}
                                 </div>
                             </div>
 
@@ -339,6 +339,17 @@ function taskListsUpdate(taskLists) {
         document.getElementById("taskListQueue").innerHTML = taskListsHTML;
         lastTaskListHTML = taskListsHTML;
     }
+}
+
+function cancelTask(taskNumber){
+    fetch(baseUrl+`/api/cancelTask?taskNumber=${taskNumber}`
+    ).then(response => {
+        return response.text();
+    }).then(response => {
+        alert(response);
+    }).catch(error => {
+        alert("取消任務失敗: ", error);
+    });
 }
 
 function getDetails(taskNumber){
