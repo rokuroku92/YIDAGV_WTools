@@ -247,13 +247,15 @@ public class AGVInstantStatus {
     }
 
     private void handleExecutingTask(AGV agv){
-        if(agv.getTask().getStatus() == 1){
-            agv.getTask().setStatus(2);
-            AGVQTask task = agv.getTask();
-            taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 2);
-        }
-        if(!agv.getTask().getTaskNumber().matches("#(SB|LB).*")){
-            CountUtilizationRate.isWorking[agv.getId()-1] = true;
+        AGVQTask task = agv.getTask();
+        if(task != null){
+            if(task.getStatus() == 1){
+                task.setStatus(2);
+                taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 2);
+            }
+            if(!task.getTaskNumber().matches("#(SB|LB).*")){
+                CountUtilizationRate.isWorking[agv.getId()-1] = true;
+            }
         }
     }
     private void handleCompletedTask(AGV agv, NotificationDao.Title agvTitle){
