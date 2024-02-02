@@ -1,5 +1,9 @@
 
 document.addEventListener("DOMContentLoaded", function() {
+    if(localStorage.getItem("gridManual") == 1){
+        document.getElementById("logo").style.fill = "#FF0000";
+    }
+
     var modeBtn = document.querySelector('#modeOption');
     modeBtn.addEventListener("click", function (event) {
         // 检查是否点击了选项按钮（btn-check 类的元素）

@@ -265,7 +265,6 @@ public class AGVInstantStatus {
         CountUtilizationRate.isWorking[agv.getId()-1] = false;
         if(agv.getTask() != null) {
             processTasks.completedTask(agv, agvTitle);
-            agv.setReDispatchCount(0);
         }
     }
 

@@ -67,7 +67,7 @@ public class ProcessAGVTask {
     }
 
 
-    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 2000)
     public void dispatchTasks() {
         if(isRetrying)return;
 
@@ -132,6 +132,13 @@ public class ProcessAGVTask {
                 if (task == null) return false;
                 String nowPlace = agv.getPlace();
                 if(nowPlace.equals(task.getTerminalStation())){  // 主要是為了防止派遣回待命點時，出現無限輪迴。
+                    NotificationDao.Title agvTitle = switch (agv.getId()) {
+                        case 1 -> NotificationDao.Title.AMR_1;
+                        case 2 -> NotificationDao.Title.AMR_2;
+                        case 3 -> NotificationDao.Title.AMR_3;
+                        default -> throw new IllegalStateException("Unexpected agvManager.getAgvLength() value: " + agv.getId());
+                    };
+                    completedTask(agv, agvTitle);
                     return true;
                 }
                 String url;
@@ -259,6 +266,7 @@ public class ProcessAGVTask {
         notificationDao.insertMessage(agvTitle, "Completed task " + task.getTaskNumber() + ":" + task.getSequence());
         taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 100);
         agv.setTaskStatus(AGV.TaskStatus.NO_TASK);
+        agv.setReDispatchCount(0);
         agv.setTask(null);
     }
 
@@ -288,7 +296,7 @@ public class ProcessAGVTask {
         AGVQTask toStandbyTask = new AGVQTask();
         toStandbyTask.setAgvId(agv.getId());
         toStandbyTask.setModeId(1);
-        toStandbyTask.setStatus(0);
+        toStandbyTask.setStatus(1);
         toStandbyTask.setSequence(1);
         toStandbyTask.setTaskNumber(taskNumber);
         toStandbyTask.setStartStationId(standbyStation.get());

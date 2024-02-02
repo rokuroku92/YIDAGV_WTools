@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -119,6 +120,7 @@ public class TaskService {
         if (taskSize == 0){
             return "未輸入起始格位";
         }
+        sortTasksByStartGrid(taskListRequest);
         for (int i = 0; i < taskSize; i++) {
             if(gridManager.getGridStatus(taskListRequest.getTasks().get(i).getStartGrid()) != Grid.Status.FREE){
                 return "起始格位非可用";
@@ -278,6 +280,34 @@ public class TaskService {
             serialNumber++;
         }
         return lastDate + String.format("%04d", serialNumber);
+    }
+
+    private void sortTasksByStartGrid(TaskListRequest taskListRequest) {
+        // 使用Comparator進行自定義排序
+        taskListRequest.getTasks().sort(new Comparator<TaskListRequest.Task>() {
+            @Override
+            public int compare(TaskListRequest.Task task1, TaskListRequest.Task task2) {
+                int number1 = extractNumber(task1.getStartGrid());
+                int number2 = extractNumber(task2.getStartGrid());
+
+                // 從大到小排序
+                return Integer.compare(number2, number1);
+            }
+
+            // 提取數字部分
+            private int extractNumber(String s) {
+                String[] parts = s.split("-");
+                if (parts.length > 2) {
+                    try {
+                        return Integer.parseInt(parts[2]);
+                    } catch (NumberFormatException e) {
+                        // 處理無法提取數字例外
+                        e.printStackTrace();
+                    }
+                }
+                return 0; // 默認返回0，表示無法提取數字
+            }
+        });
     }
 
     private void insertIntoDB(TaskListRequest taskListRequest, int index, List<Grid> availableGrids, String formattedDateTime, List<List<WorkNumberResult>> requestObjectData){
