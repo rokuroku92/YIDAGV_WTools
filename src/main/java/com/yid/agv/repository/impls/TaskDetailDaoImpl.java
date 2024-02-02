@@ -33,7 +33,7 @@ public class TaskDetailDaoImpl implements TaskDetailDao {
                 "INNER JOIN task_detail_title tdt ON td.title_id = tdt.id " +
                 "LEFT JOIN station_data sd ON td.start_id = sd.id " +
                 "LEFT JOIN station_data sdd ON td.terminal_id = sdd.id " +
-                "INNER JOIN mode_data md ON td.mode_id = md.id WHERE td.task_number NOT LIKE '#SB%' " +
+                "INNER JOIN mode_data md ON td.mode_id = md.id WHERE td.task_number NOT LIKE '#%B%' " +
                 "ORDER BY CONVERT(SUBSTRING(td.task_number, 4, 14), SIGNED INTEGER) DESC, td.sequence DESC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(TaskDetail.class));
     }
