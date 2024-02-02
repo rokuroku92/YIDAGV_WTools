@@ -20,9 +20,14 @@ public class GridService {
         return gridListDao.queryAllGrids();
     }
 
-    public boolean clearGrid(String gridName){
+    public boolean clearGrid(String gridName) {
         int stationId = gridManager.getGirdStationId(gridName);
         return gridListDao.clearWorkOrder(stationId) && gridListDao.updateStatus(stationId, Grid.Status.FREE);
+    }
+
+    public boolean occupiedGrid(String gridName) {
+        int stationId = gridManager.getGirdStationId(gridName);
+        return gridListDao.clearWorkOrder(stationId) && gridListDao.updateStatus(stationId, Grid.Status.OCCUPIED);
     }
 
     public boolean updateLineCode(String gridName, String lineNumber, String lineCode){

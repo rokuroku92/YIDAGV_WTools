@@ -123,6 +123,8 @@ function gridUpdate(data){
                     grid.classList.add("occupied");
                     status = "Occupied";
                     grid.setAttribute("onclick", "clearGrid('" + gridName + "')");
+                } else if(gdata.status === 0){
+                    grid.setAttribute("onclick", "occupiedGrid('" + gridName + "')");
                 }
                 if(gdata.workNumber_1 != null){
                     gridListHTML += `<tr>
@@ -199,6 +201,32 @@ function clearGrid(gridName){
     var result = confirm("是否要取消 " + gridName + " 的鎖定");
     if(result){
         fetch(baseUrl + `/api/grid/clearGrid?gridName=${gridName}`)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            if(data != "OK"){
+                alert(data);
+            } else {
+                console.log(data);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    }
+}
+
+function occupiedGrid(gridName){
+    if(localStorage.getItem("gridManual") != 1){
+        return;
+    }
+    let result = confirm("是否要將 " + gridName + " 設為佔用");
+    if(result){
+        fetch(baseUrl + `/api/grid/occupiedGrid?gridName=${gridName}`)
         .then(response => {
             if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);

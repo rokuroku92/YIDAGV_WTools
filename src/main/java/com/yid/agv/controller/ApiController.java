@@ -209,6 +209,10 @@ public class ApiController {
     public String clearGrid(@RequestParam("gridName") String gridName){
         return gridService.clearGrid(gridName)? "OK" : "FAIL";
     }
+    @RequestMapping(value = "/grid/occupiedGrid", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String occupiedGrid(@RequestParam("gridName") String gridName){
+        return gridService.occupiedGrid(gridName)? "OK" : "FAIL";
+    }
 
     @RequestMapping(value = "/cancelTask", produces = MediaType.TEXT_PLAIN_VALUE)
     public String cancelTask(@RequestParam("taskNumber") String taskNumber){

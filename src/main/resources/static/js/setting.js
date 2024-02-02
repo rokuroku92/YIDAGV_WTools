@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     getConfig();
+    document.getElementById("gridManual").checked = localStorage.getItem("gridManual") == 1 ? true : false;
     document.getElementById("save").addEventListener("click", function (){
         setConfig();
     })
@@ -103,4 +104,9 @@ function setConfig(){
     }).catch(error => {
         alert("修改失敗: ", error);
     });
+}
+
+function setGridManual(el) {
+    localStorage.setItem("gridManual", el.checked?1:0);
+    console.log(localStorage.getItem("gridManual"));
 }
