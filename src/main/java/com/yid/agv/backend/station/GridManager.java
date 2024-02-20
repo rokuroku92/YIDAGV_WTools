@@ -1,7 +1,10 @@
 package com.yid.agv.backend.station;
+import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.repository.GridListDao;
 import com.yid.agv.repository.StationDao;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,7 @@ import java.util.*;
 
 @Component
 public class GridManager {
+    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     @Autowired
     private StationDao stationDao;
     @Autowired
@@ -23,7 +27,7 @@ public class GridManager {
     @PostConstruct
     public void initialize() {
         gridListDao.queryAllGrids().forEach(grid -> gridMap.put(grid.getStation(), new Grid(grid)));
-        System.out.println("Initialize gridMap: " + gridMap);
+        log.info("Initialize gridMap: " + gridMap);
     }
 
     @Scheduled(fixedRate = 1000)

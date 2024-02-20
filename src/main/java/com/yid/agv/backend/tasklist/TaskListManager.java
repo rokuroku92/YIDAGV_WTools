@@ -1,5 +1,6 @@
 package com.yid.agv.backend.tasklist;
 
+import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.model.NowTaskList;
@@ -7,6 +8,8 @@ import com.yid.agv.model.TaskDetail;
 import com.yid.agv.model.TaskList;
 import com.yid.agv.repository.*;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,7 @@ import java.util.Map;
 
 @Component
 public class TaskListManager {
+    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     @Autowired
     private NowTaskListDao nowTaskListDao;
     @Autowired
@@ -41,7 +45,7 @@ public class TaskListManager {
     public void initialize() {
         taskListMap.put(1, null);
         taskListMap.put(2, null);
-        System.out.println("Initialize taskListMap: " + taskListMap);
+        log.info("Initialize taskListMap: " + taskListMap);
 
         // 處理資料庫中狀態為執行中的任務
 //        List<TaskList> unexpectedTasks = taskListDao.queryUnexpectedTaskLists();
@@ -52,7 +56,7 @@ public class TaskListManager {
                     List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
                     unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
                         if(unCompletedTaskDetail.getStatus() != 100) {
-                            System.out.println("cancel： " + unCompletedTaskDetail.getTaskNumber() + " : " + unCompletedTaskDetail.getSequence());
+                            log.info("Cancel： " + unCompletedTaskDetail.getTaskNumber() + " : " + unCompletedTaskDetail.getSequence());
                             if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
                                 gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
                                 gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
@@ -68,7 +72,7 @@ public class TaskListManager {
         });
     }
 
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 1000)
     public synchronized void refreshTaskList(){
         taskListMap.forEach((taskProcessId, taskList) -> {
             if(taskList == null) {

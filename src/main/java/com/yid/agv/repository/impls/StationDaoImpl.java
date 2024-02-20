@@ -30,6 +30,11 @@ public class StationDaoImpl implements StationDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(String.class), areaName+"%");
     }
     @Override
+    public String getStationTagByGridName(String gridName){
+        String sql = "SELECT tag FROM `station_data` WHERE `name` = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, gridName);
+    }
+    @Override
     public List<Station> queryStandbyStations(){
         String sql = "SELECT * FROM `station_data` WHERE `name` LIKE '%-S'";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Station.class));

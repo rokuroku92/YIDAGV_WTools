@@ -25,9 +25,6 @@ public class HomePageService {
     @Autowired
     private AGVManager agvManager;
 
-    @Autowired
-    private ElevatorManager elevatorManager;
-
     private int iAlarm;
 
     public int getIAlarm() {
@@ -38,9 +35,6 @@ public class HomePageService {
         this.iAlarm = iAlarm;
     }
 
-    public boolean getElevatorObstacleAlarm(){
-        return elevatorManager.getIAlarmObstacle();
-    }
     public AGV[] getAgv(){
         return agvManager.getAgvCopyArray();
     }

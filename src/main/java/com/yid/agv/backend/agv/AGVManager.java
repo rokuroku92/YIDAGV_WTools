@@ -1,44 +1,53 @@
 package com.yid.agv.backend.agv;
 
 
+import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.repository.AGVIdDao;
 import com.yid.agv.repository.StationDao;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class AGVManager {
+    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     @Autowired
     private AGVIdDao agvIdDao;
     @Autowired
     private StationDao stationDao;
-    private final Map<Integer, AGV> agvStatusMap;
+    private final Map<Integer, AGV> agvMap;
 
     public AGVManager(){
-        agvStatusMap = new HashMap<>();
+        agvMap = new HashMap<>();
     }
 
     @PostConstruct
     public void initialize() {
-        agvIdDao.queryAGVList().forEach(agvId -> agvStatusMap.put(agvId.getId(), new AGV(agvId.getId())));
-        System.out.println("Initialize agvStatusMap: "+agvStatusMap);
+        agvIdDao.queryAGVList().forEach(agvId -> agvMap.put(agvId.getId(), new AGV(agvId.getId())));
+        log.info("Initialize agvMap: "+ agvMap);
     }
 
     public int getAgvSize(){
-        return agvStatusMap.size();
+        return agvMap.size();
     }
 
     public AGV getAgv(int agvId){
-        return agvStatusMap.get(agvId);
+        return agvMap.get(agvId);
+    }
+
+    public List<AGV> getAgvs() {
+        return new ArrayList<>(agvMap.values());
     }
 
     public boolean iAgvInElevator(int agvId){
-        String place = agvStatusMap.get(agvId).getPlace();
+        String place = agvMap.get(agvId).getPlace();
         List<String> tags = stationDao.getStationTagByAreaName("E-");
         for (String tag: tags) {
             if (place.equals(tag)){
@@ -49,11 +58,11 @@ public class AGVManager {
     }
 
     public int getAgvLength(){
-        return agvStatusMap.size();
+        return agvMap.size();
     }
 
     public AGV[] getAgvCopyArray() {
-        return agvStatusMap.values()
+        return agvMap.values()
                 .stream()
                 .map(originalAGV -> {
                     AGV copy = new AGV(originalAGV.getId());

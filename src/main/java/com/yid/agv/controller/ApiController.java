@@ -23,6 +23,8 @@ public class ApiController {
 
     @Autowired
     private HomePageService homePageService;
+    @Autowired
+    private ElevatorService elevatorService;
 
     @Autowired
     private AnalysisService analysisService;
@@ -67,9 +69,13 @@ public class ApiController {
         return gson.toJson(taskService.queryAllTaskLists());
     }
 
-    @GetMapping(value = "/homepage/iElevatorObstacleAlarm", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/elevator/iElevatorObstacleAlarm", produces = MediaType.TEXT_PLAIN_VALUE)
     public String getIAlarm(){
-        return homePageService.getElevatorObstacleAlarm() ? "1" : "0";
+        return elevatorService.getElevatorObstacleAlarm() ? "1" : "0";
+    }
+    @GetMapping(value = "/elevator/personCount", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getElevatorPersonCount(){
+        return Integer.toString(elevatorService.getElevatorPersonCount());
     }
 
     @GetMapping(value = "/homepage/notifications", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")

@@ -17,6 +17,7 @@ function getConfig(){
             document.getElementById("agvLowBattery").value = configJSON.agv.low_battery;
             document.getElementById("agvLowBatteryDuration").value = configJSON.agv.low_battery_duration;
             document.getElementById("agvObstacleDuration").value = configJSON.agv.obstacle_duration;
+            document.getElementById("agvTaskExceptionOption").value = configJSON.agv.task_exception_option;
             document.getElementById("httpTimeout").value = configJSON.http.timeout;
             document.getElementById("httpMaxRetry").value = configJSON.http.max_retry;
             document.getElementById("wToolslUrl").value = configJSON.jdbc.WTools.url;
@@ -36,6 +37,7 @@ function setConfig(){
     let agvLowBattery = document.getElementById("agvLowBattery").value;
     let agvLowBatteryDuration = document.getElementById("agvLowBatteryDuration").value;
     let agvObstacleDuration = document.getElementById("agvObstacleDuration").value;
+    let agvTaskExceptionOption = document.getElementById("agvTaskExceptionOption").value;
     let httpTimeout = document.getElementById("httpTimeout").value;
     let httpMaxRetry = document.getElementById("httpMaxRetry").value;
     let wToolslUrl = document.getElementById("wToolslUrl").value;
@@ -47,39 +49,63 @@ function setConfig(){
     let elevatorFailSocket = document.getElementById("elevatorFailSocket").value;
     let elevatorPrePersonOpenDoorDuration = document.getElementById("elevatorPrePersonOpenDoorDuration").value;
     if(agvControlUrl === ""){
-        return "AgvControlUrl參數為空值";
+        alert("AgvControlUrl參數為空值");
+        return;
     } else if(agvLowBattery === ""){
-        return "AgvLowBattery參數為空值";
+        alert("AgvLowBattery參數為空值");
+        return;
     } else if(agvLowBatteryDuration === ""){
-        return "AgvLowBatteryDuration參數為空值";
+        alert("AgvLowBatteryDuration參數為空值");
+        return;
     } else if(agvObstacleDuration === ""){
-        return "AgvObstacleDuration參數為空值";
+        alert("AgvObstacleDuration參數為空值");
+        return;
+    } else if(agvTaskExceptionOption === ""){
+        alert("AgvTaskExceptionOption參數為空值");
+        return;
     } else if(httpTimeout === ""){
-        return "HttpTimeout參數為空值";
+        alert("HttpTimeout參數為空值");
+        return;
     } else if(httpMaxRetry === ""){
-        return "HttpMaxRetry參數為空值";
+        alert("HttpMaxRetry參數為空值");
+        return;
     } else if(wToolslUrl === ""){
-        return "wToolslUrl參數為空值";
+        alert("wToolslUrl參數為空值");
+        return;
     } else if(wToolsUsername === ""){
-        return "wToolsUsername參數為空值";
+        alert("wToolsUsername參數為空值");
+        return;
     } else if(wToolsPassword === ""){
-        return "wToolsPassword參數為空值";
+        alert("wToolsPassword參數為空值");
+        return;
     } else if(elevatorIp === ""){
-        return "elevatorIp參數為空值";
+        alert("elevatorIp參數為空值");
+        return;
     } else if(elevatorPort === ""){
-        return "elevatorPort參數為空值";
+        alert("elevatorPort參數為空值");
+        return;
     } else if(elevatorTimeout === ""){
-        return "elevatorTimeout參數為空值";
+        alert("elevatorTimeout參數為空值");
+        return;
     } else if(elevatorFailSocket === ""){
-        return "elevatorFailSocket參數為空值";
+        alert("elevatorFailSocket參數為空值");
+        return;
     } else if(elevatorPrePersonOpenDoorDuration === ""){
-        return "elevatorPrePersonOpenDoorDuration參數為空值";
+        alert("elevatorPrePersonOpenDoorDuration參數為空值");
+        return;
     }
+
+    if(agvTaskExceptionOption != 0 && agvTaskExceptionOption != 1){
+        alert("agvTaskExceptionOption參數輸入錯誤，應為0|1");
+        return;
+    }
+
     let config = {
         agvControlUrl: agvControlUrl,
         agvLowBattery: agvLowBattery,
         agvLowBatteryDuration: agvLowBatteryDuration,
         agvObstacleDuration: agvObstacleDuration,
+        agvTaskExceptionOption: agvTaskExceptionOption,
         httpTimeout: httpTimeout,
         httpMaxRetry: httpMaxRetry,
         dbWToolsUrl: wToolslUrl,

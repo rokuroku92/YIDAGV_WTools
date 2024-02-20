@@ -1,6 +1,7 @@
 package com.yid.agv.backend.agv;
 
 import com.yid.agv.backend.agvtask.AGVQTask;
+import com.yid.agv.repository.NotificationDao;
 import lombok.Data;
 
 @Data
@@ -33,6 +34,7 @@ public class AGV {
 
     private AGVQTask task;
     private TaskStatus taskStatus;
+    private NotificationDao.Title title;
 
     // 以下是程式附帶屬性|補償屬性
     private String lastAgvSystemStatusData;  // 利基系統的狀態參數
@@ -49,5 +51,11 @@ public class AGV {
     public AGV(int id){
         this.id=id;
         taskStatus = TaskStatus.NO_TASK;
+        this.title = switch (id) {
+            case 1 -> NotificationDao.Title.AMR_1;
+            case 2 -> NotificationDao.Title.AMR_2;
+            case 3 -> NotificationDao.Title.AMR_3;
+            default -> NotificationDao.Title.AGV_SYSTEM;
+        };
     }
 }

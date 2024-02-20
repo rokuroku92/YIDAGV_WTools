@@ -1,7 +1,7 @@
 package com.yid.agv.backend.elevator;
 
-import com.yid.agv.model.Station;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,13 +12,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Component
 public class ElevatorManager {
@@ -28,87 +24,90 @@ public class ElevatorManager {
     private String agvUrl;
     @Value("${elevator.pre_person_open_door_duration}")
     private int prePersonOpenDoorDuration;
+    @Autowired
+    private ElevatorSocketBox elevatorSocketBox;
     private ElevatorPermission elevatorPermission;
 
     private int prePersonOpenDoorCount;
     private int elevatorPersonCount;
-    private boolean iOpenDoor;
-    private boolean iPersonOccupancyButton;
-    private boolean iObstacle;
     private boolean iAlarmObstacle;
-    private final int[] lastCallerStatus;
-
+    private final Map<Integer, ElevatorCaller> elevatorCallerMap;
     private final Queue<Integer> callQueue;
+
     public ElevatorManager() {
+        elevatorCallerMap = new HashMap<>();
         callQueue = new ConcurrentLinkedDeque<>();
-        lastCallerStatus = new int[8];
     }
 
     @PostConstruct
     public void initialize() {
-        Arrays.fill(lastCallerStatus, -1);
         prePersonOpenDoorCount = 0;
         elevatorPersonCount = 0;
+        for (int i = 1; i <= 4; i++) {
+            elevatorCallerMap.put(i, new ElevatorCaller(i));
+        }
+        elevatorPermission = ElevatorPermission.FREE;
     }
 
-//    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 1000)
     public void elevatorProcess() {
-        String[] statusData = crawlStatus().orElse(new String[0]);
-        if (statusData.length == 0) return;
-        int[] callerStatus = new int[8];
-        Arrays.fill(callerStatus, 0);
-        String[] elevatorData = statusData[0].split(",");
-        // 假設開門
-        iOpenDoor = elevatorData[1].equals("1");
-        // 假設人員按鈕被按下
-        iPersonOccupancyButton = elevatorData[2].equals("1");
-        // 假設電梯有障礙
-        iObstacle = elevatorData[3].equals("1");
+        String[] allCallerInstantStatuses = crawlStatus().orElse(new String[0]);
+        if (allCallerInstantStatuses.length == 0) return;
 
-        for(int i = 0; i < statusData.length-1; i++){
-            String[] data = statusData[i].split(",");  // 分隔資料
-            if (data[0].equals("-1")){
-                callerStatus[i] = -1;
-                continue;
-            }
-            if(i % 2 == 0) {
-                // 假設呼叫按鈕按下
-                if (Objects.requireNonNull(parseStatus(Integer.parseInt(data[1])))[0]){
-                    int finalI = i;
-                    AtomicBoolean had = new AtomicBoolean(false);
-                    callQueue.forEach(floor -> {
-                        if(floor == finalI){
-                            had.set(true);
-                        }
-                    });
-                    if(!had.get()){
-                        callQueue.offer(i);
-                    }
-                    callerStatus[i] = 2;  // TODO: 假設 2 是閃黃燈
+        elevatorCallerMap.values().forEach(elevatorCaller -> {
+            String callerId1 = Integer.toString(elevatorCaller.getFloor()*2-1);
+            String callerId2 = Integer.toString(elevatorCaller.getFloor()*2);
+            String[] identifiedCaller1Data = null;
+            String[] identifiedCaller2Data = null;
+            // 比對資料，取出正確 AGV 資料
+            for (String callerInstantStatus : allCallerInstantStatuses) {
+                String[] unidentifiedCallerData = callerInstantStatus.split(",");  // 分隔 Traffic Control 資料
+                String dataCallerId = unidentifiedCallerData[0].trim();
+                if (dataCallerId.equals(callerId1)) {
+                    identifiedCaller1Data = unidentifiedCallerData;
+                } else if (dataCallerId.equals(callerId2)){
+                    identifiedCaller2Data = unidentifiedCallerData;
                 }
             }
-        }
 
-        switch (elevatorPermission){
+            if (identifiedCaller1Data == null || Integer.parseInt(identifiedCaller1Data[1]) < 0){
+                updateCaller1OfflineStatus(elevatorCaller);
+            } else {
+                updateCaller1OnlineStatus(elevatorCaller, identifiedCaller1Data);
+            }
+            if (identifiedCaller2Data == null || Integer.parseInt(identifiedCaller2Data[1]) < 0) {
+                updateCaller2OfflineStatus(elevatorCaller);
+            } else {
+                updateCaller2OnlineStatus(elevatorCaller, identifiedCaller2Data);
+            }
+        });
+
+        elevatorCallerMap.values().forEach(elevatorCaller -> {
+            elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.OFF);
+            elevatorCaller.setRedLight(ElevatorCaller.IOStatus.OFF);
+        });
+        switch (elevatorPermission) {
             case SYSTEM -> {
+                elevatorPersonCount = 0;
+                elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setRedLight(ElevatorCaller.IOStatus.ON));
             }
             case PRE_PERSON -> {
                 Integer floor = callQueue.peek();
-                callerStatus[floor] = 3;  // TODO: 假設黃色恆亮是3
-                if (iOpenDoor){
-                    if (!iPersonOccupancyButton){
+                ElevatorCaller elevatorCaller = elevatorCallerMap.get(floor);
+                if (elevatorCaller.isIOpenDoor()) {
+                    if (!elevatorSocketBox.isElevatorBoxManual()) {
                         prePersonOpenDoorCount++;
                         if(prePersonOpenDoorCount > prePersonOpenDoorDuration){
                             callQueue.poll();
-                            // TODO: clear callerButton
-                            controlElevatorDoor(floor, false);
+                            elevatorCaller.setICallButton(false);
+                            controlElevatorTO(null);
                             elevatorPermission = ElevatorPermission.FREE;
                             prePersonOpenDoorCount = 0;
                         }
                     } else {
                         callQueue.poll();
-                        // TODO: clear callerButton
-                        controlElevatorDoor(floor, false);
+                        elevatorCaller.setICallButton(false);
+                        controlElevatorTO(null);
                         elevatorPermission = ElevatorPermission.PERSON;
                         prePersonOpenDoorCount = 0;
                     }
@@ -116,57 +115,90 @@ public class ElevatorManager {
             }
             case PERSON -> {
                 elevatorPersonCount++;
-                if (!iPersonOccupancyButton){
+                if (!elevatorSocketBox.isElevatorBoxManual()) {
                     elevatorPersonCount = 0;
-                    // TODO: close Door
                     elevatorPermission = ElevatorPermission.FREE;
                 }
             }
             case FREE -> {
                 elevatorPersonCount = 0;
-                if (!callQueue.isEmpty() && !iOpenDoor){
+                if (!callQueue.isEmpty()) {
                     Integer floor = callQueue.peek();
-                    if (controlElevatorDoor(floor, true)){
+                    if (floor != null){
+                        controlElevatorTO(floor);
                         elevatorPermission = ElevatorPermission.PRE_PERSON;
                     }
+                } else {
+                    elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.ON));
                 }
             }
         }
 
-        for (int i = 0; i < callerStatus.length; i+=2) {
-            if(callerStatus[i] == -1){
-                lastCallerStatus[i] = -1;
-                continue;
+        // 發送指令到TrafficControl
+        elevatorCallerMap.values().forEach(elevatorCaller -> {
+            if (!elevatorCaller.isICaller1Offline() && !elevatorCaller.isICaller2Offline()){
+                sendCaller(elevatorCaller);
             }
-            switch (elevatorPermission){
-                case FREE,PRE_PERSON,PERSON -> {
-                    if(callerStatus[i] == 3){
-                        sendCaller(i+1, 6);  // TODO: 假設黃色、綠色燈號恆亮是6
-                    } else if (callerStatus[i] == 2){
-                        sendCaller(i+1, 5);  // TODO: 假設綠色燈號恆亮、黃色閃爍是5
-                    } else {
-                        sendCaller(i+1, 4);  // TODO: 假設綠色燈號恆亮4
-                    }
-                }
-                case SYSTEM -> {
-                    if (callerStatus[i] == 2){
-                        sendCaller(i+1, 9);  // TODO: 假設紅色、黃色燈號恆亮是9
-                    } else {
-                        sendCaller(i+1, 8);  // TODO: 假設紅燈號恆亮8
-                    }
-                }
+        });
 
+    }
+
+    private void updateCaller1OfflineStatus(ElevatorCaller elevatorCaller){
+        elevatorCaller.setICaller1Offline(true);
+        elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.UNKNOWN);
+        elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.UNKNOWN);
+        elevatorCaller.setRedLight(ElevatorCaller.IOStatus.UNKNOWN);
+        elevatorCaller.setIBuzz(ElevatorCaller.IOStatus.UNKNOWN);
+    }
+    private void updateCaller2OfflineStatus(ElevatorCaller elevatorCaller){
+        elevatorCaller.setICaller2Offline(true);
+    }
+    private void updateCaller1OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
+        elevatorCaller.setICaller1Offline(false);
+
+        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
+
+        elevatorCaller.setGreenLight(optionalIOValue.filter(ioValue -> elevatorCaller.getGreenLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setYellowLight(optionalIOValue.filter(ioValue -> elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[1] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setRedLight(optionalIOValue.filter(ioValue -> elevatorCaller.getRedLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setIBuzz(optionalIOValue.map(ioValue -> ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+
+    }
+    private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
+        elevatorCaller.setICaller2Offline(false);
+
+        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
+
+        // 假設呼叫按鈕按下
+        optionalIOValue.ifPresent(ioValue -> {
+            // ioValue[0] 為 Button Trigger (真正呼叫電梯的I/O)
+
+            if (ioValue[1]) {
+                elevatorCaller.setICallButton(true);
+                AtomicBoolean had = new AtomicBoolean(false);
+                callQueue.forEach(floor -> {
+                    if (floor == elevatorCaller.getFloor()) {
+                        had.set(true);
+                    }
+                });
+                if(!had.get()){
+                    callQueue.offer(elevatorCaller.getFloor());
+                }
+                // 按下按鈕且不是電梯目標樓層則顯示閃黃燈
+                if (!elevatorCaller.isDoCallElevator() && elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE) {
+                    elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.TOGGLE);
+                }
+            } else {
+                elevatorCaller.setICallButton(false);
+                elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.OFF);
             }
-        }
 
+            elevatorCaller.setIOpenDoor(!ioValue[2]);
+        });
     }
 
     public ElevatorPermission getElevatorPermission() {
         return elevatorPermission;
-    }
-
-    public boolean getIOpenDoor(){
-        return iOpenDoor;
     }
 
     public boolean acquireElevatorPermission() {
@@ -174,7 +206,7 @@ public class ElevatorManager {
             return true;
         } else if (elevatorPermission == ElevatorPermission.PRE_PERSON || elevatorPermission == ElevatorPermission.PERSON || callQueue.size() > 0){
             return false;
-        } else if (iObstacle){
+        } else if (elevatorSocketBox.isElevatorBoxScan()) {
             iAlarmObstacle = true;
             return false;
         } else {
@@ -197,15 +229,18 @@ public class ElevatorManager {
         return iAlarmObstacle;
     }
 
+    public boolean iOpenDoorByFloor(int floor){
+        return elevatorCallerMap.get(floor).isIOpenDoor();
+    }
+
     public Optional<String[]> crawlStatus() {
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(agvUrl + "/callers"))  // TODO: fix
+                .uri(URI.create(agvUrl + "/callers"))
                 .GET()
                 .timeout(timeout)
                 .build();
-
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             String webpageContent = response.body();
@@ -219,40 +254,64 @@ public class ElevatorManager {
         return Optional.empty();
     }
 
-    public boolean controlElevatorDoor(int floor, boolean iOpen){
-        String cmd = iOpen ? "J0130" : "J0132";
+    public void controlElevatorTO(Integer floor){
+        if (floor == null) {
+            elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setDoCallElevator(false));
+        } else {
+            elevatorCallerMap.values().forEach(elevatorCaller -> {
+                if (elevatorCaller.getFloor() == floor && !elevatorCaller.isDoCallElevator()) {
+                    elevatorCaller.setDoCallElevator(true);
+                    elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.ON);
+                } else {
+                    elevatorCaller.setDoCallElevator(false);
+                }
+            });
+        }
+    }
+
+    public void sendCaller(ElevatorCaller elevatorCaller){
+        int caller1Id = elevatorCaller.getFloor()*2-1;
+        int caller1OutputValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
+        int caller1ToggleValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
+
+        if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue) {
+            System.out.println("SendIOControlBoxOutput Id: " + caller1Id + " Value: " + caller1OutputValue);
+            elevatorCaller.setLastCaller1OutputValue(caller1OutputValue);
+            sendCaller(caller1Id, caller1OutputValue, "output");
+        }
+        if(elevatorCaller.getLastCaller1ToggleValue() != caller1ToggleValue) {
+            System.out.println("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
+            elevatorCaller.setLastCaller1ToggleValue(caller1ToggleValue);
+            sendCaller(caller1Id, caller1ToggleValue, "toggle");
+        }
+
+        int caller2Id = elevatorCaller.getFloor()*2;
+        int caller2OutputValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
+        int caller2ToggleValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
+
+        if(elevatorCaller.getLastCaller2OutputValue() != caller2OutputValue) {
+            System.out.println("SendIOControlBoxOutput Id: " + caller2Id + " Value: " + caller2OutputValue);
+            elevatorCaller.setLastCaller2OutputValue(caller2OutputValue);
+            sendCaller(caller2Id, caller2OutputValue, "output");
+        }
+        if(elevatorCaller.getLastCaller2ToggleValue() != caller2ToggleValue) {
+            System.out.println("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
+            elevatorCaller.setLastCaller2ToggleValue(caller2ToggleValue);
+            sendCaller(caller1Id, caller2ToggleValue, "toggle");
+        }
+    }
+
+    public void sendCaller(int callerId, int value, String command){
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(agvUrl + "/cmd=" + floor + "&Q" + cmd + "X"))  // TODO: fix
+                .uri(URI.create(agvUrl + "/caller=" + callerId + "&" + value + "&" + command))
                 .GET()
                 .timeout(timeout)
                 .build();
         try {
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            String webpageContent = response.body();
-            return webpageContent.trim().equals("OK");
-        } catch (IOException | InterruptedException ignored) {
-            return false;
-        }
-    }
-
-
-    public void sendCaller(int id, int value){
-        if(lastCallerStatus[id-1] != value) {
-            System.out.println("Id: " + id + "  Value: " + value);
-            lastCallerStatus[id-1] = value;
-            Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
-            HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create("http://192.168.0.100:20100/caller=" + id + "&" + value + "&output"))
-                    .uri(URI.create(agvUrl + "/caller=" + id + "&" + value + "&output"))
-                    .GET()
-                    .timeout(timeout)
-                    .build();
-            try {
-                HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -268,6 +327,38 @@ public class ElevatorManager {
         }
         return statusArray;
     }
+
+    private int convertToCaller1ValueByIOStatus(ElevatorCaller elevatorCaller, ElevatorCaller.IOStatus ioStatus){
+        int value = 0;
+        if (elevatorCaller.getGreenLight() == ioStatus) {
+            value += 1;
+        }
+        if (elevatorCaller.getYellowLight() == ioStatus) {
+            value += 2;
+        }
+        if (elevatorCaller.getRedLight() == ioStatus) {
+            value += 4;
+        }
+        if (elevatorCaller.getIBuzz() == ioStatus) {
+            value += 8;
+        }
+        return value;
+    }
+
+    private int convertToCaller2ValueByIOStatus(ElevatorCaller elevatorCaller, ElevatorCaller.IOStatus ioStatus){
+        int value = 0;
+        if (ioStatus == ElevatorCaller.IOStatus.TOGGLE) {
+            if (elevatorCaller.isDoCallElevator()) {
+                value += 1;
+            }
+        } else if (ioStatus == ElevatorCaller.IOStatus.ON) {
+            if (elevatorCaller.isICallButton()) {
+                value += 2;
+            }
+        }
+        return value;
+    }
+
 
 
 }

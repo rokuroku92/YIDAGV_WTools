@@ -8,18 +8,15 @@ import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.elevator.ElevatorPermission;
 import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.model.NowTaskList;
-import com.yid.agv.model.Station;
 import com.yid.agv.model.TaskDetail;
 import com.yid.agv.repository.NowTaskListDao;
 import com.yid.agv.repository.Phase;
 import com.yid.agv.repository.TaskDetailDao;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ProcessTaskList {
@@ -63,13 +60,13 @@ public class ProcessTaskList {
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
                 if(elevatorManager.acquireElevatorPermission()){  // check elevator permission
-                    elevatorManager.controlElevatorDoor(1, true);
+                    elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.CALL_ELEVATOR);
                     taskListManager.setTaskListProgress(nowTaskList, 1);
                 }
             }
             case CALL_ELEVATOR -> {
-                if(elevatorManager.getIOpenDoor()){
+                if(elevatorManager.iOpenDoorByFloor(2)){
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#1")) {
                             AGVQTask task = new AGVQTask();
@@ -95,13 +92,12 @@ public class ProcessTaskList {
             }
             case FIRST_STAGE_1F -> {
                 if(agvManager.getAgv(1).getTask().getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)){
-                    elevatorManager.controlElevatorDoor(1, false);
-                    elevatorManager.controlElevatorDoor(3, true);
+                    elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
             }
             case ELEVATOR_TRANSFER -> {
-                if(elevatorManager.getIOpenDoor()){
+                if(elevatorManager.iOpenDoorByFloor(4)){
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#3") && taskDetail.getStart().startsWith("E-")) {
                             AGVQTask task = new AGVQTask();
@@ -126,10 +122,10 @@ public class ProcessTaskList {
                 }
             }
             case SECOND_STAGE_3F -> {
-                if(agvTaskManager.isEmpty(3)
+                if (agvTaskManager.isEmpty(3)
                         && agvManager.getAgv(3).getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION
-                        && !agvManager.iAgvInElevator(3)){
-                    elevatorManager.controlElevatorDoor(3, false);
+                        && !agvManager.iAgvInElevator(3)) {
+                    elevatorManager.controlElevatorTO(null);
                     elevatorManager.resetElevatorPermission();  // unlock elevator permission
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#3") && taskDetail.getStart().startsWith("3-T-")) {
@@ -150,7 +146,8 @@ public class ProcessTaskList {
                 }
             }
             case THIRD_STAGE_3F -> {
-                if(agvTaskManager.isEmpty(3) && agvManager.getAgv(3).getTask() == null){
+                if(agvTaskManager.isEmpty(3) &&
+                        (agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB"))){
                     taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                 }
             }
@@ -162,13 +159,13 @@ public class ProcessTaskList {
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
                 if(elevatorManager.acquireElevatorPermission()){  // check elevator permission
-                    elevatorManager.controlElevatorDoor(3, true);
+                    elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.CALL_ELEVATOR);
                     taskListManager.setTaskListProgress(nowTaskList, 1);
                 }
             }
             case CALL_ELEVATOR -> {
-                if(elevatorManager.getIOpenDoor()){
+                if(elevatorManager.iOpenDoorByFloor(4)){
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#3")) {
                             AGVQTask task = new AGVQTask();
@@ -193,14 +190,14 @@ public class ProcessTaskList {
                 }
             }
             case FIRST_STAGE_3F -> {
-                if(agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(3)){
-                    elevatorManager.controlElevatorDoor(3, false);
-                    elevatorManager.controlElevatorDoor(1, true);
+                if((agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB"))
+                        && !agvManager.iAgvInElevator(3)) {
+                    elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
             }
             case ELEVATOR_TRANSFER -> {
-                if(elevatorManager.getIOpenDoor()){
+                if(elevatorManager.iOpenDoorByFloor(2)){
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#1") && taskDetail.getStart().startsWith("E-")) {
                             AGVQTask task = new AGVQTask();
@@ -225,15 +222,15 @@ public class ProcessTaskList {
                 }
             }
             case SECOND_STAGE_1F -> {
-                if(elevatorManager.getElevatorPermission() == ElevatorPermission.SYSTEM){
+                if(elevatorManager.getElevatorPermission() == ElevatorPermission.SYSTEM) {
                     if(agvTaskManager.isEmpty(1)
                             && agvManager.getAgv(1).getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION
                             && !agvManager.iAgvInElevator(1)){
-                        elevatorManager.controlElevatorDoor(1, false);
+                        elevatorManager.controlElevatorTO(null);
                         elevatorManager.resetElevatorPermission();  // unlock elevator permission
                     }
                 } else {
-                    if(agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB")){
+                    if(agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB")){
                         taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                     }
                 }
@@ -246,7 +243,7 @@ public class ProcessTaskList {
     private void handleNETask(NowTaskList nowTaskList, List<TaskDetail> taskDetails, int taskProcessId){
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
-                if (agvManager.getAgv(2).getStatus() == AGV.Status.ONLINE){
+                if (agvManager.getAgv(2).getStatus() == AGV.Status.ONLINE) {
                     taskListManager.setTaskListProgress(nowTaskList, 1);
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#2")) {
@@ -267,7 +264,7 @@ public class ProcessTaskList {
                 }
             }
             case TRANSFER -> {
-                if (agvTaskManager.isEmpty(2) && agvManager.getAgv(2).getTask() == null){
+                if (agvTaskManager.isEmpty(2) && agvManager.getAgv(2).getTask() == null) {
                     taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                 }
             }

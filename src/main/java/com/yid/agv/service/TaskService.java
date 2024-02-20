@@ -75,7 +75,6 @@ public class TaskService {
 //    public Collection<AGVQTask> getTaskQueue(){
 //        return taskQueue.getTaskQueueCopy();
 //    }
-//
     public List<NowTaskListResponse> queryNowTaskLists(){
         return nowTaskListDao.queryNowTaskListsResult();
     }
@@ -152,7 +151,7 @@ public class TaskService {
         switch (taskListRequest.getMode()){  // 1: 1F->3F | 2: 2F->2F | 3: 3F->1F
             case 1 -> {
                 switch (taskListRequest.getTerminal()) {
-                    case "A", "B", "C", "D" -> {
+                    case "A" -> {
                         String area = "3-" + taskListRequest.getTerminal();
                         List<Grid> availableGrids = gridManager.getAvailableGrids(area);
 
@@ -165,23 +164,54 @@ public class TaskService {
                         for (int i = 0; i < taskSize; i++) {
                             taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_1, ++step,
                                     Integer.toString(gridManager.getGirdStationId(taskListRequest.getTasks().get(i).getStartGrid())),
-                                    Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(taskSize-i)))), TaskDetailDao.Mode.DEFAULT,
-                                    formattedDateTime);  // TODO: wait confirm
+                                    Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
+                                    formattedDateTime);
                             gridManager.setGridStatus(taskListRequest.getTasks().get(i).getStartGrid(), Grid.Status.BOOKED);
                         }
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.ELEVATOR_TRANSPORT, formattedDateTime);
-                        for (int i = 1; i <= taskSize; i++) {
+                        for (int i = taskSize, index=0; i > 0; i--, index++) {
+                            gridManager.setGridStatus(availableGrids.get(index).getGridName(), Grid.Status.BOOKED);
                             taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
                                     Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i)))),
-                                    Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(i)))), TaskDetailDao.Mode.DEFAULT,
-                                    formattedDateTime);  // TODO: wait confirm
+                                    Integer.toString(availableGrids.get(index).getId()), TaskDetailDao.Mode.DEFAULT,
+                                    formattedDateTime);
+                            insertIntoDB(taskListRequest, taskSize-1, availableGrids, formattedDateTime, requestObjectData);
+                        }
+
+                        taskListDao.insertTaskList(taskNumber, formattedDateTime, step);
+                        nowTaskListDao.insertNowTaskList(taskNumber, step);
+                        return "成功發送！ 任務號碼： ".concat(taskNumber);
+                    }
+                    case "B", "C", "D" -> {
+                        String area = "3-" + taskListRequest.getTerminal();
+                        List<Grid> availableGrids = gridManager.getAvailableGrids(area);
+
+                        if(availableGrids.size() < taskSize){
+                            return "終點區域格位已滿";
+                        }
+
+                        String taskNumber = "#YE" + getPureTaskNumber();
+                        taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.CALL_ELEVATOR, formattedDateTime);
+                        for (int i = 0; i < taskSize; i++) {
+                            taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_1, ++step,
+                                    Integer.toString(gridManager.getGirdStationId(taskListRequest.getTasks().get(i).getStartGrid())),
+                                    Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
+                                    formattedDateTime);
+                            gridManager.setGridStatus(taskListRequest.getTasks().get(i).getStartGrid(), Grid.Status.BOOKED);
+                        }
+                        taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.ELEVATOR_TRANSPORT, formattedDateTime);
+                        for (int i = 0; i < taskSize; i++) {
+                            taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
+                                    Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(taskSize-i)))),
+                                    Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
+                                    formattedDateTime);
                         }
                         for (int i = taskSize, index=0; i > 0; i--, index++) {
                             gridManager.setGridStatus(availableGrids.get(index).getGridName(), Grid.Status.BOOKED);
                             taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
                                     Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(i)))),
                                     Integer.toString(availableGrids.get(index).getId()), TaskDetailDao.Mode.DEFAULT,
-                                    formattedDateTime);  // TODO: wait confirm
+                                    formattedDateTime);
                             insertIntoDB(taskListRequest, index, availableGrids, formattedDateTime, requestObjectData);
                         }
 
@@ -208,7 +238,7 @@ public class TaskService {
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_2, ++step,
                                 Integer.toString(gridManager.getGirdStationId(taskListRequest.getTasks().get(i).getStartGrid())),
                                 Integer.toString(availableGrids.get(i).getId()), TaskDetailDao.Mode.DEFAULT,
-                                formattedDateTime);  // TODO: wait confirm
+                                formattedDateTime);
                         gridManager.setGridStatus(taskListRequest.getTasks().get(i).getStartGrid(), Grid.Status.BOOKED);
                         gridManager.setGridStatus(availableGrids.get(i).getGridName(), Grid.Status.BOOKED);
                     }
@@ -231,13 +261,19 @@ public class TaskService {
                     }
 
                     String taskNumber = "#RE" + getPureTaskNumber();
-                    taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.CALL_ELEVATOR, formattedDateTime);
                     for (int i = 0; i < taskSize; i++) {
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
                                 Integer.toString(gridManager.getGirdStationId(taskListRequest.getTasks().get(i).getStartGrid())),
-                                Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
-                                formattedDateTime);  // TODO: wait confirm
+                                Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
+                                formattedDateTime);
                         gridManager.setGridStatus(taskListRequest.getTasks().get(i).getStartGrid(), Grid.Status.BOOKED);
+                    }
+                    taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.CALL_ELEVATOR, formattedDateTime);
+                    for (int i = 0; i < taskSize; i++) {
+                        taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_3, ++step,
+                                Integer.toString(gridManager.getGirdStationId("3-T-".concat(Integer.toString(taskSize-i)))),
+                                Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i+1)))), TaskDetailDao.Mode.DEFAULT,
+                                formattedDateTime);
                     }
                     taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.ELEVATOR, ++step, TaskDetailDao.Mode.ELEVATOR_TRANSPORT, formattedDateTime);
                     for (int i = taskSize, index=0; i > 0; i--, index++) {
@@ -245,7 +281,7 @@ public class TaskService {
                         taskDetailDao.insertTaskDetail(taskNumber, TaskDetailDao.Title.AMR_1, ++step,
                                 Integer.toString(gridManager.getGirdStationId("E-".concat(Integer.toString(i)))),
                                 Integer.toString(availableGrids.get(index).getId()), TaskDetailDao.Mode.DEFAULT,
-                                formattedDateTime);  // TODO: wait confirm
+                                formattedDateTime);
                         insertIntoDB(taskListRequest, index, availableGrids, formattedDateTime, requestObjectData);
                     }
 
@@ -314,23 +350,18 @@ public class TaskService {
         List<String> workNumbers = taskListRequest.getTasks().get(index).getWorkNumber();
         switch (workNumbers.size()){
             case 0 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime);
-            case 1 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
+            case 1 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(0).getObjectNumber(),
                         taskListRequest.getTasks().get(index).getLineCode().get(0));
-            }
-            case 2 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
+            case 2 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),
                         requestObjectData.get(index).get(0).getObjectNumber(),
                         requestObjectData.get(index).get(1).getObjectNumber(),
                         taskListRequest.getTasks().get(index).getLineCode().get(0),
                         taskListRequest.getTasks().get(index).getLineCode().get(1));
-            }
-            case 3 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
+            case 3 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), workNumbers.get(2),
                         requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),
@@ -341,9 +372,7 @@ public class TaskService {
                         taskListRequest.getTasks().get(index).getLineCode().get(0),
                         taskListRequest.getTasks().get(index).getLineCode().get(1),
                         taskListRequest.getTasks().get(index).getLineCode().get(2));
-            }
-            case 4 -> {
-                gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
+            case 4 -> gridListDao.updateWorkOrder(availableGrids.get(index).getId(), formattedDateTime,
                         workNumbers.get(0), workNumbers.get(1), workNumbers.get(2), workNumbers.get(3),
                         requestObjectData.get(index).get(0).getObjectName(),
                         requestObjectData.get(index).get(1).getObjectName(),
@@ -357,7 +386,6 @@ public class TaskService {
                         taskListRequest.getTasks().get(index).getLineCode().get(1),
                         taskListRequest.getTasks().get(index).getLineCode().get(2),
                         taskListRequest.getTasks().get(index).getLineCode().get(3));
-            }
         }
     }
 }

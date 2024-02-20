@@ -1,7 +1,10 @@
 package com.yid.agv.backend.elevator;
 
+import com.yid.agv.backend.ProcessAGVTask;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,7 @@ import java.util.Objects;
 
 @Component
 public class ElevatorSocketBox {
+    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     public enum ElevatorBoxCommand{
         ASK_STATUS("QQQE0010E0000XXX"), OPEN_BUZZER("QQQE0010E0042XXX"), CLOSE_BUZZER("QQQE0010E0002XXX"), CLOSE_BUTTON("QQQE0010E0021XXX");
         private final String command;
@@ -63,10 +67,10 @@ public class ElevatorSocketBox {
                     String serverMessage = readInputStream(reader);
                     if (serverMessage == null) {
                         // Server has closed the connection
-                        System.out.println("Server has closed the connection, trying to reconnect...");
+                        log.warn("Server has closed the connection, trying to reconnect...");
                         reStartThread();
                     } else {
-//                        System.out.println("ServerMessage: " + serverMessage);
+//                        log.info("ServerMessage: " + serverMessage);
                         failSocketCount--;
                         if(serverMessage.matches("^QQQ([A-Z]\\d{4})XXX$")){
                             // TODO: update status
@@ -84,7 +88,7 @@ public class ElevatorSocketBox {
                         }
                     }
                 }
-                System.out.println("ReceiveThread stop.");
+                log.info("ReceiveThread stop.");
             } catch (SocketException s) {
                 reStartThread();
             } catch (IOException e) {
@@ -116,12 +120,12 @@ public class ElevatorSocketBox {
     @PreDestroy
     public void cleanup() {
         // 在應用程式終止時執行清理工作
-        System.out.println("Closing Socket...");
+        log.info("Closing Socket...");
         running = false;  // 停止所有執行緒
         try {
-            System.out.println("Closing receiveThread...");
+            log.info("Closing receiveThread...");
             receiveThread.interrupt();
-            System.out.println("Closing sendThread...");
+            log.info("Closing sendThread...");
             sendThread.interrupt();
             sendThread.join();
             if (socket != null && !socket.isClosed()) {
@@ -137,7 +141,7 @@ public class ElevatorSocketBox {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("All SocketThread has been terminated!");
+        log.info("All SocketThread has been terminated!");
     }
 
     private void connectToServer() {
@@ -159,9 +163,9 @@ public class ElevatorSocketBox {
 
             failSocketCount = 0;
             ElevatorBoxConnected = true;
-            System.out.println("Connected to ElevatorBox!");
+            log.info("Connected to ElevatorBox!");
         } catch (IOException e) {
-            System.out.println("Failed to connect to server, try again later...");
+            log.warn("Failed to connect to server, try again later...");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
@@ -173,7 +177,7 @@ public class ElevatorSocketBox {
 
     private void reStartThread() {
         if(running){
-            System.out.println("Do restart thread...");
+            log.info("Do restart thread...");
             cleanup();
             running = true;
             if(!socket.isClosed()){
@@ -212,7 +216,7 @@ public class ElevatorSocketBox {
     public synchronized void sendCommandToElevatorBox(ElevatorBoxCommand elevatorBoxCommand){
         if (socket != null && !socket.isClosed()) {
             if(elevatorBoxCommand != ElevatorBoxCommand.ASK_STATUS){
-                System.out.println("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
+                log.info("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
             }
             writer.println(elevatorBoxCommand.getCommand());
             failSocketCount++;

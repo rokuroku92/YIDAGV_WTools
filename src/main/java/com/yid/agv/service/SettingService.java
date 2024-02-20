@@ -37,6 +37,8 @@ public class SettingService {
                 return "AgvLowBatteryDuration參數為空值";
             } else if(settingRequest.getAgvObstacleDuration() == null){
                 return "AgvObstacleDuration參數為空值";
+            } else if(settingRequest.getAgvTaskExceptionOption() == null){
+                return "AgvTaskExceptionOption參數為空值";
             } else if(settingRequest.getHttpTimeout() == null){
                 return "HttpTimeout參數為空值";
             } else if(settingRequest.getHttpMaxRetry() == null){
@@ -70,6 +72,7 @@ public class SettingService {
         updateYamlMap(yamlMap, "agv.low_battery", settingRequest.getAgvLowBattery());
         updateYamlMap(yamlMap, "agv.low_battery_duration", settingRequest.getAgvLowBatteryDuration());
         updateYamlMap(yamlMap, "agv.obstacle_duration", settingRequest.getAgvObstacleDuration());
+        updateYamlMap(yamlMap, "agv.task_exception_option", settingRequest.getAgvTaskExceptionOption());
         updateYamlMap(yamlMap, "elevator.ip", settingRequest.getElevatorIp());
         updateYamlMap(yamlMap, "elevator.port", settingRequest.getElevatorPort());
         updateYamlMap(yamlMap, "elevator.timeout", settingRequest.getElevatorTimeout());
