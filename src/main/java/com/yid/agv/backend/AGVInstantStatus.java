@@ -429,7 +429,7 @@ public class AGVInstantStatus {
         } catch (IOException | InterruptedException e) {
 //            e.printStackTrace();
             if(iCon){
-                log.warn("AGV 控制系統未連線");
+                log.warn("Traffic Control is not connected");
                 notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.OFFLINE);
                 iCon=false;
             }
