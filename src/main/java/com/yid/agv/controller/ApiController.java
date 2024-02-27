@@ -69,15 +69,14 @@ public class ApiController {
         return gson.toJson(taskService.queryAllTaskLists());
     }
 
-    @GetMapping(value = "/elevator/iElevatorObstacleAlarm", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getIAlarm(){
-        return elevatorService.getElevatorObstacleAlarm() ? "1" : "0";
+    @GetMapping(value = "/elevator/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String getElevatorStatus() {
+        return gson.toJson(elevatorService.getElevatorStatus());
     }
-    @GetMapping(value = "/elevator/personCount", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String getElevatorPersonCount(){
-        return Integer.toString(elevatorService.getElevatorPersonCount());
+    @GetMapping(value = "/elevator/cancelPersonOccupied", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String cancelPersonOccupied(){
+        return elevatorService.cancelPersonOccupied() ? "OK" : "FAIL";
     }
-
     @GetMapping(value = "/homepage/notifications", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getNotificationsL(){
         return gson.toJson(homePageService.queryNotificationsL());

@@ -65,9 +65,7 @@ public class AGVInstantStatus {
     private GridManager stationManager;
     @Autowired
     private HomePageService homePageService;
-
     private Map<Integer, Integer> stationIdTagMap;
-
 
     @PostConstruct
     public void initialize() {
@@ -141,7 +139,6 @@ public class AGVInstantStatus {
         }
     }
 
-
     private void updateAGVOnlineStatus(AGV agv, String[] data){
         // data[1] 位置
         agv.setPlace(data[1].trim());
@@ -188,8 +185,6 @@ public class AGVInstantStatus {
                 homePageService.setIAlarm(1);
             }
         }
-
-
 
     }
 

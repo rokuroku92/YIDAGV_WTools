@@ -21,10 +21,10 @@
 .title.page{
     font-size: 2em;
 }
-.settingDiv{
+.aboutDiv{
     overflow: auto;
-    min-height: 30em;
-    max-height: 55em;
+    /* min-height: 30em;
+    max-height: 55em; */
     margin-left: 1.6em;
     margin-right: 1em;
     margin-top: 0.5em;
@@ -33,14 +33,6 @@
     padding: 10px;
     padding-left: 0px;
     padding-right: 0px;
-    background-color: #3E3A39;
-}
-.setting-label{
-    display: flex;
-    justify-content: left;
     color: #FFFFFF;
-}
-.btn-success{
-    font-family: NewFont, sans-serif;
-    font-size: 2em;
+    background-color: #3E3A39;
 }

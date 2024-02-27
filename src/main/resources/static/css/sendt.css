@@ -52,7 +52,7 @@
     left: 50%; /* 水平居中 */
     transform: translate(-50%, -50%); /* 居中对齐 */
     font-size: 6em; /* 字体大小 */
-    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
 .grid-btns #btns2::before{
@@ -62,7 +62,7 @@
     left: 50%; /* 水平居中 */
     transform: translate(-50%, -50%); /* 居中对齐 */
     font-size: 6em; /* 字体大小 */
-    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
 .grid-btns #btns3::before{
@@ -72,7 +72,7 @@
     left: 50%; /* 水平居中 */
     transform: translate(-50%, -50%); /* 居中对齐 */
     font-size: 6em; /* 字体大小 */
-    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
 .grid-btns #btns4::before{
@@ -82,7 +82,7 @@
     left: 50%; /* 水平居中 */
     transform: translate(-50%, -50%); /* 居中对齐 */
     font-size: 6em; /* 字体大小 */
-    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
 .grid-btns #btns9::before{
@@ -92,12 +92,12 @@
     left: 50%; /* 水平居中 */
     transform: translate(-50%, -50%); /* 居中对齐 */
     font-size: 4em; /* 字体大小 */
-    color: rgba(0, 0, 0, 0.4); /* 水印文本颜色，这里使用了半透明黑色 */
+    color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
 .grid-btn{
     background-color: #cab8b2;
-    border: 1px black solid;
+    border: 1px rgba(0, 0, 0) solid;
     height: 4em;
     width: 4em;
     margin: 0px;
@@ -123,6 +123,8 @@
     width: 4em;
 }
 .grid-btn.terminal{
+    border: 1px rgba(0, 0, 0, 0.2) solid;
+    color:rgba(0, 0, 0, 0.4);
     height: 3em;
     width: 3em;
 }

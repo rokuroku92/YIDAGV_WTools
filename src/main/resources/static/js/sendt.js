@@ -268,7 +268,7 @@ function bindBeforeContent() {
             gridTables.forEach(function(otherTable) {
                 if (otherTable.id !== table.id) {
                     var style = document.createElement('style');
-                    style.innerHTML = '#' + otherTable.id + '::before { color: rgba(0, 0, 0, 0.4)!important; }';
+                    style.innerHTML = '#' + otherTable.id + '::before { color: rgba(0, 0, 0, 0.7)!important; }';
                     otherTable.style='border: 0px;';
                     otherTable.appendChild(style);
                 }

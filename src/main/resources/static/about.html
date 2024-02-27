@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>元創智動系統 | 歷史紀錄</title>
+    <title>元創智動系統 | 關於我們</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <base id="Base" />
-    <script defer>
+    <script>
         var baseUrl;
-        if (window.location.port != "8080") {
+        if (window.location.port !== "8080") {
             // Live Server 环境
             console.log('Running on Live Server');
             baseUrl = "http://"+window.location.hostname+":8080/YIDAGV";
-            // var baseHref = document.createElement("base");
-            var baseHref = document.getElementById("Base");
+            var baseHref = document.createElement("base");
             baseHref.href = window.location.origin + "/";
             document.head.appendChild(baseHref);
-
+    
             document.addEventListener("DOMContentLoaded", function() {
                 var _a_ = document.querySelectorAll("a");
                 _a_.forEach(a => {
@@ -27,27 +25,20 @@
             // Spring Boot 环境 window.location.href.startsWith('http://localhost:8080/YIDAGV')
             console.log('Running on Spring Boot');
             baseUrl = window.location.origin + "/YIDAGV";
-            // var baseHref = document.createElement("base");
-            var baseHref = document.getElementById("Base");
+            var baseHref = document.createElement("base");
+            // var baseHref = document.getElementById("Base");
             baseHref.href = "/YIDAGV/";
             document.head.appendChild(baseHref);
         }
-
     </script>
     <!-- BootStrap框架 -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- YID CSS -->
     <link rel="stylesheet" href="css/yid.css">
-    <link rel="stylesheet" href="css/history.css">
+    <link rel="stylesheet" href="css/about.css">
+
     <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-table.min.js"></script>
-    <script src="js/chart.js@4.3.0"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <!-- <script type="text/javascript" src="js/yiddemoroomhistory.js"></script> -->
-    <script type="text/javascript" src="js/history.js"></script>
-    <script type="text/javascript" src="js/yid.js"></script>
 
 </head>
 <body>
@@ -98,12 +89,12 @@
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
             <li>
                 <a href="agv/send" class="nav-link py-3">
-                    <svg class="bi" width="24" height="24" role="img"><use xlink:href="#send"/></svg>
+                  <svg class="bi" width="24" height="24" role="img"><use xlink:href="#send"/></svg>
                 </a>
-            </li>
+              </li>
             <li>
                 <a href="agv/grid" class="nav-link py-3">
-                  <svg class="bi" width="24" height="24" role="img"><use xlink:href="#return"/></svg>
+                    <svg class="bi" width="24" height="24" role="img"><use xlink:href="#return"/></svg>
                 </a>
             </li>
             <li>
@@ -117,8 +108,8 @@
                 </a>
             </li>
             <li>
-                <a href="agv/history" class="nav-link py-3 active">
-                    <svg class="bi" width="24" height="24" style="fill: #2F2725" role="img"><use xlink:href="#list"/></svg>
+                <a href="agv/history" class="nav-link py-3">
+                    <svg class="bi" width="24" height="24" role="img"><use xlink:href="#list"/></svg>
                 </a>
             </li>
             <li>
@@ -127,55 +118,41 @@
                 </a>
             </li>
             <li>
-                <a href="agv/about" class="nav-link py-3">
-                    <svg class="bi" width="24" height="24" role="img"><use xlink:href="#about"/></svg>
+                <a href="agv/about" class="nav-link py-3 active">
+                    <svg class="bi" width="24" height="24" style="fill: #2F2725" role="img"><use xlink:href="#about"/></svg>
                 </a>
             </li>
         </ul>
-
-        <div id="elevatorDiv" class="elevator">
-            <div class="nav-link py-3">
-              <svg width="24" height="24" role="img"><use xlink:href="#elevator"/></svg>
-            </div>
-            <p id="elevatorTime" style="color: white; display: none;">0m0s</p>
-        </div>
     </div>
 
     <div class="container">
         <div class="row">
             <div class="col Title">
-                <label class="title page">History</label>
+                <label class="title page">About us</label>
             </div>
         </div>
 
-        <!-- <div class="row" style="height: 90%;padding:1.6em;padding-top: 0px;">
-            <div class="col" style="border-radius: 0.6rem!important;background-color: #5C5C5C;margin-right: 1.6em;">
-
-            </div>
-            <div class="col">
-
-            </div>
-        </div> -->
-
-        <div class="row" style="height: 90%;padding:1.6em;padding-top: 0px;">
+        <div class="row" style="padding:1.6em;padding-top: 0px;">
             <div class="col">
                 <div class="row">
-                    <div class="col Title">
-                        <label class="title">ALL Task Queue</label>
+                    <div class="col aboutDiv">
+                        <div class="row p-4">
+                            <div class="col-lg-3 col-md-0 col-sm-0"></div>
+                            <div class="col-lg-3 col-md-6 col-sm-6 center">
+                                <img class="img-fluid" style="width: 50%;" src="image/innovati_logo.jpg" alt="image error">
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-6">
+                                <h3>利基應用科技股份有限公司</h3>
+                                <p>新竹市經國路二段290號2樓</p>
+                                <p>電話: 886-3-5277539 </p>
+                                <p>傳真: 886-3-5278645</p>
+                                <p>其他的支援資訊support@innovati.com.tw</p>
+                                <p>對本公司有其他任何建議service@innovati.com.tw</p>
+                                <!-- <p>購買本公司產品或詢問其規格sales@innovati.com.tw</p> -->
+                            </div>
+                            <div class="col-lg-3 col-md-0 col-sm-0"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div id="taskQueue" class="col taskQueue"></div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <div class="col Title">
-                        <label class="title">ALL Notification</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div id="notification" class="col"></div>
                 </div>
             </div>
         </div>

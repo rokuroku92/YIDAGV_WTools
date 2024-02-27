@@ -1,6 +1,7 @@
 package com.yid.agv.backend.elevator;
 
 import com.yid.agv.backend.ProcessAGVTask;
+import com.yid.agv.repository.NotificationDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -52,15 +53,16 @@ public class ElevatorSocketBox {
     private final ElevatorBoxCommand defaultCommand = ElevatorBoxCommand.ASK_STATUS;
     private int failSocketCount = 0;
 
-//    @PostConstruct
-    public void __init() {
-        new Thread(this::init).start();
+    @PostConstruct
+    public void initialize() {
+        new Thread(this::elevatorSocketBoxMain).start();
     }
 
-    public void init(){
+    public void elevatorSocketBoxMain() {
         connectToServer();
         // 啟動接收訊息的執行緒
         receiveThread = new Thread(() -> {
+            log.info("receiveThread");
             try {
                 while (running) {
                     // 從伺服器接收訊息
@@ -101,6 +103,7 @@ public class ElevatorSocketBox {
 
         // 啟動發送訊息的執行緒
         sendThread = new Thread(() -> {
+            log.info("sendThread");
             try {
                 while (running) {
                     sendCommandToElevatorBox(defaultCommand);
@@ -123,11 +126,15 @@ public class ElevatorSocketBox {
         log.info("Closing Socket...");
         running = false;  // 停止所有執行緒
         try {
-            log.info("Closing receiveThread...");
-            receiveThread.interrupt();
-            log.info("Closing sendThread...");
-            sendThread.interrupt();
-            sendThread.join();
+            if (receiveThread != null) {
+                log.info("Closing receiveThread...");
+                receiveThread.interrupt();
+                log.info("Closing sendThread...");
+                sendThread.interrupt();
+                sendThread.join();
+            } else {
+                log.warn("Unsuccessful connection to ElevatorSocketBox");
+            }
             if (socket != null && !socket.isClosed()) {
                 socket.close();  // 關閉 Socket
             }
@@ -144,6 +151,7 @@ public class ElevatorSocketBox {
         log.info("All SocketThread has been terminated!");
     }
 
+    private boolean iCon = true;
     private void connectToServer() {
         try {
             if (socket != null && !socket.isClosed()) {
@@ -164,8 +172,12 @@ public class ElevatorSocketBox {
             failSocketCount = 0;
             ElevatorBoxConnected = true;
             log.info("Connected to ElevatorBox!");
+            iCon=true;
         } catch (IOException e) {
-            log.warn("Failed to connect to server, try again later...");
+            if(iCon){
+                log.warn("Failed to connect to ElevatorSocketBox, try again later...");
+                iCon=false;
+            }
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
@@ -181,7 +193,7 @@ public class ElevatorSocketBox {
             cleanup();
             running = true;
             if(!socket.isClosed()){
-                init();
+                elevatorSocketBoxMain();
             }
         }
     }

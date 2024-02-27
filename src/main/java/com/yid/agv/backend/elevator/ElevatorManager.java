@@ -1,6 +1,9 @@
 package com.yid.agv.backend.elevator;
 
+import com.yid.agv.backend.ProcessAGVTask;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class ElevatorManager {
+    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     @Value("${http.timeout}")
     private int HTTP_TIMEOUT;
     @Value("${agvControl.url}")
@@ -161,7 +165,7 @@ public class ElevatorManager {
         elevatorCaller.setGreenLight(optionalIOValue.filter(ioValue -> elevatorCaller.getGreenLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
         elevatorCaller.setYellowLight(optionalIOValue.filter(ioValue -> elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[1] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
         elevatorCaller.setRedLight(optionalIOValue.filter(ioValue -> elevatorCaller.getRedLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-        elevatorCaller.setIBuzz(optionalIOValue.map(ioValue -> ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setIBuzz(optionalIOValue.filter(ioValue -> elevatorCaller.getIBuzz() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
 
     }
     private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
@@ -169,11 +173,11 @@ public class ElevatorManager {
 
         Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
 
-        // 假設呼叫按鈕按下
         optionalIOValue.ifPresent(ioValue -> {
             // ioValue[0] 為 Button Trigger (真正呼叫電梯的I/O)
 
-            if (ioValue[1]) {
+            // 假設呼叫按鈕按下
+            if (ioValue[4]) {
                 elevatorCaller.setICallButton(true);
                 AtomicBoolean had = new AtomicBoolean(false);
                 callQueue.forEach(floor -> {
@@ -204,7 +208,7 @@ public class ElevatorManager {
     public boolean acquireElevatorPermission() {
         if (elevatorPermission == ElevatorPermission.SYSTEM){
             return true;
-        } else if (elevatorPermission == ElevatorPermission.PRE_PERSON || elevatorPermission == ElevatorPermission.PERSON || callQueue.size() > 0){
+        } else if (elevatorPermission != ElevatorPermission.FREE || callQueue.size() > 0){
             return false;
         } else if (elevatorSocketBox.isElevatorBoxScan()) {
             iAlarmObstacle = true;
@@ -275,31 +279,35 @@ public class ElevatorManager {
         int caller1ToggleValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
 
         if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue) {
-            System.out.println("SendIOControlBoxOutput Id: " + caller1Id + " Value: " + caller1OutputValue);
+            log.info("SendIOControlBoxOutput Id: " + caller1Id + " Value: " + caller1OutputValue);
             elevatorCaller.setLastCaller1OutputValue(caller1OutputValue);
             sendCaller(caller1Id, caller1OutputValue, "output");
         }
         if(elevatorCaller.getLastCaller1ToggleValue() != caller1ToggleValue) {
-            System.out.println("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
+            log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
             elevatorCaller.setLastCaller1ToggleValue(caller1ToggleValue);
             sendCaller(caller1Id, caller1ToggleValue, "toggle");
         }
 
         int caller2Id = elevatorCaller.getFloor()*2;
-        int caller2OutputValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
+        int caller2OutputValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON); // callBTN clrcall
         int caller2ToggleValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
 
         if(elevatorCaller.getLastCaller2OutputValue() != caller2OutputValue) {
-            System.out.println("SendIOControlBoxOutput Id: " + caller2Id + " Value: " + caller2OutputValue);
+            log.info("SendIOControlBoxOutput Id: " + caller2Id + " Value: " + caller2OutputValue);
             elevatorCaller.setLastCaller2OutputValue(caller2OutputValue);
-            sendCaller(caller2Id, caller2OutputValue, "output");
+            if (caller2OutputValue == 0) {
+                sendCaller(caller2Id, 0, "clrcall");
+                log.info("clrcall");
+            }
         }
         if(elevatorCaller.getLastCaller2ToggleValue() != caller2ToggleValue) {
-            System.out.println("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
+            log.info("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
             elevatorCaller.setLastCaller2ToggleValue(caller2ToggleValue);
             sendCaller(caller1Id, caller2ToggleValue, "toggle");
         }
     }
+
 
     public void sendCaller(int callerId, int value, String command){
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
@@ -310,6 +318,7 @@ public class ElevatorManager {
                 .build();
         try {
             HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            Thread.sleep(500);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -353,7 +362,7 @@ public class ElevatorManager {
             }
         } else if (ioStatus == ElevatorCaller.IOStatus.ON) {
             if (elevatorCaller.isICallButton()) {
-                value += 2;
+                value += 16;
             }
         }
         return value;
