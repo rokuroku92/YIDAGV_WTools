@@ -123,7 +123,8 @@ public class GridListDaoImpl implements GridListDao {
     public boolean clearWorkOrder(int stationId){
         String sql = "UPDATE `grid_list` SET `work_number_1` = null, `work_number_2` = null, `work_number_3` = null, `work_number_4` = null, " +
                 "`object_name_1` = null, `object_name_2` = null, `object_name_3` = null, `object_name_4` = null, `object_number_1` = null, " +
-                "`object_number_2` = null, `object_number_3` = null, `object_number_4` = null, `create_time` = null WHERE `station_id` = ?";
+                "`object_number_2` = null, `object_number_3` = null, `object_number_4` = null, `line_code_1` = null, `line_code_2` = null, " +
+                "`line_code_3` = null, `line_code_4` = null, `create_time` = null WHERE `station_id` = ?";
 
         int rowsAffected = jdbcTemplate.update(sql, stationId);
         return (rowsAffected > 0);

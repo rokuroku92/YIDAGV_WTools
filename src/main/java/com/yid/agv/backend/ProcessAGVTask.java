@@ -85,6 +85,11 @@ public class ProcessAGVTask {
             if (agv.getId() == 2) {
                 List<NowTaskList> taskLists = nowTaskListDao.queryNowTaskListsByProcessId(2);
                 if (taskLists.size() > 0) hasNextTaskList = true;
+            } else if (agv.getId() == 3) {
+                NowTaskList nowTaskList = taskListManager.getNowTaskListByTaskProcessId(1);
+                if (nowTaskList.getTaskNumber().startsWith("#RE") && nowTaskList.getPhase() == Phase.FIRST_STAGE_3F || nowTaskList.getPhase() == Phase.CALL_ELEVATOR) {
+                    hasNextTaskList = true;
+                }
             }
 
             if(agv.isILowBattery() && !iAtStandbyStation){  // 低電量時，派遣回待命點
@@ -260,6 +265,8 @@ public class ProcessAGVTask {
                     if (taskTerminalStation.startsWith("E-")){  // 3F->1F
                         gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);  // Booked to Free
                     } else if (!taskStartStation.startsWith("E-")){
+                        gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
+                    } else if (taskTerminalStation.startsWith("3-A-")) {
                         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                     }
                 }

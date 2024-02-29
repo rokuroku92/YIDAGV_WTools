@@ -87,13 +87,16 @@ public class ElevatorManager {
         });
 
         elevatorCallerMap.values().forEach(elevatorCaller -> {
-            elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.OFF);
+            elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.ON);
             elevatorCaller.setRedLight(ElevatorCaller.IOStatus.OFF);
         });
         switch (elevatorPermission) {
             case SYSTEM -> {
                 elevatorPersonCount = 0;
-                elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setRedLight(ElevatorCaller.IOStatus.ON));
+                elevatorCallerMap.values().forEach(elevatorCaller -> {
+                    elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.OFF);
+                    elevatorCaller.setRedLight(ElevatorCaller.IOStatus.ON);
+                });
             }
             case PRE_PERSON -> {
                 Integer floor = callQueue.peek();
@@ -132,8 +135,6 @@ public class ElevatorManager {
                         controlElevatorTO(floor);
                         elevatorPermission = ElevatorPermission.PRE_PERSON;
                     }
-                } else {
-                    elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.ON));
                 }
             }
         }
@@ -159,13 +160,13 @@ public class ElevatorManager {
     }
     private void updateCaller1OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
         elevatorCaller.setICaller1Offline(false);
-
-        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
-
-        elevatorCaller.setGreenLight(optionalIOValue.filter(ioValue -> elevatorCaller.getGreenLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-        elevatorCaller.setYellowLight(optionalIOValue.filter(ioValue -> elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[1] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-        elevatorCaller.setRedLight(optionalIOValue.filter(ioValue -> elevatorCaller.getRedLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-        elevatorCaller.setIBuzz(optionalIOValue.filter(ioValue -> elevatorCaller.getIBuzz() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setInstantIOValue(Integer.parseInt(data[1]));
+//        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
+//
+//        elevatorCaller.setGreenLight(optionalIOValue.filter(ioValue -> elevatorCaller.getGreenLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+//        elevatorCaller.setYellowLight(optionalIOValue.filter(ioValue -> elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[1] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+//        elevatorCaller.setRedLight(optionalIOValue.filter(ioValue -> elevatorCaller.getRedLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+//        elevatorCaller.setIBuzz(optionalIOValue.filter(ioValue -> elevatorCaller.getIBuzz() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
 
     }
     private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
@@ -263,7 +264,8 @@ public class ElevatorManager {
             elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setDoCallElevator(false));
         } else {
             elevatorCallerMap.values().forEach(elevatorCaller -> {
-                if (elevatorCaller.getFloor() == floor && !elevatorCaller.isDoCallElevator()) {
+//                if (elevatorCaller.getFloor() == floor && !elevatorCaller.isDoCallElevator()) {
+                if (elevatorCaller.getFloor() == floor) {
                     elevatorCaller.setDoCallElevator(true);
                     elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.ON);
                 } else {
@@ -278,15 +280,23 @@ public class ElevatorManager {
         int caller1OutputValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
         int caller1ToggleValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
 
-        if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue) {
+        int caller1InstantIOValue1 = elevatorCaller.getInstantIOValue();
+        int caller1InstantIOValue2 = caller1InstantIOValue1 - caller1ToggleValue;
+
+        if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue || (caller1OutputValue != caller1InstantIOValue1 && caller1OutputValue != caller1InstantIOValue2)) {
             log.info("SendIOControlBoxOutput Id: " + caller1Id + " Value: " + caller1OutputValue);
             elevatorCaller.setLastCaller1OutputValue(caller1OutputValue);
             sendCaller(caller1Id, caller1OutputValue, "output");
         }
         if(elevatorCaller.getLastCaller1ToggleValue() != caller1ToggleValue) {
-            log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
             elevatorCaller.setLastCaller1ToggleValue(caller1ToggleValue);
-            sendCaller(caller1Id, caller1ToggleValue, "toggle");
+            if (caller1ToggleValue == 0){
+                log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue + ", No send");
+            } else {
+                log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
+                sendCaller(caller1Id, caller1ToggleValue, "toggle");
+            }
+
         }
 
         int caller2Id = elevatorCaller.getFloor()*2;
@@ -318,7 +328,6 @@ public class ElevatorManager {
                 .build();
         try {
             HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            Thread.sleep(500);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

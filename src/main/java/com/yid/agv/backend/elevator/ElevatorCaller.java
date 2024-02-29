@@ -12,6 +12,7 @@ public class ElevatorCaller {
     private IOStatus yellowLight;
     private IOStatus greenLight;
     private IOStatus iBuzz;
+    private int instantIOValue;
     private boolean iOpenDoor;
     private boolean iCallButton;
     private boolean doCallElevator;

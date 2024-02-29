@@ -296,16 +296,16 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table-start" id="start">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="1-T-2" class="grid-btn start">2</td>
-                                                                        <td data-val="1-T-4" class="grid-btn start">4</td>
-                                                                        <td data-val="1-T-6" class="grid-btn start">6</td>
-                                                                        <td data-val="1-T-8" class="grid-btn start">8</td>
+                                                                        <td data-val="1-T-7" class="grid-btn start">7</td>
+                                                                        <td data-val="1-T-5" class="grid-btn start">5</td>
+                                                                        <td data-val="1-T-3" class="grid-btn start">3</td>
+                                                                        <td data-val="1-T-1" class="grid-btn start">1</td>
                                                                         </tr>
                                                                         <tr>
-                                                                        <td data-val="1-T-1" class="grid-btn start">1</td>
-                                                                        <td data-val="1-T-3" class="grid-btn start">3</td>
-                                                                        <td data-val="1-T-5" class="grid-btn start">5</td>
-                                                                        <td data-val="1-T-7" class="grid-btn start">7</td>
+                                                                        <td data-val="1-T-8" class="grid-btn start">8</td>
+                                                                        <td data-val="1-T-6" class="grid-btn start">6</td>
+                                                                        <td data-val="1-T-4" class="grid-btn start">4</td>
+                                                                        <td data-val="1-T-2" class="grid-btn start">2</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
@@ -506,20 +506,20 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table-start">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="3-R-1" class="grid-btn start">1</td>
-                                                                        <td data-val="3-R-2" class="grid-btn start">2</td>
-                                                                        <td data-val="3-R-3" class="grid-btn start">3</td>
-                                                                        <td data-val="3-R-4" class="grid-btn start">4</td>
+                                                                        <td data-val="3-R-8" class="grid-btn start">8</td>
+                                                                        <td data-val="3-R-7" class="grid-btn start">7</td>
+                                                                        <td data-val="3-R-6" class="grid-btn start">6</td>
+                                                                        <td data-val="3-R-5" class="grid-btn start">5</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
                                                                     <table class="grid-table-start">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="3-R-5" class="grid-btn start">5</td>
-                                                                        <td data-val="3-R-6" class="grid-btn start">6</td>
-                                                                        <td data-val="3-R-7" class="grid-btn start">7</td>
-                                                                        <td data-val="3-R-8" class="grid-btn start">8</td>
+                                                                        <td data-val="3-R-4" class="grid-btn start">4</td>
+                                                                        <td data-val="3-R-3" class="grid-btn start">3</td>
+                                                                        <td data-val="3-R-2" class="grid-btn start">2</td>
+                                                                        <td data-val="3-R-1" class="grid-btn start">1</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
