@@ -262,7 +262,7 @@ public class ProcessAGVTask {
                     gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                 }
                 case 3 -> {
-                    if (taskTerminalStation.startsWith("E-")){  // 3F->1F
+                    if (taskStartStation.startsWith("3-R-")){  // 3F->1F
                         gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);  // Booked to Free
                     } else if (!taskStartStation.startsWith("E-")){
                         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
