@@ -104,7 +104,12 @@ public class ElevatorManager {
                 if (elevatorCaller.isIOpenDoor()) {
                     if (!elevatorSocketBox.isElevatorBoxManual()) {
                         prePersonOpenDoorCount++;
+                        log.info("prePersonOpenDoorCount: " + prePersonOpenDoorCount);
+                        if(!elevatorSocketBox.isElevatorBoxBuzzer()){
+                            elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.OPEN_BUZZER);
+                        }
                         if(prePersonOpenDoorCount > prePersonOpenDoorDuration){
+                            elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
                             callQueue.poll();
                             elevatorCaller.setICallButton(false);
                             controlElevatorTO(null);
@@ -112,6 +117,7 @@ public class ElevatorManager {
                             prePersonOpenDoorCount = 0;
                         }
                     } else {
+                        elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
                         callQueue.poll();
                         elevatorCaller.setICallButton(false);
                         controlElevatorTO(null);
@@ -129,6 +135,9 @@ public class ElevatorManager {
             }
             case FREE -> {
                 elevatorPersonCount = 0;
+                if (elevatorSocketBox.isElevatorBoxManual()) {
+                    elevatorPermission = ElevatorPermission.PERSON;
+                }
                 if (!callQueue.isEmpty()) {
                     Integer floor = callQueue.peek();
                     if (floor != null){

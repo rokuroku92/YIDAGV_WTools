@@ -110,11 +110,13 @@ function elevatorUpdate(data) {
                 }
                 break;
             case "SYSTEM":
+                document.getElementById("elevatorDiv").classList.remove('active', 'error');
                 document.getElementById("elevatorDiv").style.fill = "#EAC343";
                 document.getElementById("elevatorTime").style.display = "block";
                 document.getElementById("elevatorTime").style.color = "#EAC343";
                 if (data.iScan) {
-                    document.getElementById("elevatorTime").innerHTML = "搬運中";
+                    // document.getElementById("elevatorTime").innerHTML = "搬運中";
+                    document.getElementById("elevatorTime").innerHTML = "系統佔用";
                 } else {
                     document.getElementById("elevatorTime").innerHTML = "系統佔用";
                 }
