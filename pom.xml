@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.yid</groupId>
 	<artifactId>agv</artifactId>
-	<version>0.5</version>
+	<version>0.9</version>
 	<name>agv</name>
 	<description>WTools agv project</description>
 	<properties>

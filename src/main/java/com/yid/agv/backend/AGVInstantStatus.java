@@ -179,10 +179,11 @@ public class AGVInstantStatus {
                 }
             }
         } else if (agv.getStatus() == AGV.Status.OBSTACLE) { // 若前有障礙時
-            if(agv.getObstacleCount()<OBSTACLE_DURATION){
+            if (agv.getObstacleCount() < OBSTACLE_DURATION) {
                 agv.setObstacleCount(agv.getObstacleCount()+1);
-            }else{
-                homePageService.setIAlarm(1);
+                agv.setIAlarm(false);
+            } else {
+                agv.setIAlarm(true);
             }
         }
 
@@ -208,7 +209,6 @@ public class AGVInstantStatus {
                 }
             }
             agv.setLastTaskBuffer(true);
-
         }
 
     }
@@ -258,6 +258,7 @@ public class AGVInstantStatus {
                     case 0 -> processTasks.failedTask(agv);
                     case 1 -> {
                         if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION) {
+                            // TODO: 檢查 AGV 車上是否有棧板。有，則繼續派遣；無，則刪除任務。
                             processTasks.failedTask(agv);
                         } else {
                             processTasks.dispatchTaskToAGV(agv);
@@ -280,7 +281,7 @@ public class AGVInstantStatus {
                         if(agv.getStatus() != AGV.Status.REBOOT){
                             agv.setStatus(AGV.Status.REBOOT);
                             notificationDao.insertMessage(agvTitle, NotificationDao.Status.REBOOT);
-                            homePageService.setIAlarm(0);
+                            agv.setIAlarm(false);
                         }
                     }
                     case 1 -> {
@@ -288,7 +289,7 @@ public class AGVInstantStatus {
                         if(agv.getStatus() != AGV.Status.MANUAL){
                             agv.setStatus(AGV.Status.MANUAL);
                             notificationDao.insertMessage(agvTitle, NotificationDao.Status.MANUAL);
-                            homePageService.setIAlarm(0);
+                            agv.setIAlarm(false);
                         }
                     }
                     case 2 -> {
@@ -296,7 +297,7 @@ public class AGVInstantStatus {
                         if(agv.getStatus() != AGV.Status.ONLINE){
                             agv.setStatus(AGV.Status.ONLINE);
                             notificationDao.insertMessage(agvTitle, NotificationDao.Status.ONLINE);
-                            homePageService.setIAlarm(0);
+                            agv.setIAlarm(false);
                         }
                     }
                     default -> {
@@ -304,7 +305,7 @@ public class AGVInstantStatus {
                         if(agv.getStatus() != AGV.Status.ERROR_AGV_DATA){
                             agv.setStatus(AGV.Status.ERROR_AGV_DATA);
                             notificationDao.insertMessage(agvTitle, NotificationDao.Status.ERROR_AGV_DATA);
-                            homePageService.setIAlarm(0);
+                            agv.setIAlarm(false);
                         }
                         log.warn("異常agv狀態資料");
                     }
@@ -315,7 +316,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.STOP){
                     agv.setStatus(AGV.Status.STOP);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.STOP);
-                    homePageService.setIAlarm(1);
+                    agv.setIAlarm(true);
                 }
             }
             case 2 -> {
@@ -323,7 +324,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.DERAIL){
                     agv.setStatus(AGV.Status.DERAIL);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.DERAIL);
-                    homePageService.setIAlarm(1);
+                    agv.setIAlarm(true);
                 }
             }
             case 3 -> {
@@ -331,7 +332,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.COLLIDE){
                     agv.setStatus(AGV.Status.COLLIDE);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.COLLIDE);
-                    homePageService.setIAlarm(1);
+                    agv.setIAlarm(true);
                 }
             }
             case 4 -> {
@@ -346,7 +347,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.EXCESSIVE_TURN_ANGLE){
                     agv.setStatus(AGV.Status.EXCESSIVE_TURN_ANGLE);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.EXCESSIVE_TURN_ANGLE);
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(true);
                 }
             }
             case 6 -> {
@@ -355,7 +356,7 @@ public class AGVInstantStatus {
                     agv.setStatus(AGV.Status.WRONG_TAG_NUMBER);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.WRONG_TAG_NUMBER);
 //                    agv.setTagError(true);  是否處理卡號錯誤
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(true);
                 }
             }
             case 7 -> {
@@ -363,7 +364,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.UNKNOWN_TAG_NUMBER){
                     agv.setStatus(AGV.Status.UNKNOWN_TAG_NUMBER);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.UNKNOWN_TAG_NUMBER);
-                    homePageService.setIAlarm(1);
+                    agv.setIAlarm(true);
                 }
             }
             case 8 -> {
@@ -371,7 +372,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.EXCEPTION_EXCLUSION){
                     agv.setStatus(AGV.Status.EXCEPTION_EXCLUSION);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.EXCEPTION_EXCLUSION);
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(false);
                 }
             }
             case 9 -> {
@@ -379,7 +380,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.SENSOR_ERROR){
                     agv.setStatus(AGV.Status.SENSOR_ERROR);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.SENSOR_ERROR);
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(false);
                 }
             }
             case 10 -> {
@@ -387,7 +388,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.CHARGE_ERROR){
                     agv.setStatus(AGV.Status.CHARGE_ERROR);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.CHARGE_ERROR);
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(false);
                 }
             }
             default -> {
@@ -395,7 +396,7 @@ public class AGVInstantStatus {
                 if(agv.getStatus() != AGV.Status.ERROR_AGV_DATA){
                     agv.setStatus(AGV.Status.ERROR_AGV_DATA);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.ERROR_AGV_DATA);
-                    homePageService.setIAlarm(0);
+                    agv.setIAlarm(false);
                 }
                 log.warn("異常agv狀態資料");
             }

@@ -51,3 +51,13 @@
     justify-content: center;
     align-items: center;
 }
+/* #orderAnalysismm::before{
+    content: "伺服器連接失敗";
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    font-size: 2em; 
+    color: rgba(255, 255, 255, 0.9); 
+    pointer-events: none;
+} */

@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     getConfig();
     document.getElementById("gridManual").checked = localStorage.getItem("gridManual") == 1 ? true : false;
+    document.getElementById("closeAlarm").checked = localStorage.getItem("closeAlarm") == 1 ? true : false;
     document.getElementById("save").addEventListener("click", function (){
         setConfig();
     })
@@ -126,7 +127,11 @@ function setConfig(){
     }).then(response => {
         return response.text();
     }).then(response => {
-        alert(response);
+        if(response == "OK"){
+            alert("請重新啟動Server方可生效。");
+        } else {
+            alert(response);
+        }
     }).catch(error => {
         alert("修改失敗: ", error);
     });
@@ -135,4 +140,9 @@ function setConfig(){
 function setGridManual(el) {
     localStorage.setItem("gridManual", el.checked?1:0);
     console.log(localStorage.getItem("gridManual"));
+}
+
+function setCloseAlarm(el) {
+    localStorage.setItem("closeAlarm", el.checked?1:0);
+    console.log(localStorage.getItem("closeAlarm"));
 }

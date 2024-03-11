@@ -65,8 +65,7 @@ CREATE TABLE `task_detail`( -- 建造task_detail TABLE
     `status` int NOT NULL default 0 -- 是否完成
 );
 CREATE INDEX idx_task_number ON task_detail (task_number);
-ALTER TABLE `task_detail`
-ADD COLUMN `create_task_time` varchar(20);
+
 
 CREATE TABLE `now_task_list`( -- 建造task_list TABLE
 	`id` int AUTO_INCREMENT PRIMARY KEY, -- 主鍵
@@ -104,3 +103,9 @@ CREATE TABLE `analysis`( -- 建造analysis TABLE
     `task` int -- 任務數
 );
 ALTER TABLE `analysis` ADD UNIQUE (`agv_id`, `year`, `month`, `day`);
+
+CREATE TABLE `work_number_history`(
+	`id` bigint AUTO_INCREMENT PRIMARY KEY, -- 主鍵
+    `work_number` varchar(20),
+	`time` datetime DEFAULT CURRENT_TIMESTAMP
+);

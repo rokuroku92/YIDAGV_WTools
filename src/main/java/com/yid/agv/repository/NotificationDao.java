@@ -18,7 +18,7 @@ public interface NotificationDao {
             return value;
         }
     }
-    enum Status{
+    enum Status {
         OFFLINE(1, "離線"), ONLINE(1, "連線"), MANUAL(2, "手動模式"), REBOOT(1, "重新啟動"),
         STOP(3, "緊急停止"), DERAIL(3, "出軌"), COLLIDE(3, "發生碰撞"), OBSTACLE(2, "前有障礙"),
         EXCESSIVE_TURN_ANGLE(3, "轉向角度過大"), WRONG_TAG_NUMBER(3, "卡號錯誤"), UNKNOWN_TAG_NUMBER(3, "未知卡號"),

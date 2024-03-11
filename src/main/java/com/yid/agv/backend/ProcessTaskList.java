@@ -52,12 +52,12 @@ public class ProcessTaskList {
 
             if (nowTaskList.getTaskNumber().startsWith("#YE")){
 //                if (agvManager.getAgv(1).getStatus() != AGV.Status.ONLINE) continue;
-//                handleYETask(nowTaskList, taskDetails, i);
-                handleYETaskTEST(nowTaskList, taskDetails, i);  // TODO: change
+                handleYETask(nowTaskList, taskDetails, i);
+//                handleYETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#RE")){
 //                if (agvManager.getAgv(3).getStatus() != AGV.Status.ONLINE) continue;
-//                handleRETask(nowTaskList, taskDetails, i);
-                handleRETaskTEST(nowTaskList, taskDetails, i);  // TODO: change
+                handleRETask(nowTaskList, taskDetails, i);
+//                handleRETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#NE")){
 //                if (agvManager.getAgv(2).getStatus() != AGV.Status.ONLINE) continue;
                 handleNETask(nowTaskList, taskDetails, i);

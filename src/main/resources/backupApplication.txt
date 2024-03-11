@@ -29,3 +29,35 @@ elevator:
 http:
   timeout: 2
   max_retry: 3
+
+---------------- TEST -------------------
+jdbc:
+  primary:
+    url: jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
+    username: root
+    password: 12345678
+  WTools:
+    url: jdbc:mysql://localhost:3306/WTools_simulation?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true
+    username: AgvYidUser
+    password: 12345678
+
+agvControl:
+  #  url: http://192.168.0.100:20100
+  #  url: http://10.11.33.199:20100
+  url: http://localhost:20100
+
+agv:
+  low_battery: 70  # AGV電量低於多少算低電量
+  low_battery_duration: 60  # AGV低電量持續多久時，派遣回待命點
+  obstacle_duration: 30  # 前有障礙多久時要發出警告
+
+elevator:
+  ip: 192.168.0.100
+  port: 8887
+  timeout: 3000
+  fail_socket: 5
+  pre_person_open_door_duration: 10  # 人員呼叫，電梯開門多久後沒按下人員佔用按鈕，歸還權限
+
+http:
+  timeout: 2
+  max_retry: 3

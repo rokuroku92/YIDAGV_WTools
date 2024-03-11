@@ -75,7 +75,7 @@ public class ElevatorSocketBox {
 //                        log.info("ServerMessage: " + serverMessage);
                         failSocketCount--;
                         if(serverMessage.matches("^QQQ([A-Z]\\d{4})XXX$")){
-                            // TODO: update status
+                            // update status
                             String resultMode = serverMessage.substring(3, 4);
                             int resultValue = Integer.parseInt(serverMessage.substring(4, 8));
                             boolean[] parseResultValue = parseCommand(resultValue);

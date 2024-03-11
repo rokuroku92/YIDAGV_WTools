@@ -461,66 +461,78 @@
               <option>C</option>
             </select>
           </div> -->
-          <div class="col-10 center">
+          <div class="col-10">
             <!-- <input type="text" style="width: 100%;" value="WCDS003-AJ-S2"/> -->
-            <div id="workNumberVals" class="input-group mb-0">
-              <span class="input-group-text">1</span>
-              <select id="lineCode1" class="form-select" required>
-                <option selected disabled value="">LineCode</option>
-                <option value="00411">棘輪一線(00411)</option>
-                <option value="00412">棘輪二線(00412)</option>
-                <option value="00413">棘輪三線(00413)</option>
-                <option value="00414">棘輪四線(00414)</option>
-                <option value="00431">扭力校正(00431)</option>
-                <option value="00436">扭力組立(00436)</option>
-                <option value="00446">雷射加工(00446)</option>
-                <option value="00451">備工線(00451)</option>
-                <option value="01320">秀山加工(01320)</option>
-              </select>
-              <!-- <input type="text" class="form-control" placeholder="Object1" value="WCDS003-AJ-S2"> -->
-              <input type="text" id="workNumber1" class="form-control" placeholder="WorkNumber1">
-              <span class="input-group-text">2</span>
-              <select id="lineCode2" class="form-select" required>
-                <option selected disabled value="">LineCode</option>
-                <option value="00411">棘輪一線(00411)</option>
-                <option value="00412">棘輪二線(00412)</option>
-                <option value="00413">棘輪三線(00413)</option>
-                <option value="00414">棘輪四線(00414)</option>
-                <option value="00431">扭力校正(00431)</option>
-                <option value="00436">扭力組立(00436)</option>
-                <option value="00446">雷射加工(00446)</option>
-                <option value="00451">備工線(00451)</option>
-                <option value="01320">秀山加工(01320)</option>
-              </select>
-              <input type="text" id="workNumber2" class="form-control" placeholder="WorkNumber2">
-              <span class="input-group-text">3</span>
-              <select id="lineCode3" class="form-select" required>
-                <option selected disabled value="">LineCode</option>
-                <option value="00411">棘輪一線(00411)</option>
-                <option value="00412">棘輪二線(00412)</option>
-                <option value="00413">棘輪三線(00413)</option>
-                <option value="00414">棘輪四線(00414)</option>
-                <option value="00431">扭力校正(00431)</option>
-                <option value="00436">扭力組立(00436)</option>
-                <option value="00446">雷射加工(00446)</option>
-                <option value="00451">備工線(00451)</option>
-                <option value="01320">秀山加工(01320)</option>
-              </select>
-              <input type="text" id="workNumber3" class="form-control" placeholder="WorkNumber3">
-              <span class="input-group-text">4</span>
-              <select id="lineCode4" class="form-select" required>
-                <option selected disabled value="">LineCode</option>
-                <option value="00411">棘輪一線(00411)</option>
-                <option value="00412">棘輪二線(00412)</option>
-                <option value="00413">棘輪三線(00413)</option>
-                <option value="00414">棘輪四線(00414)</option>
-                <option value="00431">扭力校正(00431)</option>
-                <option value="00436">扭力組立(00436)</option>
-                <option value="00446">雷射加工(00446)</option>
-                <option value="00451">備工線(00451)</option>
-                <option value="01320">秀山加工(01320)</option>
-              </select>
-              <input type="text" id="workNumber4" class="form-control" placeholder="WorkNumber4">
+            <div id="workNumberVals">
+              <div class="row">
+                <div class="col input-group mb-2 mt-2">
+                  <span class="input-group-text">1</span>
+                  <select id="lineCode1" class="form-select" required>
+                    <option selected disabled value="">LineCode</option>
+                    <option value="00411">棘輪一線(00411)</option>
+                    <option value="00412">棘輪二線(00412)</option>
+                    <option value="00413">棘輪三線(00413)</option>
+                    <option value="00414">棘輪四線(00414)</option>
+                    <option value="00431">扭力校正(00431)</option>
+                    <option value="00436">扭力組立(00436)</option>
+                    <option value="00446">雷射加工(00446)</option>
+                    <option value="00451">備工線(00451)</option>
+                    <option value="01320">秀山加工(01320)</option>
+                  </select>
+                  <!-- <input type="text" class="form-control" placeholder="Object1" value="WCDS003-AJ-S2"> -->
+                  <input type="text" id="workNumber1" class="form-control workNumber" placeholder="WorkNumber1">
+                </div>
+                <div class="col input-group mb-2 mt-2">
+                  <span class="input-group-text">2</span>
+                  <select id="lineCode2" class="form-select" required>
+                    <option selected disabled value="">LineCode</option>
+                    <option value="00411">棘輪一線(00411)</option>
+                    <option value="00412">棘輪二線(00412)</option>
+                    <option value="00413">棘輪三線(00413)</option>
+                    <option value="00414">棘輪四線(00414)</option>
+                    <option value="00431">扭力校正(00431)</option>
+                    <option value="00436">扭力組立(00436)</option>
+                    <option value="00446">雷射加工(00446)</option>
+                    <option value="00451">備工線(00451)</option>
+                    <option value="01320">秀山加工(01320)</option>
+                  </select>
+                  <input type="text" id="workNumber2" class="form-control workNumber" placeholder="WorkNumber2">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col input-group mb-2">
+                  <span class="input-group-text">3</span>
+                  <select id="lineCode3" class="form-select" required>
+                    <option selected disabled value="">LineCode</option>
+                    <option value="00411">棘輪一線(00411)</option>
+                    <option value="00412">棘輪二線(00412)</option>
+                    <option value="00413">棘輪三線(00413)</option>
+                    <option value="00414">棘輪四線(00414)</option>
+                    <option value="00431">扭力校正(00431)</option>
+                    <option value="00436">扭力組立(00436)</option>
+                    <option value="00446">雷射加工(00446)</option>
+                    <option value="00451">備工線(00451)</option>
+                    <option value="01320">秀山加工(01320)</option>
+                  </select>
+                  <input type="text" id="workNumber3" class="form-control workNumber" placeholder="WorkNumber3">
+                </div>
+                <div class="col input-group mb-2">
+                  <span class="input-group-text">4</span>
+                  <select id="lineCode4" class="form-select" required>
+                    <option selected disabled value="">LineCode</option>
+                    <option value="00411">棘輪一線(00411)</option>
+                    <option value="00412">棘輪二線(00412)</option>
+                    <option value="00413">棘輪三線(00413)</option>
+                    <option value="00414">棘輪四線(00414)</option>
+                    <option value="00431">扭力校正(00431)</option>
+                    <option value="00436">扭力組立(00436)</option>
+                    <option value="00446">雷射加工(00446)</option>
+                    <option value="00451">備工線(00451)</option>
+                    <option value="01320">秀山加工(01320)</option>
+                  </select>
+                  <input type="text" id="workNumber4" class="form-control workNumber" placeholder="WorkNumber4">
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-1 center">

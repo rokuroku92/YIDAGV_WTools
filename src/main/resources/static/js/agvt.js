@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded",async function() {
     } catch (error) {
         console.error('發生錯誤：', error);
     }
-
     updateAGVStatus();  //  取得狀態資料
     updateTaskLists();
     updateNotifications();
@@ -145,7 +144,7 @@ function agvUpdate(agv){  // 更新資料
         // 更新電量
         batteryString = "AGVBatterySvg"+(i+1);
         var agvBattery = document.getElementById(batteryString);
-        // agvStatus[i].charging == 0 ? agvBattery.setAttribute("xlink:href", "#battery-charging") :
+        // agv[i].charging == 0 ? agvBattery.setAttribute("xlink:href", "#battery-charging") :
         agv[i].battery > 90 ? agvBattery.setAttribute("xlink:href", "#battery-6") :
             agv[i].battery > 80 ? agvBattery.setAttribute("xlink:href", "#battery-5") : 
             agv[i].battery > 60 ? agvBattery.setAttribute("xlink:href", "#battery-4") :
@@ -155,9 +154,9 @@ function agvUpdate(agv){  // 更新資料
             agvBattery.setAttribute("xlink:href", "#battery-0");
         // 更新電量圓餅圖
         /* 20230703已改為使用電量svg
-        var updateBattery = [agvStatus[i].battery, 100-agvStatus[i].battery]; 
+        var updateBattery = [agv[i].battery, 100-agv[i].battery]; 
         var agvBatteryChart = Chart.instances[i];
-        if(agvStatus[i].battery < 50)
+        if(agv[i].battery < 50)
             agvBatteryChart.data.datasets[0].backgroundColor = ['rgb(255, 0, 0)','rgb(255, 255, 255)'];
         else
             agvBatteryChart.data.datasets[0].backgroundColor = ['rgb(118, 212, 114)','rgb(255, 255, 255)'];
@@ -176,7 +175,7 @@ function agvUpdate(agv){  // 更新資料
             agvSignal.setAttribute("xlink:href", "#wifi-0");
         
         // 更新AGV狀態
-        // agvStatus[i].task(任務號碼)未使用
+        // agv[i].task(任務號碼)未使用
         document.getElementById('AGVStatusDiv'+(i+1)).classList.remove('error', 'warning', 'normal');
         document.getElementById('AGVStatus'+(i+1)).classList.remove('error', 'warning', 'normal');
         /*
@@ -261,8 +260,10 @@ function agvUpdate(agv){  // 更新資料
             document.getElementById('AGVTaskST'+(i+1)).innerHTML = "<h5>NO TASK</h5>";
         }
 
+        // 判斷是否警報
+        agvIAlarm(agv[i]);
         // 更新AGV位置
-        // updateAGVPositions(agvStatus[i].place);
+        // updateAGVPositions(agv[i].place);
 
         // updateTN();
     }
@@ -468,4 +469,67 @@ function notificationUpdate(notificationJson){
         document.getElementById("notification").innerHTML = notificationHTML;
         lastNotificationHTML = notificationHTML;
     }
+}
+
+var settingCloseAlarm = localStorage.getItem("closeAlarm") == 1 ? true : false;
+var cancelAlarm = false;
+var alarmToggle = true;
+function agvIAlarm(agv) {
+    if (settingCloseAlarm) {
+        return;
+    }
+    // if (Notification.permission !== 'granted') {
+    //     Notification.requestPermission();
+    // }
+    if (!agv.iAlarm) {
+        if(document.getElementById('alarmModal').style.display == 'block'){
+            document.getElementById('closeAlarmBTN').click();
+        }
+        cancelAlarm = false;
+    } else {
+        switch (agv.status) {
+            case "STOP":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 觸發緊急停止，請至現場排除！`;
+                break;
+            case "DERAIL":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 出軌，請至現場排除！`;
+                break;
+            case "COLLIDE":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 發生碰撞，請至現場排除！`;
+                break;
+            case "OBSTACLE":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 前有障礙超過30秒，請至現場排除！`;
+                break;
+            case "EXCESSIVE_TURN_ANGLE":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 馬達驅動器異常，請至現場排除！`;
+                break;
+            case "WRONG_TAG_NUMBER":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR系統找不到路徑(卡號錯誤)，請聯絡我們！`;
+                break;
+            case "UNKNOWN_TAG_NUMBER":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR系統路徑未匹配(未知卡號)，請聯絡我們！`;
+                break;
+            default:
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 後端資料錯誤： ${agv.status}`;
+                break;
+        }
+        if (!cancelAlarm) {
+            if (document.getElementById('alarmModal').style.display != 'block') {
+                document.getElementById('alarmBTN').click();
+            }
+            if (alarmToggle) {
+                alarmToggle=false;
+                const audio = document.createElement("audio");
+                // audio.src = baseUrl+"/audio/laser.mp3";
+                audio.src = baseUrl+"/audio/alarm3.mp3";
+                audio.play();
+            } else {
+                alarmToggle=true;
+            }
+        }
+    }
+}
+
+function closeAlarm() {
+    cancelAlarm = true;
 }

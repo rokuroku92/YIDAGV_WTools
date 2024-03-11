@@ -1,0 +1,565 @@
+2024-03-01 13:33:49,885 INFO (StartupInfoLogger.java:51)- Starting Application using Java 19.0.1 with PID 2797 (/Users/michael/Documents/JavaProject/agv_WTools/target/classes started by michael in /Users/michael/Documents/JavaProject/agv_WTools)
+2024-03-01 13:33:49,890 INFO (SpringApplication.java:634)- No active profile set, falling back to 1 default profile: "default"
+2024-03-01 13:33:49,937 INFO (DeferredLog.java:250)- The Class-Path manifest attribute in /Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar referenced one or more files that do not exist: file:/Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/mchange-commons-java-0.2.19.jar
+2024-03-01 13:33:49,937 INFO (DeferredLog.java:250)- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-03-01 13:33:49,937 INFO (DeferredLog.java:250)- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-03-01 13:33:51,093 INFO (TomcatWebServer.java:108)- Tomcat initialized with port(s): 8080 (http)
+2024-03-01 13:33:51,100 INFO (DirectJDKLog.java:173)- Initializing ProtocolHandler ["http-nio-8080"]
+2024-03-01 13:33:51,103 INFO (DirectJDKLog.java:173)- Starting service [Tomcat]
+2024-03-01 13:33:51,103 INFO (DirectJDKLog.java:173)- Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-03-01 13:33:51,153 INFO (DirectJDKLog.java:173)- Initializing Spring embedded WebApplicationContext
+2024-03-01 13:33:51,154 INFO (ServletWebServerApplicationContext.java:291)- Root WebApplicationContext: initialization completed in 1217 ms
+2024-03-01 13:33:51,228 INFO (Slf4jMLog.java:212)- MLog clients using slf4j logging.
+2024-03-01 13:33:51,331 INFO (Slf4jMLog.java:212)- Initializing c3p0-0.9.5.5 [built 11-December-2019 22:18:33 -0800; debug? true; trace: 10]
+2024-03-01 13:33:51,452 INFO (Slf4jMLog.java:212)- Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfltb11wy8qofznkt1p|6735a208, debugUnreturnedConnectionStackTraces -> true, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfltb11wy8qofznkt1p|6735a208, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 3600, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 60, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2024-03-01 13:33:51,869 INFO (AGVManager.java:34)- Initialize agvMap: {1=AGV(id=1, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_1, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 2=AGV(id=2, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_2, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 3=AGV(id=3, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_3, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0)}
+2024-03-01 13:33:51,921 INFO (GridManager.java:30)- Initialize gridMap: {2-T-10=Grid(gridName=2-T-10, id=86, status=FREE), 2-A-14=Grid(gridName=2-A-14, id=100, status=OCCUPIED), 2-A-15=Grid(gridName=2-A-15, id=101, status=OCCUPIED), 2-A-12=Grid(gridName=2-A-12, id=98, status=OCCUPIED), 2-A-13=Grid(gridName=2-A-13, id=99, status=OCCUPIED), 3-R-5=Grid(gridName=3-R-5, id=72, status=FREE), 2-A-18=Grid(gridName=2-A-18, id=104, status=FREE), 3-R-6=Grid(gridName=3-R-6, id=73, status=FREE), 2-A-19=Grid(gridName=2-A-19, id=105, status=FREE), 3-R-7=Grid(gridName=3-R-7, id=74, status=FREE), 2-A-16=Grid(gridName=2-A-16, id=102, status=OCCUPIED), 3-R-8=Grid(gridName=3-R-8, id=75, status=FREE), 2-A-17=Grid(gridName=2-A-17, id=103, status=FREE), 2-T-2=Grid(gridName=2-T-2, id=78, status=FREE), 2-T-3=Grid(gridName=2-T-3, id=79, status=FREE), 2-T-1=Grid(gridName=2-T-1, id=77, status=FREE), 2-A-10=Grid(gridName=2-A-10, id=96, status=OCCUPIED), 2-A-11=Grid(gridName=2-A-11, id=97, status=OCCUPIED), 1-R-1=Grid(gridName=1-R-1, id=9, status=OCCUPIED), 1-R-2=Grid(gridName=1-R-2, id=10, status=OCCUPIED), 3-B-1=Grid(gridName=3-B-1, id=28, status=OCCUPIED), 3-B-2=Grid(gridName=3-B-2, id=29, status=OCCUPIED), 3-B-3=Grid(gridName=3-B-3, id=30, status=OCCUPIED), 3-B-4=Grid(gridName=3-B-4, id=31, status=FREE), 2-T-8=Grid(gridName=2-T-8, id=84, status=FREE), 2-T-9=Grid(gridName=2-T-9, id=85, status=FREE), 3-B-5=Grid(gridName=3-B-5, id=32, status=FREE), 2-T-6=Grid(gridName=2-T-6, id=82, status=FREE), 3-B-6=Grid(gridName=3-B-6, id=33, status=FREE), 2-T-7=Grid(gridName=2-T-7, id=83, status=FREE), 3-B-7=Grid(gridName=3-B-7, id=34, status=FREE), 2-T-4=Grid(gridName=2-T-4, id=80, status=FREE), 3-B-8=Grid(gridName=3-B-8, id=35, status=FREE), 2-T-5=Grid(gridName=2-T-5, id=81, status=FREE), 3-R-1=Grid(gridName=3-R-1, id=68, status=FREE), 3-R-2=Grid(gridName=3-R-2, id=69, status=FREE), 3-S=Grid(gridName=3-S, id=76, status=FREE), 3-R-3=Grid(gridName=3-R-3, id=70, status=FREE), 3-R-4=Grid(gridName=3-R-4, id=71, status=FREE), 2-A-9=Grid(gridName=2-A-9, id=95, status=OCCUPIED), 2-A-7=Grid(gridName=2-A-7, id=93, status=OCCUPIED), 2-A-8=Grid(gridName=2-A-8, id=94, status=OCCUPIED), 2-A-5=Grid(gridName=2-A-5, id=91, status=OCCUPIED), 2-A-6=Grid(gridName=2-A-6, id=92, status=OCCUPIED), 2-A-3=Grid(gridName=2-A-3, id=89, status=OCCUPIED), 2-A-4=Grid(gridName=2-A-4, id=90, status=OCCUPIED), 2-A-1=Grid(gridName=2-A-1, id=87, status=OCCUPIED), 2-A-2=Grid(gridName=2-A-2, id=88, status=OCCUPIED), 3-C-1=Grid(gridName=3-C-1, id=36, status=OCCUPIED), 3-C-2=Grid(gridName=3-C-2, id=37, status=OCCUPIED), 3-C-3=Grid(gridName=3-C-3, id=38, status=OCCUPIED), 3-C-8=Grid(gridName=3-C-8, id=43, status=FREE), 3-C-9=Grid(gridName=3-C-9, id=44, status=FREE), 3-C-4=Grid(gridName=3-C-4, id=39, status=OCCUPIED), 3-C-5=Grid(gridName=3-C-5, id=40, status=FREE), 3-C-6=Grid(gridName=3-C-6, id=41, status=FREE), 3-C-7=Grid(gridName=3-C-7, id=42, status=FREE), 2-S=Grid(gridName=2-S, id=107, status=FREE), 3-T-7=Grid(gridName=3-T-7, id=18, status=FREE), 3-T-8=Grid(gridName=3-T-8, id=19, status=FREE), 3-T-3=Grid(gridName=3-T-3, id=14, status=FREE), 3-T-4=Grid(gridName=3-T-4, id=15, status=FREE), 3-T-5=Grid(gridName=3-T-5, id=16, status=FREE), 3-T-6=Grid(gridName=3-T-6, id=17, status=FREE), 1-T-1=Grid(gridName=1-T-1, id=1, status=FREE), 1-T-2=Grid(gridName=1-T-2, id=2, status=FREE), 1-T-3=Grid(gridName=1-T-3, id=3, status=FREE), 1-T-4=Grid(gridName=1-T-4, id=4, status=FREE), 1-T-5=Grid(gridName=1-T-5, id=5, status=FREE), E-1=Grid(gridName=E-1, id=108, status=FREE), 1-T-6=Grid(gridName=1-T-6, id=6, status=FREE), 1-T-7=Grid(gridName=1-T-7, id=7, status=FREE), 3-D-1=Grid(gridName=3-D-1, id=60, status=FREE), E-3=Grid(gridName=E-3, id=110, status=FREE), 1-T-8=Grid(gridName=1-T-8, id=8, status=FREE), 3-D-2=Grid(gridName=3-D-2, id=61, status=FREE), E-2=Grid(gridName=E-2, id=109, status=FREE), E-5=Grid(gridName=E-5, id=112, status=FREE), E-4=Grid(gridName=E-4, id=111, status=FREE), E-7=Grid(gridName=E-7, id=114, status=FREE), E-6=Grid(gridName=E-6, id=113, status=FREE), 3-D-7=Grid(gridName=3-D-7, id=66, status=FREE), 3-D-8=Grid(gridName=3-D-8, id=67, status=FREE), E-8=Grid(gridName=E-8, id=115, status=FREE), 3-D-3=Grid(gridName=3-D-3, id=62, status=FREE), 3-D-4=Grid(gridName=3-D-4, id=63, status=FREE), 3-D-5=Grid(gridName=3-D-5, id=64, status=FREE), 1-S=Grid(gridName=1-S, id=11, status=FREE), 3-D-6=Grid(gridName=3-D-6, id=65, status=FREE), 3-T-1=Grid(gridName=3-T-1, id=12, status=FREE), 3-T-2=Grid(gridName=3-T-2, id=13, status=FREE), 3-C-20=Grid(gridName=3-C-20, id=55, status=FREE), 3-C-21=Grid(gridName=3-C-21, id=56, status=FREE), 3-C-22=Grid(gridName=3-C-22, id=57, status=FREE), 3-C-23=Grid(gridName=3-C-23, id=58, status=FREE), 3-C-24=Grid(gridName=3-C-24, id=59, status=FREE), 3-C-10=Grid(gridName=3-C-10, id=45, status=FREE), 3-C-11=Grid(gridName=3-C-11, id=46, status=FREE), 3-C-12=Grid(gridName=3-C-12, id=47, status=FREE), 3-C-13=Grid(gridName=3-C-13, id=48, status=FREE), 3-C-14=Grid(gridName=3-C-14, id=49, status=FREE), 3-A-2=Grid(gridName=3-A-2, id=21, status=OCCUPIED), 3-C-15=Grid(gridName=3-C-15, id=50, status=FREE), 3-A-3=Grid(gridName=3-A-3, id=22, status=OCCUPIED), 3-C-16=Grid(gridName=3-C-16, id=51, status=FREE), 3-A-4=Grid(gridName=3-A-4, id=23, status=FREE), 3-C-17=Grid(gridName=3-C-17, id=52, status=FREE), 3-A-5=Grid(gridName=3-A-5, id=24, status=FREE), 3-C-18=Grid(gridName=3-C-18, id=53, status=FREE), 3-C-19=Grid(gridName=3-C-19, id=54, status=FREE), 3-A-1=Grid(gridName=3-A-1, id=20, status=OCCUPIED), 2-A-20=Grid(gridName=2-A-20, id=106, status=FREE), 3-A-6=Grid(gridName=3-A-6, id=25, status=FREE), 3-A-7=Grid(gridName=3-A-7, id=26, status=FREE), 3-A-8=Grid(gridName=3-A-8, id=27, status=FREE)}
+2024-03-01 13:33:51,943 INFO (TaskListManager.java:48)- Initialize taskListMap: {1=null, 2=null}
+2024-03-01 13:33:52,371 INFO (OptionalLiveReloadServer.java:59)- LiveReload server is running on port 35729
+2024-03-01 13:33:52,381 INFO (DirectJDKLog.java:173)- Starting ProtocolHandler ["http-nio-8080"]
+2024-03-01 13:33:52,398 INFO (TomcatWebServer.java:220)- Tomcat started on port(s): 8080 (http) with context path '/YIDAGV'
+2024-03-01 13:33:52,410 INFO (StartupInfoLogger.java:57)- Started Application in 3.057 seconds (process running for 3.525)
+2024-03-01 13:33:52,422 INFO (ElevatorSocketBox.java:174)- Connected to ElevatorBox!
+2024-03-01 13:33:52,423 INFO (ElevatorSocketBox.java:65)- receiveThread
+2024-03-01 13:33:52,423 INFO (ElevatorSocketBox.java:106)- sendThread
+2024-03-01 13:33:52,592 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 13:33:52,641 INFO (ElevatorManager.java:294)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 13:33:52,641 INFO (ElevatorManager.java:307)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 13:33:52,659 INFO (ElevatorManager.java:311)- clrcall
+2024-03-01 13:33:52,660 INFO (ElevatorManager.java:315)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 13:33:52,672 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:33:52,684 INFO (ElevatorManager.java:294)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 13:33:52,684 INFO (ElevatorManager.java:307)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 13:33:52,692 INFO (ElevatorManager.java:311)- clrcall
+2024-03-01 13:33:52,692 INFO (ElevatorManager.java:315)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 13:33:52,708 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:33:52,724 INFO (ElevatorManager.java:294)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 13:33:52,725 INFO (ElevatorManager.java:307)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 13:33:52,741 INFO (ElevatorManager.java:311)- clrcall
+2024-03-01 13:33:52,741 INFO (ElevatorManager.java:315)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 13:33:53,451 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 13:33:53,479 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:33:53,503 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:33:54,431 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:33:55,424 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:33:56,435 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:34:03,824 INFO (DirectJDKLog.java:173)- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-01 13:34:03,826 INFO (FrameworkServlet.java:532)- Initializing Servlet 'dispatcherServlet'
+2024-03-01 13:34:03,827 INFO (FrameworkServlet.java:554)- Completed initialization in 1 ms
+2024-03-01 13:34:23,443 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:34:23,454 INFO (ElevatorManager.java:307)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 13:34:23,455 INFO (ElevatorManager.java:315)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 13:34:24,446 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:34:52,443 INFO (ElevatorManager.java:307)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 13:34:52,460 INFO (ElevatorManager.java:311)- clrcall
+2024-03-01 13:34:52,461 INFO (ElevatorManager.java:315)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 13:34:53,429 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:34:54,434 INFO (ElevatorManager.java:287)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:35:09,231 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0021XXX
+2024-03-01 13:35:34,415 WARN (AGVInstantStatus.java:427)- Traffic Control is not connected
+2024-03-01 13:38:10,846 INFO (ElevatorSocketBox.java:126)- Closing Socket...
+2024-03-01 13:38:10,846 INFO (ElevatorSocketBox.java:130)- Closing receiveThread...
+2024-03-01 13:38:10,846 INFO (ElevatorSocketBox.java:132)- Closing sendThread...
+2024-03-01 13:38:10,848 INFO (ElevatorSocketBox.java:151)- All SocketThread has been terminated!
+2024-03-01 13:38:16,245 INFO (StartupInfoLogger.java:51)- Starting Application using Java 19.0.1 with PID 2863 (/Users/michael/Documents/JavaProject/agv_WTools/target/classes started by michael in /Users/michael/Documents/JavaProject/agv_WTools)
+2024-03-01 13:38:16,247 INFO (SpringApplication.java:634)- No active profile set, falling back to 1 default profile: "default"
+2024-03-01 13:38:16,306 INFO (DeferredLog.java:250)- The Class-Path manifest attribute in /Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar referenced one or more files that do not exist: file:/Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/mchange-commons-java-0.2.19.jar
+2024-03-01 13:38:16,306 INFO (DeferredLog.java:250)- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-03-01 13:38:16,306 INFO (DeferredLog.java:250)- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-03-01 13:38:17,374 INFO (TomcatWebServer.java:108)- Tomcat initialized with port(s): 8080 (http)
+2024-03-01 13:38:17,380 INFO (DirectJDKLog.java:173)- Initializing ProtocolHandler ["http-nio-8080"]
+2024-03-01 13:38:17,382 INFO (DirectJDKLog.java:173)- Starting service [Tomcat]
+2024-03-01 13:38:17,382 INFO (DirectJDKLog.java:173)- Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-03-01 13:38:17,435 INFO (DirectJDKLog.java:173)- Initializing Spring embedded WebApplicationContext
+2024-03-01 13:38:17,435 INFO (ServletWebServerApplicationContext.java:291)- Root WebApplicationContext: initialization completed in 1128 ms
+2024-03-01 13:38:17,518 INFO (Slf4jMLog.java:212)- MLog clients using slf4j logging.
+2024-03-01 13:38:17,767 INFO (Slf4jMLog.java:212)- Initializing c3p0-0.9.5.5 [built 11-December-2019 22:18:33 -0800; debug? true; trace: 10]
+2024-03-01 13:38:17,881 INFO (Slf4jMLog.java:212)- Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfltb11wyeg9r1kwd5id|4f1e8284, debugUnreturnedConnectionStackTraces -> true, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfltb11wyeg9r1kwd5id|4f1e8284, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 3600, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 60, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2024-03-01 13:38:18,214 INFO (AGVManager.java:34)- Initialize agvMap: {1=AGV(id=1, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_1, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 2=AGV(id=2, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_2, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 3=AGV(id=3, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_3, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0)}
+2024-03-01 13:38:18,263 INFO (GridManager.java:30)- Initialize gridMap: {2-T-10=Grid(gridName=2-T-10, id=86, status=FREE), 2-A-14=Grid(gridName=2-A-14, id=100, status=OCCUPIED), 2-A-15=Grid(gridName=2-A-15, id=101, status=OCCUPIED), 2-A-12=Grid(gridName=2-A-12, id=98, status=OCCUPIED), 2-A-13=Grid(gridName=2-A-13, id=99, status=OCCUPIED), 3-R-5=Grid(gridName=3-R-5, id=72, status=FREE), 2-A-18=Grid(gridName=2-A-18, id=104, status=FREE), 3-R-6=Grid(gridName=3-R-6, id=73, status=FREE), 2-A-19=Grid(gridName=2-A-19, id=105, status=FREE), 3-R-7=Grid(gridName=3-R-7, id=74, status=FREE), 2-A-16=Grid(gridName=2-A-16, id=102, status=OCCUPIED), 3-R-8=Grid(gridName=3-R-8, id=75, status=FREE), 2-A-17=Grid(gridName=2-A-17, id=103, status=FREE), 2-T-2=Grid(gridName=2-T-2, id=78, status=FREE), 2-T-3=Grid(gridName=2-T-3, id=79, status=FREE), 2-T-1=Grid(gridName=2-T-1, id=77, status=FREE), 2-A-10=Grid(gridName=2-A-10, id=96, status=OCCUPIED), 2-A-11=Grid(gridName=2-A-11, id=97, status=OCCUPIED), 1-R-1=Grid(gridName=1-R-1, id=9, status=OCCUPIED), 1-R-2=Grid(gridName=1-R-2, id=10, status=OCCUPIED), 3-B-1=Grid(gridName=3-B-1, id=28, status=OCCUPIED), 3-B-2=Grid(gridName=3-B-2, id=29, status=OCCUPIED), 3-B-3=Grid(gridName=3-B-3, id=30, status=OCCUPIED), 3-B-4=Grid(gridName=3-B-4, id=31, status=FREE), 2-T-8=Grid(gridName=2-T-8, id=84, status=FREE), 2-T-9=Grid(gridName=2-T-9, id=85, status=FREE), 3-B-5=Grid(gridName=3-B-5, id=32, status=FREE), 2-T-6=Grid(gridName=2-T-6, id=82, status=FREE), 3-B-6=Grid(gridName=3-B-6, id=33, status=FREE), 2-T-7=Grid(gridName=2-T-7, id=83, status=FREE), 3-B-7=Grid(gridName=3-B-7, id=34, status=FREE), 2-T-4=Grid(gridName=2-T-4, id=80, status=FREE), 3-B-8=Grid(gridName=3-B-8, id=35, status=FREE), 2-T-5=Grid(gridName=2-T-5, id=81, status=FREE), 3-R-1=Grid(gridName=3-R-1, id=68, status=FREE), 3-R-2=Grid(gridName=3-R-2, id=69, status=FREE), 3-S=Grid(gridName=3-S, id=76, status=FREE), 3-R-3=Grid(gridName=3-R-3, id=70, status=FREE), 3-R-4=Grid(gridName=3-R-4, id=71, status=FREE), 2-A-9=Grid(gridName=2-A-9, id=95, status=OCCUPIED), 2-A-7=Grid(gridName=2-A-7, id=93, status=OCCUPIED), 2-A-8=Grid(gridName=2-A-8, id=94, status=OCCUPIED), 2-A-5=Grid(gridName=2-A-5, id=91, status=OCCUPIED), 2-A-6=Grid(gridName=2-A-6, id=92, status=OCCUPIED), 2-A-3=Grid(gridName=2-A-3, id=89, status=OCCUPIED), 2-A-4=Grid(gridName=2-A-4, id=90, status=OCCUPIED), 2-A-1=Grid(gridName=2-A-1, id=87, status=OCCUPIED), 2-A-2=Grid(gridName=2-A-2, id=88, status=OCCUPIED), 3-C-1=Grid(gridName=3-C-1, id=36, status=OCCUPIED), 3-C-2=Grid(gridName=3-C-2, id=37, status=OCCUPIED), 3-C-3=Grid(gridName=3-C-3, id=38, status=OCCUPIED), 3-C-8=Grid(gridName=3-C-8, id=43, status=FREE), 3-C-9=Grid(gridName=3-C-9, id=44, status=FREE), 3-C-4=Grid(gridName=3-C-4, id=39, status=OCCUPIED), 3-C-5=Grid(gridName=3-C-5, id=40, status=FREE), 3-C-6=Grid(gridName=3-C-6, id=41, status=FREE), 3-C-7=Grid(gridName=3-C-7, id=42, status=FREE), 2-S=Grid(gridName=2-S, id=107, status=FREE), 3-T-7=Grid(gridName=3-T-7, id=18, status=FREE), 3-T-8=Grid(gridName=3-T-8, id=19, status=FREE), 3-T-3=Grid(gridName=3-T-3, id=14, status=FREE), 3-T-4=Grid(gridName=3-T-4, id=15, status=FREE), 3-T-5=Grid(gridName=3-T-5, id=16, status=FREE), 3-T-6=Grid(gridName=3-T-6, id=17, status=FREE), 1-T-1=Grid(gridName=1-T-1, id=1, status=FREE), 1-T-2=Grid(gridName=1-T-2, id=2, status=FREE), 1-T-3=Grid(gridName=1-T-3, id=3, status=FREE), 1-T-4=Grid(gridName=1-T-4, id=4, status=FREE), 1-T-5=Grid(gridName=1-T-5, id=5, status=FREE), E-1=Grid(gridName=E-1, id=108, status=FREE), 1-T-6=Grid(gridName=1-T-6, id=6, status=FREE), 1-T-7=Grid(gridName=1-T-7, id=7, status=FREE), 3-D-1=Grid(gridName=3-D-1, id=60, status=FREE), E-3=Grid(gridName=E-3, id=110, status=FREE), 1-T-8=Grid(gridName=1-T-8, id=8, status=FREE), 3-D-2=Grid(gridName=3-D-2, id=61, status=FREE), E-2=Grid(gridName=E-2, id=109, status=FREE), E-5=Grid(gridName=E-5, id=112, status=FREE), E-4=Grid(gridName=E-4, id=111, status=FREE), E-7=Grid(gridName=E-7, id=114, status=FREE), E-6=Grid(gridName=E-6, id=113, status=FREE), 3-D-7=Grid(gridName=3-D-7, id=66, status=FREE), 3-D-8=Grid(gridName=3-D-8, id=67, status=FREE), E-8=Grid(gridName=E-8, id=115, status=FREE), 3-D-3=Grid(gridName=3-D-3, id=62, status=FREE), 3-D-4=Grid(gridName=3-D-4, id=63, status=FREE), 3-D-5=Grid(gridName=3-D-5, id=64, status=FREE), 1-S=Grid(gridName=1-S, id=11, status=FREE), 3-D-6=Grid(gridName=3-D-6, id=65, status=FREE), 3-T-1=Grid(gridName=3-T-1, id=12, status=FREE), 3-T-2=Grid(gridName=3-T-2, id=13, status=FREE), 3-C-20=Grid(gridName=3-C-20, id=55, status=FREE), 3-C-21=Grid(gridName=3-C-21, id=56, status=FREE), 3-C-22=Grid(gridName=3-C-22, id=57, status=FREE), 3-C-23=Grid(gridName=3-C-23, id=58, status=FREE), 3-C-24=Grid(gridName=3-C-24, id=59, status=FREE), 3-C-10=Grid(gridName=3-C-10, id=45, status=FREE), 3-C-11=Grid(gridName=3-C-11, id=46, status=FREE), 3-C-12=Grid(gridName=3-C-12, id=47, status=FREE), 3-C-13=Grid(gridName=3-C-13, id=48, status=FREE), 3-C-14=Grid(gridName=3-C-14, id=49, status=FREE), 3-A-2=Grid(gridName=3-A-2, id=21, status=OCCUPIED), 3-C-15=Grid(gridName=3-C-15, id=50, status=FREE), 3-A-3=Grid(gridName=3-A-3, id=22, status=OCCUPIED), 3-C-16=Grid(gridName=3-C-16, id=51, status=FREE), 3-A-4=Grid(gridName=3-A-4, id=23, status=FREE), 3-C-17=Grid(gridName=3-C-17, id=52, status=FREE), 3-A-5=Grid(gridName=3-A-5, id=24, status=FREE), 3-C-18=Grid(gridName=3-C-18, id=53, status=FREE), 3-C-19=Grid(gridName=3-C-19, id=54, status=FREE), 3-A-1=Grid(gridName=3-A-1, id=20, status=OCCUPIED), 2-A-20=Grid(gridName=2-A-20, id=106, status=FREE), 3-A-6=Grid(gridName=3-A-6, id=25, status=FREE), 3-A-7=Grid(gridName=3-A-7, id=26, status=FREE), 3-A-8=Grid(gridName=3-A-8, id=27, status=FREE)}
+2024-03-01 13:38:18,286 INFO (TaskListManager.java:48)- Initialize taskListMap: {1=null, 2=null}
+2024-03-01 13:38:18,340 INFO (ElevatorSocketBox.java:174)- Connected to ElevatorBox!
+2024-03-01 13:38:18,341 INFO (ElevatorSocketBox.java:65)- receiveThread
+2024-03-01 13:38:18,341 INFO (ElevatorSocketBox.java:106)- sendThread
+2024-03-01 13:38:18,716 INFO (OptionalLiveReloadServer.java:59)- LiveReload server is running on port 35729
+2024-03-01 13:38:18,727 INFO (DirectJDKLog.java:173)- Starting ProtocolHandler ["http-nio-8080"]
+2024-03-01 13:38:18,743 INFO (TomcatWebServer.java:220)- Tomcat started on port(s): 8080 (http) with context path '/YIDAGV'
+2024-03-01 13:38:18,756 INFO (StartupInfoLogger.java:57)- Started Application in 3.014 seconds (process running for 3.384)
+2024-03-01 13:38:18,972 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 13:38:18,985 INFO (ElevatorManager.java:299)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 13:38:18,986 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 13:38:18,999 INFO (ElevatorManager.java:316)- clrcall
+2024-03-01 13:38:19,000 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 13:38:19,015 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 13:38:19,029 INFO (ElevatorManager.java:299)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 13:38:19,029 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 13:38:19,046 INFO (ElevatorManager.java:316)- clrcall
+2024-03-01 13:38:19,046 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 13:38:19,116 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:38:19,144 INFO (ElevatorManager.java:299)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 13:38:19,144 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 13:38:19,156 INFO (ElevatorManager.java:316)- clrcall
+2024-03-01 13:38:19,156 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 13:38:19,261 INFO (DirectJDKLog.java:173)- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-01 13:38:19,261 INFO (FrameworkServlet.java:532)- Initializing Servlet 'dispatcherServlet'
+2024-03-01 13:38:19,262 INFO (FrameworkServlet.java:554)- Completed initialization in 0 ms
+2024-03-01 13:38:26,780 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:38:26,796 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 13:38:26,796 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 13:38:27,771 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:38:36,783 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 13:38:44,774 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 13:38:44,774 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 13:38:44,791 INFO (ElevatorManager.java:316)- clrcall
+2024-03-01 13:38:44,791 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 13:38:45,773 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:38:46,791 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:39:28,774 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:39:28,789 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 13:39:28,790 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 13:39:29,772 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:39:30,790 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 13:39:34,764 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 13:39:43,767 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 13:39:43,768 INFO (ElevatorManager.java:312)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 13:39:43,797 INFO (ElevatorManager.java:316)- clrcall
+2024-03-01 13:39:43,798 INFO (ElevatorManager.java:320)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 13:39:44,764 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:39:45,779 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:39:46,791 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:39:47,766 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:39:48,768 INFO (ElevatorManager.java:292)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 13:41:31,320 INFO (ElevatorSocketBox.java:126)- Closing Socket...
+2024-03-01 13:41:31,321 INFO (ElevatorSocketBox.java:130)- Closing receiveThread...
+2024-03-01 13:41:31,321 INFO (ElevatorSocketBox.java:132)- Closing sendThread...
+2024-03-01 13:41:31,322 INFO (ElevatorSocketBox.java:151)- All SocketThread has been terminated!
+2024-03-01 15:24:38,314 INFO (StartupInfoLogger.java:51)- Starting Application using Java 19.0.1 with PID 3865 (/Users/michael/Documents/JavaProject/agv_WTools/target/classes started by michael in /Users/michael/Documents/JavaProject/agv_WTools)
+2024-03-01 15:24:38,316 INFO (SpringApplication.java:634)- No active profile set, falling back to 1 default profile: "default"
+2024-03-01 15:24:38,362 INFO (DeferredLog.java:250)- The Class-Path manifest attribute in /Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar referenced one or more files that do not exist: file:/Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/mchange-commons-java-0.2.19.jar
+2024-03-01 15:24:38,362 INFO (DeferredLog.java:250)- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-03-01 15:24:38,362 INFO (DeferredLog.java:250)- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-03-01 15:24:39,510 INFO (TomcatWebServer.java:108)- Tomcat initialized with port(s): 8080 (http)
+2024-03-01 15:24:39,518 INFO (DirectJDKLog.java:173)- Initializing ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:24:39,520 INFO (DirectJDKLog.java:173)- Starting service [Tomcat]
+2024-03-01 15:24:39,520 INFO (DirectJDKLog.java:173)- Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-03-01 15:24:39,578 INFO (DirectJDKLog.java:173)- Initializing Spring embedded WebApplicationContext
+2024-03-01 15:24:39,578 INFO (ServletWebServerApplicationContext.java:291)- Root WebApplicationContext: initialization completed in 1215 ms
+2024-03-01 15:24:39,667 INFO (Slf4jMLog.java:212)- MLog clients using slf4j logging.
+2024-03-01 15:24:39,901 INFO (Slf4jMLog.java:212)- Initializing c3p0-0.9.5.5 [built 11-December-2019 22:18:33 -0800; debug? true; trace: 10]
+2024-03-01 15:24:40,024 INFO (Slf4jMLog.java:212)- Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfltb11x278r91r3uhwb|36653293, debugUnreturnedConnectionStackTraces -> true, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfltb11x278r91r3uhwb|36653293, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 3600, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 60, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2024-03-01 15:24:40,387 INFO (AGVManager.java:34)- Initialize agvMap: {1=AGV(id=1, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_1, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 2=AGV(id=2, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_2, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 3=AGV(id=3, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_3, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0)}
+2024-03-01 15:24:40,442 INFO (GridManager.java:30)- Initialize gridMap: {2-T-10=Grid(gridName=2-T-10, id=86, status=FREE), 2-A-14=Grid(gridName=2-A-14, id=100, status=OCCUPIED), 2-A-15=Grid(gridName=2-A-15, id=101, status=OCCUPIED), 2-A-12=Grid(gridName=2-A-12, id=98, status=OCCUPIED), 2-A-13=Grid(gridName=2-A-13, id=99, status=OCCUPIED), 3-R-5=Grid(gridName=3-R-5, id=72, status=FREE), 2-A-18=Grid(gridName=2-A-18, id=104, status=FREE), 3-R-6=Grid(gridName=3-R-6, id=73, status=FREE), 2-A-19=Grid(gridName=2-A-19, id=105, status=FREE), 3-R-7=Grid(gridName=3-R-7, id=74, status=FREE), 2-A-16=Grid(gridName=2-A-16, id=102, status=OCCUPIED), 3-R-8=Grid(gridName=3-R-8, id=75, status=FREE), 2-A-17=Grid(gridName=2-A-17, id=103, status=FREE), 2-T-2=Grid(gridName=2-T-2, id=78, status=FREE), 2-T-3=Grid(gridName=2-T-3, id=79, status=FREE), 2-T-1=Grid(gridName=2-T-1, id=77, status=FREE), 2-A-10=Grid(gridName=2-A-10, id=96, status=OCCUPIED), 2-A-11=Grid(gridName=2-A-11, id=97, status=OCCUPIED), 1-R-1=Grid(gridName=1-R-1, id=9, status=OCCUPIED), 1-R-2=Grid(gridName=1-R-2, id=10, status=OCCUPIED), 3-B-1=Grid(gridName=3-B-1, id=28, status=OCCUPIED), 3-B-2=Grid(gridName=3-B-2, id=29, status=OCCUPIED), 3-B-3=Grid(gridName=3-B-3, id=30, status=OCCUPIED), 3-B-4=Grid(gridName=3-B-4, id=31, status=FREE), 2-T-8=Grid(gridName=2-T-8, id=84, status=FREE), 2-T-9=Grid(gridName=2-T-9, id=85, status=FREE), 3-B-5=Grid(gridName=3-B-5, id=32, status=FREE), 2-T-6=Grid(gridName=2-T-6, id=82, status=FREE), 3-B-6=Grid(gridName=3-B-6, id=33, status=FREE), 2-T-7=Grid(gridName=2-T-7, id=83, status=FREE), 3-B-7=Grid(gridName=3-B-7, id=34, status=FREE), 2-T-4=Grid(gridName=2-T-4, id=80, status=FREE), 3-B-8=Grid(gridName=3-B-8, id=35, status=FREE), 2-T-5=Grid(gridName=2-T-5, id=81, status=FREE), 3-R-1=Grid(gridName=3-R-1, id=68, status=FREE), 3-R-2=Grid(gridName=3-R-2, id=69, status=FREE), 3-S=Grid(gridName=3-S, id=76, status=FREE), 3-R-3=Grid(gridName=3-R-3, id=70, status=FREE), 3-R-4=Grid(gridName=3-R-4, id=71, status=FREE), 2-A-9=Grid(gridName=2-A-9, id=95, status=OCCUPIED), 2-A-7=Grid(gridName=2-A-7, id=93, status=OCCUPIED), 2-A-8=Grid(gridName=2-A-8, id=94, status=OCCUPIED), 2-A-5=Grid(gridName=2-A-5, id=91, status=OCCUPIED), 2-A-6=Grid(gridName=2-A-6, id=92, status=OCCUPIED), 2-A-3=Grid(gridName=2-A-3, id=89, status=OCCUPIED), 2-A-4=Grid(gridName=2-A-4, id=90, status=OCCUPIED), 2-A-1=Grid(gridName=2-A-1, id=87, status=OCCUPIED), 2-A-2=Grid(gridName=2-A-2, id=88, status=OCCUPIED), 3-C-1=Grid(gridName=3-C-1, id=36, status=OCCUPIED), 3-C-2=Grid(gridName=3-C-2, id=37, status=OCCUPIED), 3-C-3=Grid(gridName=3-C-3, id=38, status=OCCUPIED), 3-C-8=Grid(gridName=3-C-8, id=43, status=FREE), 3-C-9=Grid(gridName=3-C-9, id=44, status=FREE), 3-C-4=Grid(gridName=3-C-4, id=39, status=OCCUPIED), 3-C-5=Grid(gridName=3-C-5, id=40, status=FREE), 3-C-6=Grid(gridName=3-C-6, id=41, status=FREE), 3-C-7=Grid(gridName=3-C-7, id=42, status=FREE), 2-S=Grid(gridName=2-S, id=107, status=FREE), 3-T-7=Grid(gridName=3-T-7, id=18, status=FREE), 3-T-8=Grid(gridName=3-T-8, id=19, status=FREE), 3-T-3=Grid(gridName=3-T-3, id=14, status=FREE), 3-T-4=Grid(gridName=3-T-4, id=15, status=FREE), 3-T-5=Grid(gridName=3-T-5, id=16, status=FREE), 3-T-6=Grid(gridName=3-T-6, id=17, status=FREE), 1-T-1=Grid(gridName=1-T-1, id=1, status=FREE), 1-T-2=Grid(gridName=1-T-2, id=2, status=FREE), 1-T-3=Grid(gridName=1-T-3, id=3, status=FREE), 1-T-4=Grid(gridName=1-T-4, id=4, status=FREE), 1-T-5=Grid(gridName=1-T-5, id=5, status=FREE), E-1=Grid(gridName=E-1, id=108, status=FREE), 1-T-6=Grid(gridName=1-T-6, id=6, status=FREE), 1-T-7=Grid(gridName=1-T-7, id=7, status=FREE), 3-D-1=Grid(gridName=3-D-1, id=60, status=FREE), E-3=Grid(gridName=E-3, id=110, status=FREE), 1-T-8=Grid(gridName=1-T-8, id=8, status=FREE), 3-D-2=Grid(gridName=3-D-2, id=61, status=FREE), E-2=Grid(gridName=E-2, id=109, status=FREE), E-5=Grid(gridName=E-5, id=112, status=FREE), E-4=Grid(gridName=E-4, id=111, status=FREE), E-7=Grid(gridName=E-7, id=114, status=FREE), E-6=Grid(gridName=E-6, id=113, status=FREE), 3-D-7=Grid(gridName=3-D-7, id=66, status=FREE), 3-D-8=Grid(gridName=3-D-8, id=67, status=FREE), E-8=Grid(gridName=E-8, id=115, status=FREE), 3-D-3=Grid(gridName=3-D-3, id=62, status=FREE), 3-D-4=Grid(gridName=3-D-4, id=63, status=FREE), 3-D-5=Grid(gridName=3-D-5, id=64, status=FREE), 1-S=Grid(gridName=1-S, id=11, status=FREE), 3-D-6=Grid(gridName=3-D-6, id=65, status=FREE), 3-T-1=Grid(gridName=3-T-1, id=12, status=FREE), 3-T-2=Grid(gridName=3-T-2, id=13, status=FREE), 3-C-20=Grid(gridName=3-C-20, id=55, status=FREE), 3-C-21=Grid(gridName=3-C-21, id=56, status=FREE), 3-C-22=Grid(gridName=3-C-22, id=57, status=FREE), 3-C-23=Grid(gridName=3-C-23, id=58, status=FREE), 3-C-24=Grid(gridName=3-C-24, id=59, status=FREE), 3-C-10=Grid(gridName=3-C-10, id=45, status=FREE), 3-C-11=Grid(gridName=3-C-11, id=46, status=FREE), 3-C-12=Grid(gridName=3-C-12, id=47, status=FREE), 3-C-13=Grid(gridName=3-C-13, id=48, status=FREE), 3-C-14=Grid(gridName=3-C-14, id=49, status=FREE), 3-A-2=Grid(gridName=3-A-2, id=21, status=OCCUPIED), 3-C-15=Grid(gridName=3-C-15, id=50, status=FREE), 3-A-3=Grid(gridName=3-A-3, id=22, status=OCCUPIED), 3-C-16=Grid(gridName=3-C-16, id=51, status=FREE), 3-A-4=Grid(gridName=3-A-4, id=23, status=FREE), 3-C-17=Grid(gridName=3-C-17, id=52, status=FREE), 3-A-5=Grid(gridName=3-A-5, id=24, status=FREE), 3-C-18=Grid(gridName=3-C-18, id=53, status=FREE), 3-C-19=Grid(gridName=3-C-19, id=54, status=FREE), 3-A-1=Grid(gridName=3-A-1, id=20, status=OCCUPIED), 2-A-20=Grid(gridName=2-A-20, id=106, status=FREE), 3-A-6=Grid(gridName=3-A-6, id=25, status=FREE), 3-A-7=Grid(gridName=3-A-7, id=26, status=FREE), 3-A-8=Grid(gridName=3-A-8, id=27, status=FREE)}
+2024-03-01 15:24:40,468 INFO (TaskListManager.java:48)- Initialize taskListMap: {1=null, 2=null}
+2024-03-01 15:24:40,524 INFO (ElevatorSocketBox.java:174)- Connected to ElevatorBox!
+2024-03-01 15:24:40,525 INFO (ElevatorSocketBox.java:65)- receiveThread
+2024-03-01 15:24:40,525 INFO (ElevatorSocketBox.java:106)- sendThread
+2024-03-01 15:24:40,961 INFO (OptionalLiveReloadServer.java:59)- LiveReload server is running on port 35729
+2024-03-01 15:24:40,986 INFO (DirectJDKLog.java:173)- Starting ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:24:41,012 INFO (TomcatWebServer.java:220)- Tomcat started on port(s): 8080 (http) with context path '/YIDAGV'
+2024-03-01 15:24:41,036 INFO (StartupInfoLogger.java:57)- Started Application in 3.238 seconds (process running for 3.641)
+2024-03-01 15:24:41,259 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:24:41,291 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 15:24:41,296 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 15:24:41,321 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:24:41,321 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 15:24:41,337 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:24:41,351 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 15:24:41,352 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 15:24:41,368 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:24:41,368 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 15:24:41,388 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:24:41,406 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 15:24:41,406 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:24:41,417 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:24:41,418 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:24:42,081 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:24:42,097 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:24:42,112 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:24:43,085 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:25:03,081 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:25:03,093 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:25:03,093 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:25:04,074 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:25:05,053 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:25:10,073 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:25:10,073 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:25:11,074 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:25:12,065 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:25:13,060 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:25:14,065 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:25:15,060 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 6
+2024-03-01 15:25:16,055 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 7
+2024-03-01 15:25:17,050 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 8
+2024-03-01 15:25:18,100 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 9
+2024-03-01 15:25:19,064 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 10
+2024-03-01 15:25:20,059 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 11
+2024-03-01 15:25:21,075 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 12
+2024-03-01 15:25:22,080 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 13
+2024-03-01 15:25:23,061 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 14
+2024-03-01 15:25:25,062 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 15
+2024-03-01 15:25:26,139 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 16
+2024-03-01 15:25:27,002 INFO (DirectJDKLog.java:173)- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-01 15:25:27,002 INFO (FrameworkServlet.java:532)- Initializing Servlet 'dispatcherServlet'
+2024-03-01 15:25:27,003 INFO (FrameworkServlet.java:554)- Completed initialization in 0 ms
+2024-03-01 15:25:27,060 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 17
+2024-03-01 15:25:28,061 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 18
+2024-03-01 15:25:31,077 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 19
+2024-03-01 15:25:32,097 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 20
+2024-03-01 15:25:33,044 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 21
+2024-03-01 15:25:34,106 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 22
+2024-03-01 15:25:35,067 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 23
+2024-03-01 15:25:36,071 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 24
+2024-03-01 15:25:37,056 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 25
+2024-03-01 15:25:38,050 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 26
+2024-03-01 15:25:39,095 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 27
+2024-03-01 15:25:40,064 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 28
+2024-03-01 15:25:41,048 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 29
+2024-03-01 15:25:42,054 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 30
+2024-03-01 15:25:43,095 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 31
+2024-03-01 15:25:43,096 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:25:43,096 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:25:43,126 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:25:43,126 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:25:44,052 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:25:45,044 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:26:54,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:26:54,081 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:26:54,081 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:26:55,067 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:26:56,090 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:27:00,099 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:27:00,099 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:27:01,064 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:27:02,065 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:27:03,086 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:27:04,078 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:27:05,067 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:27:05,067 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:27:05,082 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:27:05,083 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:27:06,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:27:36,049 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0021XXX
+2024-03-01 15:27:49,055 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:27:49,074 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:27:49,074 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:27:50,071 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:27:54,057 INFO (ElevatorManager.java:302)- SendIOControlBoxToggle Id: 3 Value: 2
+2024-03-01 15:27:54,082 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 4 Value: 16
+2024-03-01 15:28:04,077 INFO (ElevatorManager.java:302)- SendIOControlBoxToggle Id: 1 Value: 2
+2024-03-01 15:28:04,093 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 2 Value: 16
+2024-03-01 15:28:31,081 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:28:31,082 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:28:32,076 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:28:33,072 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:28:34,070 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:28:35,071 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:28:35,072 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:28:35,095 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:28:35,095 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:28:36,082 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:37,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:38,075 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:39,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:40,126 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:41,112 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:42,082 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:43,112 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:44,069 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:45,077 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:46,070 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:47,082 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:48,066 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:49,061 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:50,071 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:51,058 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:52,087 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:53,070 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:28:54,073 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:29:27,062 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:29:50,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:29:56,068 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 15:29:56,069 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 15:29:56,084 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:30:04,049 WARN (AGVInstantStatus.java:427)- Traffic Control is not connected
+2024-03-01 15:30:45,061 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:05,108 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 3
+2024-03-01 15:31:05,128 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 1
+2024-03-01 15:31:06,076 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:12,116 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:31:12,117 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:31:25,081 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:31:26,065 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:31:26,065 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:41,060 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:31:41,060 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:41,084 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 15:31:42,068 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:43,067 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 3
+2024-03-01 15:31:43,099 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 15:31:43,099 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 2 Value: 1
+2024-03-01 15:31:43,111 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:44,066 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 3
+2024-03-01 15:31:44,092 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:45,069 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 3
+2024-03-01 15:31:45,082 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:46,073 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:47,072 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:48,073 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:49,070 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:50,057 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:51,082 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:52,084 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:31:53,064 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:32:25,108 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:32:26,072 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:32:27,063 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:32:28,074 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:32:29,096 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:33:46,076 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:33:46,076 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:33:47,094 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:33:48,131 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:33:49,074 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:33:50,076 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:33:51,071 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 6
+2024-03-01 15:33:52,081 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 7
+2024-03-01 15:33:53,080 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:33:53,081 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 15:33:53,107 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:33:53,107 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 15:33:54,091 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:34:41,080 INFO (ElevatorManager.java:302)- SendIOControlBoxToggle Id: 7 Value: 2
+2024-03-01 15:34:41,094 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:34:55,094 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:34:55,123 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 15:34:55,124 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:34:56,120 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:34:57,075 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:34:58,076 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:35:11,071 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:35:11,071 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:35:12,074 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:35:13,149 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:35:14,068 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:35:15,068 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:35:16,067 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:35:16,067 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:35:16,097 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:35:16,098 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:35:17,093 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:35:18,098 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:35:53,741 INFO (ElevatorSocketBox.java:126)- Closing Socket...
+2024-03-01 15:35:53,741 INFO (ElevatorSocketBox.java:130)- Closing receiveThread...
+2024-03-01 15:35:53,742 INFO (ElevatorSocketBox.java:132)- Closing sendThread...
+2024-03-01 15:35:53,744 INFO (ElevatorSocketBox.java:151)- All SocketThread has been terminated!
+2024-03-01 15:36:19,872 INFO (StartupInfoLogger.java:51)- Starting Application using Java 19.0.1 with PID 3973 (/Users/michael/Documents/JavaProject/agv_WTools/target/classes started by michael in /Users/michael/Documents/JavaProject/agv_WTools)
+2024-03-01 15:36:19,874 INFO (SpringApplication.java:634)- No active profile set, falling back to 1 default profile: "default"
+2024-03-01 15:36:19,919 INFO (DeferredLog.java:250)- The Class-Path manifest attribute in /Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar referenced one or more files that do not exist: file:/Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/mchange-commons-java-0.2.19.jar
+2024-03-01 15:36:19,919 INFO (DeferredLog.java:250)- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-03-01 15:36:19,919 INFO (DeferredLog.java:250)- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-03-01 15:36:21,008 INFO (TomcatWebServer.java:108)- Tomcat initialized with port(s): 8080 (http)
+2024-03-01 15:36:21,016 INFO (DirectJDKLog.java:173)- Initializing ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:36:21,019 INFO (DirectJDKLog.java:173)- Starting service [Tomcat]
+2024-03-01 15:36:21,019 INFO (DirectJDKLog.java:173)- Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-03-01 15:36:21,073 INFO (DirectJDKLog.java:173)- Initializing Spring embedded WebApplicationContext
+2024-03-01 15:36:21,074 INFO (ServletWebServerApplicationContext.java:291)- Root WebApplicationContext: initialization completed in 1154 ms
+2024-03-01 15:36:21,159 INFO (Slf4jMLog.java:212)- MLog clients using slf4j logging.
+2024-03-01 15:36:21,393 INFO (Slf4jMLog.java:212)- Initializing c3p0-0.9.5.5 [built 11-December-2019 22:18:33 -0800; debug? true; trace: 10]
+2024-03-01 15:36:21,519 INFO (Slf4jMLog.java:212)- Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfltb11x2ma13u8676e|43d17832, debugUnreturnedConnectionStackTraces -> true, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfltb11x2ma13u8676e|43d17832, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 3600, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 60, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2024-03-01 15:36:21,897 INFO (AGVManager.java:34)- Initialize agvMap: {1=AGV(id=1, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_1, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 2=AGV(id=2, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_2, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 3=AGV(id=3, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_3, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0)}
+2024-03-01 15:36:21,942 INFO (GridManager.java:30)- Initialize gridMap: {2-T-10=Grid(gridName=2-T-10, id=86, status=FREE), 2-A-14=Grid(gridName=2-A-14, id=100, status=OCCUPIED), 2-A-15=Grid(gridName=2-A-15, id=101, status=OCCUPIED), 2-A-12=Grid(gridName=2-A-12, id=98, status=OCCUPIED), 2-A-13=Grid(gridName=2-A-13, id=99, status=OCCUPIED), 3-R-5=Grid(gridName=3-R-5, id=72, status=FREE), 2-A-18=Grid(gridName=2-A-18, id=104, status=FREE), 3-R-6=Grid(gridName=3-R-6, id=73, status=FREE), 2-A-19=Grid(gridName=2-A-19, id=105, status=FREE), 3-R-7=Grid(gridName=3-R-7, id=74, status=FREE), 2-A-16=Grid(gridName=2-A-16, id=102, status=OCCUPIED), 3-R-8=Grid(gridName=3-R-8, id=75, status=FREE), 2-A-17=Grid(gridName=2-A-17, id=103, status=FREE), 2-T-2=Grid(gridName=2-T-2, id=78, status=FREE), 2-T-3=Grid(gridName=2-T-3, id=79, status=FREE), 2-T-1=Grid(gridName=2-T-1, id=77, status=FREE), 2-A-10=Grid(gridName=2-A-10, id=96, status=OCCUPIED), 2-A-11=Grid(gridName=2-A-11, id=97, status=OCCUPIED), 1-R-1=Grid(gridName=1-R-1, id=9, status=OCCUPIED), 1-R-2=Grid(gridName=1-R-2, id=10, status=OCCUPIED), 3-B-1=Grid(gridName=3-B-1, id=28, status=OCCUPIED), 3-B-2=Grid(gridName=3-B-2, id=29, status=OCCUPIED), 3-B-3=Grid(gridName=3-B-3, id=30, status=OCCUPIED), 3-B-4=Grid(gridName=3-B-4, id=31, status=FREE), 2-T-8=Grid(gridName=2-T-8, id=84, status=FREE), 2-T-9=Grid(gridName=2-T-9, id=85, status=FREE), 3-B-5=Grid(gridName=3-B-5, id=32, status=FREE), 2-T-6=Grid(gridName=2-T-6, id=82, status=FREE), 3-B-6=Grid(gridName=3-B-6, id=33, status=FREE), 2-T-7=Grid(gridName=2-T-7, id=83, status=FREE), 3-B-7=Grid(gridName=3-B-7, id=34, status=FREE), 2-T-4=Grid(gridName=2-T-4, id=80, status=FREE), 3-B-8=Grid(gridName=3-B-8, id=35, status=FREE), 2-T-5=Grid(gridName=2-T-5, id=81, status=FREE), 3-R-1=Grid(gridName=3-R-1, id=68, status=FREE), 3-R-2=Grid(gridName=3-R-2, id=69, status=FREE), 3-S=Grid(gridName=3-S, id=76, status=FREE), 3-R-3=Grid(gridName=3-R-3, id=70, status=FREE), 3-R-4=Grid(gridName=3-R-4, id=71, status=FREE), 2-A-9=Grid(gridName=2-A-9, id=95, status=OCCUPIED), 2-A-7=Grid(gridName=2-A-7, id=93, status=OCCUPIED), 2-A-8=Grid(gridName=2-A-8, id=94, status=OCCUPIED), 2-A-5=Grid(gridName=2-A-5, id=91, status=OCCUPIED), 2-A-6=Grid(gridName=2-A-6, id=92, status=OCCUPIED), 2-A-3=Grid(gridName=2-A-3, id=89, status=OCCUPIED), 2-A-4=Grid(gridName=2-A-4, id=90, status=OCCUPIED), 2-A-1=Grid(gridName=2-A-1, id=87, status=OCCUPIED), 2-A-2=Grid(gridName=2-A-2, id=88, status=OCCUPIED), 3-C-1=Grid(gridName=3-C-1, id=36, status=OCCUPIED), 3-C-2=Grid(gridName=3-C-2, id=37, status=OCCUPIED), 3-C-3=Grid(gridName=3-C-3, id=38, status=OCCUPIED), 3-C-8=Grid(gridName=3-C-8, id=43, status=FREE), 3-C-9=Grid(gridName=3-C-9, id=44, status=FREE), 3-C-4=Grid(gridName=3-C-4, id=39, status=OCCUPIED), 3-C-5=Grid(gridName=3-C-5, id=40, status=FREE), 3-C-6=Grid(gridName=3-C-6, id=41, status=FREE), 3-C-7=Grid(gridName=3-C-7, id=42, status=FREE), 2-S=Grid(gridName=2-S, id=107, status=FREE), 3-T-7=Grid(gridName=3-T-7, id=18, status=FREE), 3-T-8=Grid(gridName=3-T-8, id=19, status=FREE), 3-T-3=Grid(gridName=3-T-3, id=14, status=FREE), 3-T-4=Grid(gridName=3-T-4, id=15, status=FREE), 3-T-5=Grid(gridName=3-T-5, id=16, status=FREE), 3-T-6=Grid(gridName=3-T-6, id=17, status=FREE), 1-T-1=Grid(gridName=1-T-1, id=1, status=FREE), 1-T-2=Grid(gridName=1-T-2, id=2, status=FREE), 1-T-3=Grid(gridName=1-T-3, id=3, status=FREE), 1-T-4=Grid(gridName=1-T-4, id=4, status=FREE), 1-T-5=Grid(gridName=1-T-5, id=5, status=FREE), E-1=Grid(gridName=E-1, id=108, status=FREE), 1-T-6=Grid(gridName=1-T-6, id=6, status=FREE), 1-T-7=Grid(gridName=1-T-7, id=7, status=FREE), 3-D-1=Grid(gridName=3-D-1, id=60, status=FREE), E-3=Grid(gridName=E-3, id=110, status=FREE), 1-T-8=Grid(gridName=1-T-8, id=8, status=FREE), 3-D-2=Grid(gridName=3-D-2, id=61, status=FREE), E-2=Grid(gridName=E-2, id=109, status=FREE), E-5=Grid(gridName=E-5, id=112, status=FREE), E-4=Grid(gridName=E-4, id=111, status=FREE), E-7=Grid(gridName=E-7, id=114, status=FREE), E-6=Grid(gridName=E-6, id=113, status=FREE), 3-D-7=Grid(gridName=3-D-7, id=66, status=FREE), 3-D-8=Grid(gridName=3-D-8, id=67, status=FREE), E-8=Grid(gridName=E-8, id=115, status=FREE), 3-D-3=Grid(gridName=3-D-3, id=62, status=FREE), 3-D-4=Grid(gridName=3-D-4, id=63, status=FREE), 3-D-5=Grid(gridName=3-D-5, id=64, status=FREE), 1-S=Grid(gridName=1-S, id=11, status=FREE), 3-D-6=Grid(gridName=3-D-6, id=65, status=FREE), 3-T-1=Grid(gridName=3-T-1, id=12, status=FREE), 3-T-2=Grid(gridName=3-T-2, id=13, status=FREE), 3-C-20=Grid(gridName=3-C-20, id=55, status=FREE), 3-C-21=Grid(gridName=3-C-21, id=56, status=FREE), 3-C-22=Grid(gridName=3-C-22, id=57, status=FREE), 3-C-23=Grid(gridName=3-C-23, id=58, status=FREE), 3-C-24=Grid(gridName=3-C-24, id=59, status=FREE), 3-C-10=Grid(gridName=3-C-10, id=45, status=FREE), 3-C-11=Grid(gridName=3-C-11, id=46, status=FREE), 3-C-12=Grid(gridName=3-C-12, id=47, status=FREE), 3-C-13=Grid(gridName=3-C-13, id=48, status=FREE), 3-C-14=Grid(gridName=3-C-14, id=49, status=FREE), 3-A-2=Grid(gridName=3-A-2, id=21, status=OCCUPIED), 3-C-15=Grid(gridName=3-C-15, id=50, status=FREE), 3-A-3=Grid(gridName=3-A-3, id=22, status=OCCUPIED), 3-C-16=Grid(gridName=3-C-16, id=51, status=FREE), 3-A-4=Grid(gridName=3-A-4, id=23, status=FREE), 3-C-17=Grid(gridName=3-C-17, id=52, status=FREE), 3-A-5=Grid(gridName=3-A-5, id=24, status=FREE), 3-C-18=Grid(gridName=3-C-18, id=53, status=FREE), 3-C-19=Grid(gridName=3-C-19, id=54, status=FREE), 3-A-1=Grid(gridName=3-A-1, id=20, status=OCCUPIED), 2-A-20=Grid(gridName=2-A-20, id=106, status=FREE), 3-A-6=Grid(gridName=3-A-6, id=25, status=FREE), 3-A-7=Grid(gridName=3-A-7, id=26, status=FREE), 3-A-8=Grid(gridName=3-A-8, id=27, status=FREE)}
+2024-03-01 15:36:21,966 INFO (TaskListManager.java:48)- Initialize taskListMap: {1=null, 2=null}
+2024-03-01 15:36:22,013 INFO (ElevatorSocketBox.java:174)- Connected to ElevatorBox!
+2024-03-01 15:36:22,014 INFO (ElevatorSocketBox.java:65)- receiveThread
+2024-03-01 15:36:22,014 INFO (ElevatorSocketBox.java:106)- sendThread
+2024-03-01 15:36:22,356 INFO (OptionalLiveReloadServer.java:59)- LiveReload server is running on port 35729
+2024-03-01 15:36:22,367 INFO (DirectJDKLog.java:173)- Starting ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:36:22,382 INFO (TomcatWebServer.java:220)- Tomcat started on port(s): 8080 (http) with context path '/YIDAGV'
+2024-03-01 15:36:22,394 INFO (StartupInfoLogger.java:57)- Started Application in 2.996 seconds (process running for 3.426)
+2024-03-01 15:36:22,506 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:36:22,551 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 15:36:22,555 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 15:36:22,605 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:36:22,606 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 15:36:22,667 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:36:22,688 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 15:36:22,688 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 15:36:22,746 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:36:22,749 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 15:36:22,783 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:36:22,807 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 15:36:22,810 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:36:22,825 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:36:22,825 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:36:27,089 INFO (DirectJDKLog.java:173)- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-01 15:36:27,089 INFO (FrameworkServlet.java:532)- Initializing Servlet 'dispatcherServlet'
+2024-03-01 15:36:27,090 INFO (FrameworkServlet.java:554)- Completed initialization in 1 ms
+2024-03-01 15:45:11,458 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:45:11,606 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:45:11,607 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:45:12,471 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:45:13,446 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:45:18,446 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:45:18,447 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:45:19,430 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:45:20,430 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:45:21,518 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:45:22,443 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:45:22,444 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:45:22,459 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:45:22,459 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:45:23,429 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:45:23,452 INFO (ElevatorManager.java:302)- SendIOControlBoxToggle Id: 7 Value: 2
+2024-03-01 15:45:23,473 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:45:24,457 INFO (ElevatorManager.java:300)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 15:45:24,457 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:45:24,467 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:45:35,464 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:45:36,438 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:45:37,450 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:45:40,451 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:45:40,474 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:45:41,447 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:45:41,448 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:45:41,448 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:45:42,461 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:45:43,450 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:45:44,430 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:45:45,759 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:45:46,446 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:45:46,446 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:48:26,439 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 4
+2024-03-01 15:48:26,466 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:26,500 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 1
+2024-03-01 15:48:26,524 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 4
+2024-03-01 15:48:27,464 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 4
+2024-03-01 15:48:27,483 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:27,502 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 4
+2024-03-01 15:48:28,575 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:29,449 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:30,431 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:31,492 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:32,451 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:33,464 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:34,438 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:35,443 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:36,443 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:37,433 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:38,447 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:39,436 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:40,445 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:41,444 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:42,442 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:48:43,445 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 4
+2024-03-01 15:49:30,419 INFO (ProcessTaskList.java:91)- AGVQTask(taskNumber=#YE202403010001, agvId=1, sequence=2, startStation=1-T-6, terminalStation=E-1, startStationId=6, terminalStationId=108, modeId=0, status=0)
+2024-03-01 15:49:30,427 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:2.
+2024-03-01 15:49:30,430 INFO (ProcessTaskList.java:91)- AGVQTask(taskNumber=#YE202403010001, agvId=1, sequence=3, startStation=1-T-4, terminalStation=E-2, startStationId=4, terminalStationId=109, modeId=0, status=0)
+2024-03-01 15:49:30,438 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:3.
+2024-03-01 15:49:34,419 INFO (ProcessTaskList.java:107)- 已搬運至1F電梯
+2024-03-01 15:49:34,444 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 15:49:34,463 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:49:46,466 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 4
+2024-03-01 15:49:47,439 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 4
+2024-03-01 15:49:50,417 INFO (ProcessTaskList.java:125)- AGVQTask(taskNumber=#YE202403010001, agvId=3, sequence=5, startStation=E-2, terminalStation=3-T-1, startStationId=109, terminalStationId=12, modeId=0, status=0)
+2024-03-01 15:49:50,424 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:5.
+2024-03-01 15:49:50,426 INFO (ProcessTaskList.java:125)- AGVQTask(taskNumber=#YE202403010001, agvId=3, sequence=6, startStation=E-1, terminalStation=3-T-2, startStationId=108, terminalStationId=13, modeId=0, status=0)
+2024-03-01 15:49:50,430 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:6.
+2024-03-01 15:49:54,416 INFO (ProcessTaskList.java:141)- 已從電梯中搬運至3F暫存區完成
+2024-03-01 15:49:54,417 INFO (ProcessTaskList.java:156)- AGVQTask(taskNumber=#YE202403010001, agvId=3, sequence=7, startStation=3-T-2, terminalStation=3-C-7, startStationId=13, terminalStationId=42, modeId=0, status=0)
+2024-03-01 15:49:54,433 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:7.
+2024-03-01 15:49:54,435 INFO (ProcessTaskList.java:156)- AGVQTask(taskNumber=#YE202403010001, agvId=3, sequence=8, startStation=3-T-1, terminalStation=3-C-8, startStationId=12, terminalStationId=43, modeId=0, status=0)
+2024-03-01 15:49:54,439 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:49:54,442 INFO (ProcessAGVTask.java:295)- Completed task #YE202403010001:8.
+2024-03-01 15:49:54,475 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:49:54,486 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:49:54,503 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:49:55,440 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:49:55,486 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:49:56,445 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:49:58,417 INFO (ProcessTaskList.java:165)- YE任務已完成
+2024-03-01 15:54:33,478 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:54:33,513 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 16
+2024-03-01 15:54:33,513 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 1
+2024-03-01 15:54:34,446 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:54:35,463 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 3
+2024-03-01 15:54:39,460 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 1
+2024-03-01 15:54:39,460 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0042XXX
+2024-03-01 15:54:40,435 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 2
+2024-03-01 15:54:41,478 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 3
+2024-03-01 15:54:42,445 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 4
+2024-03-01 15:54:43,474 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 5
+2024-03-01 15:54:44,459 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 6
+2024-03-01 15:54:45,642 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 7
+2024-03-01 15:54:46,440 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 8
+2024-03-01 15:54:47,459 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 9
+2024-03-01 15:54:48,463 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 10
+2024-03-01 15:54:49,456 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 11
+2024-03-01 15:54:50,456 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 12
+2024-03-01 15:54:51,448 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 13
+2024-03-01 15:54:52,454 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 14
+2024-03-01 15:54:53,450 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 15
+2024-03-01 15:54:54,454 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 16
+2024-03-01 15:54:55,446 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 17
+2024-03-01 15:54:56,455 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 18
+2024-03-01 15:54:57,453 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 19
+2024-03-01 15:54:58,485 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 20
+2024-03-01 15:54:59,455 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 21
+2024-03-01 15:55:00,603 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 22
+2024-03-01 15:55:01,481 INFO (ElevatorManager.java:107)- prePersonOpenDoorCount: 23
+2024-03-01 15:55:02,457 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0002XXX
+2024-03-01 15:55:02,457 INFO (ElevatorManager.java:313)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:55:02,470 INFO (ElevatorManager.java:317)- clrcall
+2024-03-01 15:55:02,470 INFO (ElevatorManager.java:321)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:55:03,452 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:55:04,455 INFO (ElevatorManager.java:293)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:59:03,134 INFO (ElevatorSocketBox.java:126)- Closing Socket...
+2024-03-01 15:59:03,136 INFO (ElevatorSocketBox.java:130)- Closing receiveThread...
+2024-03-01 15:59:03,137 INFO (ElevatorSocketBox.java:132)- Closing sendThread...
+2024-03-01 15:59:03,140 INFO (ElevatorSocketBox.java:151)- All SocketThread has been terminated!
+2024-03-01 15:59:07,417 INFO (StartupInfoLogger.java:51)- Starting Application using Java 19.0.1 with PID 4191 (/Users/michael/Documents/JavaProject/agv_WTools/target/classes started by michael in /Users/michael/Documents/JavaProject/agv_WTools)
+2024-03-01 15:59:07,420 INFO (SpringApplication.java:634)- No active profile set, falling back to 1 default profile: "default"
+2024-03-01 15:59:07,465 INFO (DeferredLog.java:250)- The Class-Path manifest attribute in /Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar referenced one or more files that do not exist: file:/Users/michael/.m2/repository/com/mchange/c3p0/0.9.5.5/mchange-commons-java-0.2.19.jar
+2024-03-01 15:59:07,465 INFO (DeferredLog.java:250)- Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-03-01 15:59:07,465 INFO (DeferredLog.java:250)- For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-03-01 15:59:08,549 INFO (TomcatWebServer.java:108)- Tomcat initialized with port(s): 8080 (http)
+2024-03-01 15:59:08,557 INFO (DirectJDKLog.java:173)- Initializing ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:59:08,559 INFO (DirectJDKLog.java:173)- Starting service [Tomcat]
+2024-03-01 15:59:08,560 INFO (DirectJDKLog.java:173)- Starting Servlet engine: [Apache Tomcat/10.1.10]
+2024-03-01 15:59:08,617 INFO (DirectJDKLog.java:173)- Initializing Spring embedded WebApplicationContext
+2024-03-01 15:59:08,617 INFO (ServletWebServerApplicationContext.java:291)- Root WebApplicationContext: initialization completed in 1152 ms
+2024-03-01 15:59:08,702 INFO (Slf4jMLog.java:212)- MLog clients using slf4j logging.
+2024-03-01 15:59:08,986 INFO (Slf4jMLog.java:212)- Initializing c3p0-0.9.5.5 [built 11-December-2019 22:18:33 -0800; debug? true; trace: 10]
+2024-03-01 15:59:09,105 INFO (Slf4jMLog.java:212)- Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> z8kfltb11x3fl9sezcewq|5b3366d5, debugUnreturnedConnectionStackTraces -> true, description -> null, driverClass -> com.mysql.cj.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceSynchronousCheckins -> false, forceUseNamedDriverClass -> false, identityToken -> z8kfltb11x3fl9sezcewq|5b3366d5, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> jdbc:mysql://localhost:3306/AGV_WTools?zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Taipei&characterEncoding=utf-8&useUnicode=true, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 3600, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 60, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {password=******, user=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+2024-03-01 15:59:09,461 INFO (AGVManager.java:34)- Initialize agvMap: {1=AGV(id=1, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_1, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 2=AGV(id=2, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_2, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0), 3=AGV(id=3, status=null, place=null, battery=0, signal=0, task=null, taskStatus=NO_TASK, title=AMR_3, lastAgvSystemStatusData=null, iLowBattery=false, lowBatteryCount=0, reDispatchCount=0, tagError=false, fixAgvTagErrorCompleted=false, tagErrorDispatchCompleted=false, lastTaskBuffer=false, obstacleCount=0)}
+2024-03-01 15:59:09,514 INFO (GridManager.java:30)- Initialize gridMap: {2-T-10=Grid(gridName=2-T-10, id=86, status=FREE), 2-A-14=Grid(gridName=2-A-14, id=100, status=OCCUPIED), 2-A-15=Grid(gridName=2-A-15, id=101, status=OCCUPIED), 2-A-12=Grid(gridName=2-A-12, id=98, status=OCCUPIED), 2-A-13=Grid(gridName=2-A-13, id=99, status=OCCUPIED), 3-R-5=Grid(gridName=3-R-5, id=72, status=FREE), 2-A-18=Grid(gridName=2-A-18, id=104, status=FREE), 3-R-6=Grid(gridName=3-R-6, id=73, status=FREE), 2-A-19=Grid(gridName=2-A-19, id=105, status=FREE), 3-R-7=Grid(gridName=3-R-7, id=74, status=FREE), 2-A-16=Grid(gridName=2-A-16, id=102, status=OCCUPIED), 3-R-8=Grid(gridName=3-R-8, id=75, status=FREE), 2-A-17=Grid(gridName=2-A-17, id=103, status=FREE), 2-T-2=Grid(gridName=2-T-2, id=78, status=FREE), 2-T-3=Grid(gridName=2-T-3, id=79, status=FREE), 2-T-1=Grid(gridName=2-T-1, id=77, status=FREE), 2-A-10=Grid(gridName=2-A-10, id=96, status=OCCUPIED), 2-A-11=Grid(gridName=2-A-11, id=97, status=OCCUPIED), 1-R-1=Grid(gridName=1-R-1, id=9, status=OCCUPIED), 1-R-2=Grid(gridName=1-R-2, id=10, status=OCCUPIED), 3-B-1=Grid(gridName=3-B-1, id=28, status=OCCUPIED), 3-B-2=Grid(gridName=3-B-2, id=29, status=OCCUPIED), 3-B-3=Grid(gridName=3-B-3, id=30, status=OCCUPIED), 3-B-4=Grid(gridName=3-B-4, id=31, status=FREE), 2-T-8=Grid(gridName=2-T-8, id=84, status=FREE), 2-T-9=Grid(gridName=2-T-9, id=85, status=FREE), 3-B-5=Grid(gridName=3-B-5, id=32, status=FREE), 2-T-6=Grid(gridName=2-T-6, id=82, status=FREE), 3-B-6=Grid(gridName=3-B-6, id=33, status=FREE), 2-T-7=Grid(gridName=2-T-7, id=83, status=FREE), 3-B-7=Grid(gridName=3-B-7, id=34, status=FREE), 2-T-4=Grid(gridName=2-T-4, id=80, status=FREE), 3-B-8=Grid(gridName=3-B-8, id=35, status=FREE), 2-T-5=Grid(gridName=2-T-5, id=81, status=FREE), 3-R-1=Grid(gridName=3-R-1, id=68, status=FREE), 3-R-2=Grid(gridName=3-R-2, id=69, status=FREE), 3-S=Grid(gridName=3-S, id=76, status=FREE), 3-R-3=Grid(gridName=3-R-3, id=70, status=FREE), 3-R-4=Grid(gridName=3-R-4, id=71, status=FREE), 2-A-9=Grid(gridName=2-A-9, id=95, status=OCCUPIED), 2-A-7=Grid(gridName=2-A-7, id=93, status=OCCUPIED), 2-A-8=Grid(gridName=2-A-8, id=94, status=OCCUPIED), 2-A-5=Grid(gridName=2-A-5, id=91, status=OCCUPIED), 2-A-6=Grid(gridName=2-A-6, id=92, status=OCCUPIED), 2-A-3=Grid(gridName=2-A-3, id=89, status=OCCUPIED), 2-A-4=Grid(gridName=2-A-4, id=90, status=OCCUPIED), 2-A-1=Grid(gridName=2-A-1, id=87, status=OCCUPIED), 2-A-2=Grid(gridName=2-A-2, id=88, status=OCCUPIED), 3-C-1=Grid(gridName=3-C-1, id=36, status=OCCUPIED), 3-C-2=Grid(gridName=3-C-2, id=37, status=OCCUPIED), 3-C-3=Grid(gridName=3-C-3, id=38, status=OCCUPIED), 3-C-8=Grid(gridName=3-C-8, id=43, status=OCCUPIED), 3-C-9=Grid(gridName=3-C-9, id=44, status=FREE), 3-C-4=Grid(gridName=3-C-4, id=39, status=OCCUPIED), 3-C-5=Grid(gridName=3-C-5, id=40, status=FREE), 3-C-6=Grid(gridName=3-C-6, id=41, status=FREE), 3-C-7=Grid(gridName=3-C-7, id=42, status=OCCUPIED), 2-S=Grid(gridName=2-S, id=107, status=FREE), 3-T-7=Grid(gridName=3-T-7, id=18, status=FREE), 3-T-8=Grid(gridName=3-T-8, id=19, status=FREE), 3-T-3=Grid(gridName=3-T-3, id=14, status=FREE), 3-T-4=Grid(gridName=3-T-4, id=15, status=FREE), 3-T-5=Grid(gridName=3-T-5, id=16, status=FREE), 3-T-6=Grid(gridName=3-T-6, id=17, status=FREE), 1-T-1=Grid(gridName=1-T-1, id=1, status=FREE), 1-T-2=Grid(gridName=1-T-2, id=2, status=FREE), 1-T-3=Grid(gridName=1-T-3, id=3, status=FREE), 1-T-4=Grid(gridName=1-T-4, id=4, status=FREE), 1-T-5=Grid(gridName=1-T-5, id=5, status=FREE), E-1=Grid(gridName=E-1, id=108, status=FREE), 1-T-6=Grid(gridName=1-T-6, id=6, status=FREE), 1-T-7=Grid(gridName=1-T-7, id=7, status=FREE), 3-D-1=Grid(gridName=3-D-1, id=60, status=FREE), E-3=Grid(gridName=E-3, id=110, status=FREE), 1-T-8=Grid(gridName=1-T-8, id=8, status=FREE), 3-D-2=Grid(gridName=3-D-2, id=61, status=FREE), E-2=Grid(gridName=E-2, id=109, status=FREE), E-5=Grid(gridName=E-5, id=112, status=FREE), E-4=Grid(gridName=E-4, id=111, status=FREE), E-7=Grid(gridName=E-7, id=114, status=FREE), E-6=Grid(gridName=E-6, id=113, status=FREE), 3-D-7=Grid(gridName=3-D-7, id=66, status=FREE), 3-D-8=Grid(gridName=3-D-8, id=67, status=FREE), E-8=Grid(gridName=E-8, id=115, status=FREE), 3-D-3=Grid(gridName=3-D-3, id=62, status=FREE), 3-D-4=Grid(gridName=3-D-4, id=63, status=FREE), 3-D-5=Grid(gridName=3-D-5, id=64, status=FREE), 1-S=Grid(gridName=1-S, id=11, status=FREE), 3-D-6=Grid(gridName=3-D-6, id=65, status=FREE), 3-T-1=Grid(gridName=3-T-1, id=12, status=FREE), 3-T-2=Grid(gridName=3-T-2, id=13, status=FREE), 3-C-20=Grid(gridName=3-C-20, id=55, status=FREE), 3-C-21=Grid(gridName=3-C-21, id=56, status=FREE), 3-C-22=Grid(gridName=3-C-22, id=57, status=FREE), 3-C-23=Grid(gridName=3-C-23, id=58, status=FREE), 3-C-24=Grid(gridName=3-C-24, id=59, status=FREE), 3-C-10=Grid(gridName=3-C-10, id=45, status=FREE), 3-C-11=Grid(gridName=3-C-11, id=46, status=FREE), 3-C-12=Grid(gridName=3-C-12, id=47, status=FREE), 3-C-13=Grid(gridName=3-C-13, id=48, status=FREE), 3-C-14=Grid(gridName=3-C-14, id=49, status=FREE), 3-A-2=Grid(gridName=3-A-2, id=21, status=OCCUPIED), 3-C-15=Grid(gridName=3-C-15, id=50, status=FREE), 3-A-3=Grid(gridName=3-A-3, id=22, status=OCCUPIED), 3-C-16=Grid(gridName=3-C-16, id=51, status=FREE), 3-A-4=Grid(gridName=3-A-4, id=23, status=FREE), 3-C-17=Grid(gridName=3-C-17, id=52, status=FREE), 3-A-5=Grid(gridName=3-A-5, id=24, status=FREE), 3-C-18=Grid(gridName=3-C-18, id=53, status=FREE), 3-C-19=Grid(gridName=3-C-19, id=54, status=FREE), 3-A-1=Grid(gridName=3-A-1, id=20, status=OCCUPIED), 2-A-20=Grid(gridName=2-A-20, id=106, status=FREE), 3-A-6=Grid(gridName=3-A-6, id=25, status=FREE), 3-A-7=Grid(gridName=3-A-7, id=26, status=FREE), 3-A-8=Grid(gridName=3-A-8, id=27, status=FREE)}
+2024-03-01 15:59:09,540 INFO (TaskListManager.java:48)- Initialize taskListMap: {1=null, 2=null}
+2024-03-01 15:59:09,593 INFO (ElevatorSocketBox.java:174)- Connected to ElevatorBox!
+2024-03-01 15:59:09,594 INFO (ElevatorSocketBox.java:65)- receiveThread
+2024-03-01 15:59:09,595 INFO (ElevatorSocketBox.java:106)- sendThread
+2024-03-01 15:59:09,991 INFO (OptionalLiveReloadServer.java:59)- LiveReload server is running on port 35729
+2024-03-01 15:59:10,003 INFO (DirectJDKLog.java:173)- Starting ProtocolHandler ["http-nio-8080"]
+2024-03-01 15:59:10,017 INFO (TomcatWebServer.java:220)- Tomcat started on port(s): 8080 (http) with context path '/YIDAGV'
+2024-03-01 15:59:10,031 INFO (StartupInfoLogger.java:57)- Started Application in 3.08 seconds (process running for 3.521)
+2024-03-01 15:59:10,159 INFO (ElevatorManager.java:296)- SendIOControlBoxOutput Id: 1 Value: 1
+2024-03-01 15:59:10,244 INFO (ElevatorManager.java:303)- SendIOControlBoxToggle Id: 1 Value: 0, No send
+2024-03-01 15:59:10,251 INFO (ElevatorManager.java:316)- SendIOControlBoxOutput Id: 2 Value: 0
+2024-03-01 15:59:10,297 INFO (ElevatorManager.java:320)- clrcall
+2024-03-01 15:59:10,298 INFO (ElevatorManager.java:324)- SendIOControlBoxToggle Id: 2 Value: 0
+2024-03-01 15:59:10,320 INFO (ElevatorManager.java:296)- SendIOControlBoxOutput Id: 3 Value: 1
+2024-03-01 15:59:10,340 INFO (ElevatorManager.java:303)- SendIOControlBoxToggle Id: 3 Value: 0, No send
+2024-03-01 15:59:10,341 INFO (ElevatorManager.java:316)- SendIOControlBoxOutput Id: 4 Value: 0
+2024-03-01 15:59:10,396 INFO (ElevatorManager.java:320)- clrcall
+2024-03-01 15:59:10,400 INFO (ElevatorManager.java:324)- SendIOControlBoxToggle Id: 4 Value: 0
+2024-03-01 15:59:10,460 INFO (ElevatorManager.java:296)- SendIOControlBoxOutput Id: 7 Value: 1
+2024-03-01 15:59:10,491 INFO (ElevatorManager.java:303)- SendIOControlBoxToggle Id: 7 Value: 0, No send
+2024-03-01 15:59:10,493 INFO (ElevatorManager.java:316)- SendIOControlBoxOutput Id: 8 Value: 0
+2024-03-01 15:59:10,533 INFO (ElevatorManager.java:320)- clrcall
+2024-03-01 15:59:10,533 INFO (ElevatorManager.java:324)- SendIOControlBoxToggle Id: 8 Value: 0
+2024-03-01 15:59:25,131 INFO (DirectJDKLog.java:173)- Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-03-01 15:59:25,133 INFO (FrameworkServlet.java:532)- Initializing Servlet 'dispatcherServlet'
+2024-03-01 15:59:25,139 INFO (FrameworkServlet.java:554)- Completed initialization in 5 ms
+2024-03-01 15:59:32,062 INFO (ElevatorSocketBox.java:231)- ElevatorBox Command: QQQE0010E0021XXX
+2024-03-01 15:59:44,283 INFO (ElevatorSocketBox.java:126)- Closing Socket...
+2024-03-01 15:59:44,283 INFO (ElevatorSocketBox.java:130)- Closing receiveThread...
+2024-03-01 15:59:44,283 INFO (ElevatorSocketBox.java:132)- Closing sendThread...
+2024-03-01 15:59:44,284 INFO (ElevatorSocketBox.java:151)- All SocketThread has been terminated!

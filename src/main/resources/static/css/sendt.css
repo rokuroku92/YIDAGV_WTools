@@ -147,7 +147,7 @@
     margin-bottom: 1em;
 }
 .list-title{
-    height: 4em;
+    /* height: 4em; */
     background-color: #867976;
     border-radius: 0.6rem 0.6rem 0 0!important;
 }
@@ -178,4 +178,7 @@
 .btn-remove{
     height: 80%;
     font-size: 0.8em;
+}
+.workNumber{
+    width: 50%!important;
 }

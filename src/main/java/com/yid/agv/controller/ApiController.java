@@ -77,6 +77,10 @@ public class ApiController {
     public String cancelPersonOccupied(){
         return elevatorService.cancelPersonOccupied() ? "OK" : "FAIL";
     }
+//    @GetMapping(value = "/homepage/iAlarm", produces = MediaType.TEXT_PLAIN_VALUE)
+//    public String getIAlarm(){
+//        return Integer.toString(homePageService.getIAlarm());
+//    }
     @GetMapping(value = "/homepage/notifications", produces = MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8")
     public String getNotificationsL(){
         return gson.toJson(homePageService.queryNotificationsL());
@@ -108,6 +112,7 @@ public class ApiController {
     }
     @GetMapping(value = "/homepage/agv", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getAGVJson() {
+        // 測試資料為舊版！
 //        return """
 //                [
 //                  {

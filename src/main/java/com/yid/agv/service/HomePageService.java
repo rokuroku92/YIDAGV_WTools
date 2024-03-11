@@ -25,16 +25,6 @@ public class HomePageService {
     @Autowired
     private AGVManager agvManager;
 
-    private int iAlarm;
-
-    public int getIAlarm() {
-        return iAlarm;
-    }
-
-    public void setIAlarm(int iAlarm) {
-        this.iAlarm = iAlarm;
-    }
-
     public AGV[] getAgv(){
         return agvManager.getAgvCopyArray();
     }
