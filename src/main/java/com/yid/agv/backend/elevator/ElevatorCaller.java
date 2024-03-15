@@ -12,7 +12,8 @@ public class ElevatorCaller {
     private IOStatus yellowLight;
     private IOStatus greenLight;
     private IOStatus iBuzz;
-    private int instantIOValue;
+    private int instantCaller1Value;
+    private int instantCaller2Value;
     private boolean iOpenDoor;
     private boolean iCallButton;
     private boolean doCallElevator;
@@ -23,6 +24,7 @@ public class ElevatorCaller {
     private boolean iCaller2Offline;
     private int lastCaller2OutputValue;
     private int lastCaller2ToggleValue;
+    private int clrCallCount;  // 補償數，彌補 clrcall 延遲造成二次誤觸發。
 
     public ElevatorCaller(int floor){
         this.floor = floor;
@@ -34,5 +36,6 @@ public class ElevatorCaller {
         this.lastCaller1ToggleValue = -1;
         this.lastCaller2OutputValue = -1;
         this.lastCaller2ToggleValue = -1;
+        clrCallCount = 0;
     }
 }

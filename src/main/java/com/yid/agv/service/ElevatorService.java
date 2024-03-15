@@ -21,10 +21,14 @@ public class ElevatorService {
         elevatorStatusResponse.setIAlarmObstacle(elevatorManager.getIAlarmObstacle());  // AGV 請求電梯權限時，電梯內有東西
         elevatorStatusResponse.setElevatorPersonCount(elevatorManager.getElevatorPersonCount());
         elevatorStatusResponse.setIConnected(elevatorSocketBox.isElevatorBoxConnected());
-        elevatorStatusResponse.setIManual(elevatorSocketBox.isElevatorBoxManual());
-        elevatorStatusResponse.setIScan(elevatorSocketBox.isElevatorBoxScan());
-        elevatorStatusResponse.setIBuzzer(elevatorSocketBox.isElevatorBoxBuzzer());
-        elevatorStatusResponse.setIError(elevatorSocketBox.isElevatorBoxError());
+        if (elevatorSocketBox.isElevatorBoxManual() != ElevatorSocketBox.ElevatorBoxStatus.UNKNOWN)
+            elevatorStatusResponse.setIManual(elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.TRUE);
+        if (elevatorSocketBox.isElevatorBoxScan() != ElevatorSocketBox.ElevatorBoxStatus.UNKNOWN)
+            elevatorStatusResponse.setIScan(elevatorSocketBox.isElevatorBoxScan() == ElevatorSocketBox.ElevatorBoxStatus.TRUE);
+        if (elevatorSocketBox.isElevatorBoxBuzzer() != ElevatorSocketBox.ElevatorBoxStatus.UNKNOWN)
+            elevatorStatusResponse.setIBuzzer(elevatorSocketBox.isElevatorBoxBuzzer() == ElevatorSocketBox.ElevatorBoxStatus.TRUE);
+        if (elevatorSocketBox.isElevatorBoxError() != ElevatorSocketBox.ElevatorBoxStatus.UNKNOWN)
+            elevatorStatusResponse.setIError(elevatorSocketBox.isElevatorBoxError() == ElevatorSocketBox.ElevatorBoxStatus.TRUE);
         return elevatorStatusResponse;
     }
 

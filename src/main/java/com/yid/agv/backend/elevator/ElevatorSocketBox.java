@@ -19,7 +19,7 @@ import java.util.Objects;
 @Component
 public class ElevatorSocketBox {
     private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
-    public enum ElevatorBoxCommand{
+    public enum ElevatorBoxCommand {
         ASK_STATUS("QQQE0010E0000XXX"), OPEN_BUZZER("QQQE0010E0042XXX"), CLOSE_BUZZER("QQQE0010E0002XXX"), CLOSE_BUTTON("QQQE0010E0021XXX");
         private final String command;
         ElevatorBoxCommand(String command) {
@@ -28,6 +28,9 @@ public class ElevatorSocketBox {
         public String getCommand(){
             return command;
         }
+    }
+    public enum ElevatorBoxStatus {
+        TRUE, FALSE, UNKNOWN
     }
 
     @Value("${elevator.ip}")
@@ -40,10 +43,10 @@ public class ElevatorSocketBox {
     private int ELEVATOR_FAIL_SOCKET;
 
     private boolean ElevatorBoxConnected;
-    private boolean ElevatorBoxManual;
-    private boolean ElevatorBoxScan;
-    private boolean ElevatorBoxError;
-    private boolean ElevatorBoxBuzzer;
+    private ElevatorBoxStatus ElevatorBoxManual;
+    private ElevatorBoxStatus ElevatorBoxScan;
+    private ElevatorBoxStatus ElevatorBoxError;
+    private ElevatorBoxStatus ElevatorBoxBuzzer;
     private Thread receiveThread;
     private Thread sendThread;
     private static volatile boolean running = true;
@@ -55,6 +58,11 @@ public class ElevatorSocketBox {
 
     @PostConstruct
     public void initialize() {
+        ElevatorBoxConnected = false;
+        ElevatorBoxManual = ElevatorBoxStatus.UNKNOWN;
+        ElevatorBoxScan = ElevatorBoxStatus.UNKNOWN;
+        ElevatorBoxError = ElevatorBoxStatus.UNKNOWN;
+        ElevatorBoxBuzzer = ElevatorBoxStatus.UNKNOWN;
         new Thread(this::elevatorSocketBoxMain).start();
     }
 
@@ -81,10 +89,10 @@ public class ElevatorSocketBox {
                             boolean[] parseResultValue = parseCommand(resultValue);
                             if ("R".equals(resultMode)) {
 //                                ElevatorBoxI??? = Objects.requireNonNull(parseResultValue)[0];
-                                ElevatorBoxManual = Objects.requireNonNull(parseResultValue)[1];
-                                ElevatorBoxScan = Objects.requireNonNull(parseResultValue)[2];
-                                ElevatorBoxError = Objects.requireNonNull(parseResultValue)[3];
-                                ElevatorBoxBuzzer = Objects.requireNonNull(parseResultValue)[4];
+                                ElevatorBoxManual = Objects.requireNonNull(parseResultValue)[1] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                ElevatorBoxScan = Objects.requireNonNull(parseResultValue)[2] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                ElevatorBoxError = Objects.requireNonNull(parseResultValue)[3] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                ElevatorBoxBuzzer = Objects.requireNonNull(parseResultValue)[4] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
                             }
 
                         }
@@ -243,19 +251,19 @@ public class ElevatorSocketBox {
         return ElevatorBoxConnected;
     }
 
-    public boolean isElevatorBoxManual() {
-        return ElevatorBoxManual;
+    public ElevatorBoxStatus isElevatorBoxManual() {
+        return ElevatorBoxConnected ? ElevatorBoxManual : ElevatorBoxStatus.UNKNOWN;
     }
 
-    public boolean isElevatorBoxScan() {
-        return ElevatorBoxScan;
+    public ElevatorBoxStatus isElevatorBoxScan() {
+        return ElevatorBoxConnected ? ElevatorBoxScan : ElevatorBoxStatus.UNKNOWN;
     }
 
-    public boolean isElevatorBoxError() {
-        return ElevatorBoxError;
+    public ElevatorBoxStatus isElevatorBoxError() {
+        return ElevatorBoxConnected ? ElevatorBoxError : ElevatorBoxStatus.UNKNOWN;
     }
 
-    public boolean isElevatorBoxBuzzer() {
-        return ElevatorBoxBuzzer;
+    public ElevatorBoxStatus isElevatorBoxBuzzer() {
+        return ElevatorBoxConnected ? ElevatorBoxBuzzer : ElevatorBoxStatus.UNKNOWN;
     }
 }

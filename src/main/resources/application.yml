@@ -9,7 +9,7 @@ jdbc:
     password: Yid8789402
 
 agvControl:
-  url: http://192.168.8.3:20100
+  url: http://192.168.8.7:20100
 #    url: http://10.11.33.60:20100
 #  url: http://localhost:20100
 
@@ -20,7 +20,7 @@ agv:
   task_exception_option: 0 # AGV上線並且實例有任務時TrafficControl回報沒有執行任務時該: 0刪除任務 1重新派遣
 
 elevator:
-  ip: 192.168.8.4
+  ip: 192.168.8.9
   port: 8887
   timeout: 3000
   fail_socket: 5

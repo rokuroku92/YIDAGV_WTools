@@ -97,15 +97,21 @@ public class ElevatorManager {
                     elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.OFF);
                     elevatorCaller.setRedLight(ElevatorCaller.IOStatus.ON);
                 });
+                if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.TRUE) {
+                    elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.OPEN_BUZZER);
+                } else if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
+                    if (elevatorSocketBox.isElevatorBoxBuzzer() == ElevatorSocketBox.ElevatorBoxStatus.TRUE)
+                        elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
+                }
             }
             case PRE_PERSON -> {
                 Integer floor = callQueue.peek();
                 ElevatorCaller elevatorCaller = elevatorCallerMap.get(floor);
                 if (elevatorCaller.isIOpenDoor()) {
-                    if (!elevatorSocketBox.isElevatorBoxManual()) {
+                    if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
                         prePersonOpenDoorCount++;
                         log.info("prePersonOpenDoorCount: " + prePersonOpenDoorCount);
-                        if(!elevatorSocketBox.isElevatorBoxBuzzer()){
+                        if(elevatorSocketBox.isElevatorBoxBuzzer()  == ElevatorSocketBox.ElevatorBoxStatus.FALSE){
                             elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.OPEN_BUZZER);
                         }
                         if(prePersonOpenDoorCount > prePersonOpenDoorDuration){
@@ -128,19 +134,21 @@ public class ElevatorManager {
             }
             case PERSON -> {
                 elevatorPersonCount++;
-                if (!elevatorSocketBox.isElevatorBoxManual()) {
+                if (elevatorSocketBox.isElevatorBoxBuzzer() == ElevatorSocketBox.ElevatorBoxStatus.TRUE)
+                    elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
+                if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
                     elevatorPersonCount = 0;
                     elevatorPermission = ElevatorPermission.FREE;
                 }
             }
             case FREE -> {
                 elevatorPersonCount = 0;
-                if (elevatorSocketBox.isElevatorBoxManual()) {
+                if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.TRUE) {
                     elevatorPermission = ElevatorPermission.PERSON;
                 }
                 if (!callQueue.isEmpty()) {
                     Integer floor = callQueue.peek();
-                    if (floor != null){
+                    if (floor != null) {
                         controlElevatorTO(floor);
                         elevatorPermission = ElevatorPermission.PRE_PERSON;
                     }
@@ -169,25 +177,38 @@ public class ElevatorManager {
     }
     private void updateCaller1OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
         elevatorCaller.setICaller1Offline(false);
-        elevatorCaller.setInstantIOValue(Integer.parseInt(data[1]));
-//        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
-//
-//        elevatorCaller.setGreenLight(optionalIOValue.filter(ioValue -> elevatorCaller.getGreenLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-//        elevatorCaller.setYellowLight(optionalIOValue.filter(ioValue -> elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[1] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-//        elevatorCaller.setRedLight(optionalIOValue.filter(ioValue -> elevatorCaller.getRedLight() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
-//        elevatorCaller.setIBuzz(optionalIOValue.filter(ioValue -> elevatorCaller.getIBuzz() != ElevatorCaller.IOStatus.TOGGLE).map(ioValue -> (ioValue[3] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)).orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setInstantCaller1Value(Integer.parseInt(data[1]));
+        Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
+
+        elevatorCaller.setGreenLight(optionalIOValue.map(ioValue ->
+                ioValue[1] ? ElevatorCaller.IOStatus.TOGGLE :
+                        ioValue[0] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)
+                .orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setYellowLight(optionalIOValue.map(ioValue ->
+                ioValue[3] ? ElevatorCaller.IOStatus.TOGGLE :
+                        ioValue[2] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)
+                .orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setRedLight(optionalIOValue.map(ioValue ->
+                ioValue[5] ? ElevatorCaller.IOStatus.TOGGLE :
+                        ioValue[4] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)
+                .orElse(ElevatorCaller.IOStatus.UNKNOWN));
+        elevatorCaller.setIBuzz(optionalIOValue.map(ioValue ->
+                ioValue[7] ? ElevatorCaller.IOStatus.TOGGLE :
+                        ioValue[6] ? ElevatorCaller.IOStatus.ON : ElevatorCaller.IOStatus.OFF)
+                .orElse(ElevatorCaller.IOStatus.UNKNOWN));
 
     }
     private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
         elevatorCaller.setICaller2Offline(false);
-
+        elevatorCaller.setInstantCaller2Value(Integer.parseInt(data[1]));
         Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
 
         optionalIOValue.ifPresent(ioValue -> {
-            // ioValue[0] 為 Button Trigger (真正呼叫電梯的I/O)
+            // ioValue[1] 為 Button Trigger (真正呼叫電梯的I/O)(TOGGLE)
+            elevatorCaller.setDoCallElevator(ioValue[1]);
 
             // 假設呼叫按鈕按下
-            if (ioValue[4]) {
+            if (elevatorCaller.getClrCallCount() <= 0 && ioValue[8]) {
                 elevatorCaller.setICallButton(true);
                 AtomicBoolean had = new AtomicBoolean(false);
                 callQueue.forEach(floor -> {
@@ -195,19 +216,27 @@ public class ElevatorManager {
                         had.set(true);
                     }
                 });
-                if(!had.get()){
+                if(!had.get()) {
                     callQueue.offer(elevatorCaller.getFloor());
                 }
                 // 按下按鈕且不是電梯目標樓層則顯示閃黃燈
-                if (!elevatorCaller.isDoCallElevator() && elevatorCaller.getYellowLight() != ElevatorCaller.IOStatus.TOGGLE) {
+                if (elevatorCaller.getFloor() != targetFloor) {
                     elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.TOGGLE);
+                    elevatorCaller.setDoCallElevator(false);
+                } else {
+                    elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.ON);
+                    elevatorCaller.setDoCallElevator(true);
                 }
             } else {
                 elevatorCaller.setICallButton(false);
                 elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.OFF);
+                elevatorCaller.setDoCallElevator(false);
+                if (elevatorCaller.getClrCallCount() > 0) {
+                    elevatorCaller.setClrCallCount(elevatorCaller.getClrCallCount()-1);
+                }
             }
 
-            elevatorCaller.setIOpenDoor(!ioValue[2]);
+            elevatorCaller.setIOpenDoor(!ioValue[6]);
         });
     }
 
@@ -220,7 +249,7 @@ public class ElevatorManager {
             return true;
         } else if (elevatorPermission != ElevatorPermission.FREE || callQueue.size() > 0){
             return false;
-        } else if (elevatorSocketBox.isElevatorBoxScan()) {
+        } else if (elevatorSocketBox.isElevatorBoxScan() == ElevatorSocketBox.ElevatorBoxStatus.TRUE) {
             iAlarmObstacle = true;
             return false;
         } else {
@@ -268,39 +297,44 @@ public class ElevatorManager {
         return Optional.empty();
     }
 
+    private int targetFloor = 0;
     public void controlElevatorTO(Integer floor){
         if (floor == null) {
             elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setDoCallElevator(false));
+            targetFloor = 0;
         } else {
-            elevatorCallerMap.values().forEach(elevatorCaller -> {
-//                if (elevatorCaller.getFloor() == floor && !elevatorCaller.isDoCallElevator()) {
-                if (elevatorCaller.getFloor() == floor) {
-                    elevatorCaller.setDoCallElevator(true);
-                    elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.ON);
-                } else {
-                    elevatorCaller.setDoCallElevator(false);
-                }
-            });
+            targetFloor = floor;
         }
     }
 
-    public void sendCaller(ElevatorCaller elevatorCaller){
+    public void sendCaller(ElevatorCaller elevatorCaller) {
         int caller1Id = elevatorCaller.getFloor()*2-1;
         int caller1OutputValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
         int caller1ToggleValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
 
-        int caller1InstantIOValue1 = elevatorCaller.getInstantIOValue();
-        int caller1InstantIOValue2 = caller1InstantIOValue1 - caller1ToggleValue;
+        boolean[] instantCaller1Status = parseStatus(elevatorCaller.getInstantCaller1Value());
+        int instantCaller1OutputValue = 0;
+        int instantCaller1ToggleValue = 0;
+        for (int i = 0, index = 0; i < Objects.requireNonNull(instantCaller1Status).length && i < 8; i += 2, index++) {
+            if (instantCaller1Status[i]) {
+                instantCaller1OutputValue += Math.pow(2, index);
+            }
+            if (instantCaller1Status[i+1]) {
+                instantCaller1ToggleValue += Math.pow(2, index);
+            }
+        }
 
-        if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue || (caller1OutputValue != caller1InstantIOValue1 && caller1OutputValue != caller1InstantIOValue2)) {
+
+        if(elevatorCaller.getLastCaller1OutputValue() != caller1OutputValue || caller1OutputValue != instantCaller1OutputValue) {
             log.info("SendIOControlBoxOutput Id: " + caller1Id + " Value: " + caller1OutputValue);
             elevatorCaller.setLastCaller1OutputValue(caller1OutputValue);
             sendCaller(caller1Id, caller1OutputValue, "output");
         }
-        if(elevatorCaller.getLastCaller1ToggleValue() != caller1ToggleValue) {
+        if(elevatorCaller.getLastCaller1ToggleValue() != caller1ToggleValue || caller1ToggleValue != instantCaller1ToggleValue) {
             elevatorCaller.setLastCaller1ToggleValue(caller1ToggleValue);
             if (caller1ToggleValue == 0){
-                log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue + ", No send");
+                log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue + ", resend output");
+                elevatorCaller.setLastCaller1OutputValue(-1);  // 因為 toggle 0 無法解除，重新發送新的 output 即可
             } else {
                 log.info("SendIOControlBoxToggle Id: " + caller1Id + " Value: " + caller1ToggleValue);
                 sendCaller(caller1Id, caller1ToggleValue, "toggle");
@@ -308,22 +342,42 @@ public class ElevatorManager {
 
         }
 
-        int caller2Id = elevatorCaller.getFloor()*2;
+        int caller2Id = elevatorCaller.getFloor() * 2;
         int caller2OutputValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON); // callBTN clrcall
         int caller2ToggleValue = convertToCaller2ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.TOGGLE);
 
-        if(elevatorCaller.getLastCaller2OutputValue() != caller2OutputValue) {
+        boolean[] instantCaller2Status = parseStatus(elevatorCaller.getInstantCaller2Value());
+        int instantCaller2OutputValue = 0;
+        int instantCaller2ToggleValue = 0;
+        for (int i = 0, index = 0; i < Objects.requireNonNull(instantCaller2Status).length && i < 6; i += 2, index++) {
+            if (instantCaller2Status[i]) {
+                instantCaller2OutputValue += Math.pow(2, index);
+            }
+            if (instantCaller2Status[i+1]) {
+                instantCaller2ToggleValue += Math.pow(2, index);
+            }
+        }
+
+        if (instantCaller2Status[8]) instantCaller2OutputValue += 256;
+
+
+        if (elevatorCaller.getLastCaller2OutputValue() != caller2OutputValue || caller2OutputValue != instantCaller2OutputValue) {
             log.info("SendIOControlBoxOutput Id: " + caller2Id + " Value: " + caller2OutputValue);
             elevatorCaller.setLastCaller2OutputValue(caller2OutputValue);
             if (caller2OutputValue == 0) {
                 sendCaller(caller2Id, 0, "clrcall");
+                elevatorCaller.setClrCallCount(5);
                 log.info("clrcall");
             }
         }
-        if(elevatorCaller.getLastCaller2ToggleValue() != caller2ToggleValue) {
-            log.info("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
+        if (elevatorCaller.getLastCaller2ToggleValue() != caller2ToggleValue || caller2ToggleValue != instantCaller2ToggleValue) {
             elevatorCaller.setLastCaller2ToggleValue(caller2ToggleValue);
-            sendCaller(caller1Id, caller2ToggleValue, "toggle");
+            log.info("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
+            if (caller1ToggleValue == 0){
+                sendCaller(caller2Id, 0, "output");
+            } else {
+                sendCaller(caller2Id, caller2ToggleValue, "toggle");
+            }
         }
     }
 
@@ -344,7 +398,7 @@ public class ElevatorManager {
 
     private boolean[] parseStatus(int statusValue) {
         if(statusValue < 0) return null;
-        boolean[] statusArray = new boolean[8];
+        boolean[] statusArray = new boolean[16];
         // 從右到左解析各個位元狀態
         for (int i = 0; i < statusArray.length ; i++) {
             // 檢查第i位是否為1，若是則代表狀態為真
@@ -380,7 +434,7 @@ public class ElevatorManager {
             }
         } else if (ioStatus == ElevatorCaller.IOStatus.ON) {
             if (elevatorCaller.isICallButton()) {
-                value += 16;
+                value += 256;
             }
         }
         return value;
