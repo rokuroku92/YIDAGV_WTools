@@ -238,13 +238,11 @@ async function init(){
     myChart1 = new Chart(ctx1, {
         type: 'pie',
         data: {
-            // labels: ['WXA', 'SSG', 'BDT', 'NFX', 'XGV', 'EBC', 'KJN', 'PHY', 'OTY', 'CSB'],
-            labels: [],
+            labels: ['WXA', 'SSG', 'BDT', 'NFX', 'XGV', 'EBC', 'KJN', 'PHY', 'OTY', 'CSB'],
             datasets: [
               {
                 label: '最近兩週',
-                // data: [10,32,31,27,8,36,17,28,29,33]
-                data: []
+                data: [10,32,31,27,8,36,17,28,29,33]
               }
             ]
         },

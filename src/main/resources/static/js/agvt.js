@@ -240,6 +240,9 @@ function agvUpdate(agv){  // 更新資料
             case "CHARGE_ERROR":
                 statusHTMLClass = "error";
                 break;
+            case "NAVIGATION_LOST":
+                statusHTMLClass = "error";
+                break;
             case "ERROR_AGV_DATA":
                 statusHTMLClass = "error";
                 break;
@@ -509,6 +512,9 @@ function agvIAlarm(agv) {
             case "UNKNOWN_TAG_NUMBER":
                 document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR系統路徑未匹配(未知卡號)，請聯絡我們！`;
                 break;
+            case "NAVIGATION_LOST":
+                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR失去導航方向，請至現場協助將AMR推至啟動點！`;
+                break;
             default:
                 document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 後端資料錯誤： ${agv.status}`;
                 break;
@@ -521,7 +527,7 @@ function agvIAlarm(agv) {
                 alarmToggle=false;
                 const audio = document.createElement("audio");
                 // audio.src = baseUrl+"/audio/laser.mp3";
-                audio.src = baseUrl+"/audio/alarm3.mp3";
+                audio.src = baseUrl+"/audio/alarm3.m4a";
                 audio.play();
             } else {
                 alarmToggle=true;

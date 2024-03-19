@@ -47,7 +47,7 @@ public class ElevatorManager {
     public void initialize() {
         prePersonOpenDoorCount = 0;
         elevatorPersonCount = 0;
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 2; i <= 5; i++) {  // TODO: 改為 int i = 1; i <= 5; i++
             elevatorCallerMap.put(i, new ElevatorCaller(i));
         }
         elevatorPermission = ElevatorPermission.FREE;

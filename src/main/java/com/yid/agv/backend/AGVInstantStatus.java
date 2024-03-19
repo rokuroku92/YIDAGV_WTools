@@ -163,12 +163,14 @@ public class AGVInstantStatus {
         // data[5] agv狀態
         updateAgvStatus(agv, data[5].trim());
 
+        // data[4] 任務狀態
+        boolean[] taskStatus = parseAGVStatus(Integer.parseInt(data[4].trim()));
+        agv.setIScan(taskStatus[4]);  // AMR 背後看站板的 sensor
+
         if (agv.isTagError()){
             handleTagError(parseAGVStatus(Integer.parseInt(data[4].trim())), agv);
         } else if (agv.getStatus() == AGV.Status.ONLINE && agv.getTask() != null){
             agv.setObstacleCount(0);
-            // data[4] 任務狀態
-            boolean[] taskStatus = parseAGVStatus(Integer.parseInt(data[4].trim()));
             if (taskStatus[7]) {
                 handleFailedTask(agv);
             } else {
@@ -244,12 +246,12 @@ public class AGVInstantStatus {
     }
     private void handleNotExecutingTask(AGV agv){
 //        if(agv.getTaskStatus() == AGV.TaskStatus.PRE_START_STATION || agv.getTask().getStatus() == 1){
-        if(agv.getTask().getStatus() == 1){
+        if (agv.getTask().getStatus() == 1) {
             return;
         }
         AGVQTask task = agv.getTask();
-        if(task != null){
-            if(agv.getPlace().equals(stationDao.getStationTagByGridName(task.getTerminalStation()))){
+        if (task != null) {
+            if (agv.getPlace().equals(stationDao.getStationTagByGridName(task.getTerminalStation()))) {
                 // handleCompletedTask
                 processTasks.completedTask(agv);
             } else {
@@ -259,7 +261,11 @@ public class AGVInstantStatus {
                     case 1 -> {
                         if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION) {
                             // TODO: 檢查 AGV 車上是否有棧板。有，則繼續派遣；無，則刪除任務。
-                            processTasks.failedTask(agv);
+                            if (agv.isIScan()) {
+                                processTasks.dispatchTaskToAGV(agv);
+                            } else {
+                                processTasks.failedTask(agv);
+                            }
                         } else {
                             processTasks.dispatchTaskToAGV(agv);
                         }
@@ -389,6 +395,14 @@ public class AGVInstantStatus {
                     agv.setStatus(AGV.Status.CHARGE_ERROR);
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.CHARGE_ERROR);
                     agv.setIAlarm(false);
+                }
+            }
+            case 11 -> {
+                // AMR 迷航
+                if(agv.getStatus() != AGV.Status.NAVIGATION_LOST){
+                    agv.setStatus(AGV.Status.NAVIGATION_LOST);
+                    notificationDao.insertMessage(agvTitle, NotificationDao.Status.NAVIGATION_LOST);
+                    agv.setIAlarm(true);
                 }
             }
             default -> {

@@ -7,18 +7,10 @@ import lombok.Data;
 @Data
 public class AGV {
     public enum Status{
-        OFFLINE(1), ONLINE(2), MANUAL(3), REBOOT(4),
-        STOP(5), DERAIL(6), COLLIDE(7), OBSTACLE(8),
-        EXCESSIVE_TURN_ANGLE(9), WRONG_TAG_NUMBER(10), UNKNOWN_TAG_NUMBER(11),
-        EXCEPTION_EXCLUSION(12), SENSOR_ERROR(13), CHARGE_ERROR(14), ERROR_AGV_DATA(15);
-        private final int value;
-        Status(int value) {
-            this.value = value;
-        }
-
-        public int getValue(){
-            return value;
-        }
+        OFFLINE, ONLINE, MANUAL, REBOOT,
+        STOP, DERAIL, COLLIDE, OBSTACLE,
+        EXCESSIVE_TURN_ANGLE, WRONG_TAG_NUMBER, UNKNOWN_TAG_NUMBER,
+        EXCEPTION_EXCLUSION, SENSOR_ERROR, CHARGE_ERROR, NAVIGATION_LOST, ERROR_AGV_DATA
 
     }
 
@@ -31,6 +23,7 @@ public class AGV {
     private String place;
     private int battery;
     private int signal;
+    private boolean iScan;
 
     private AGVQTask task;
     private TaskStatus taskStatus;

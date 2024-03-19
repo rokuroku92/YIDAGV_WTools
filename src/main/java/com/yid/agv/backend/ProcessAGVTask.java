@@ -113,7 +113,7 @@ public class ProcessAGVTask {
                         agv.setTask(goTask);
                         failedTask(agv);
                     }
-                    default -> log.warn("dispatchTaskToAGV result exception: " + result);
+                    default -> log.warn("TrafficControl result exception: " + result);
                 }
             } else if (taskQueueIEmpty && !iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
                 goStandbyTask(agv);
@@ -230,7 +230,11 @@ public class ProcessAGVTask {
     public void failedTask(AGV agv){
         AGVQTask task = agv.getTask();
         log.info("Failed task:" + task);
-        gridManager.setGridStatus(task.getStartStationId(), Grid.Status.OCCUPIED);
+        if (task.getStartStation().matches("\\d+-T-\\d+")) {
+            gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);
+        } else {
+            gridManager.setGridStatus(task.getStartStationId(), Grid.Status.OCCUPIED);
+        }
         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.FREE);
         notificationDao.insertMessage(agv.getTitle(), "Failed task " + task.getTaskNumber() + ":" + task.getSequence());
         taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), -1);

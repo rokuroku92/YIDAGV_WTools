@@ -9,9 +9,9 @@ jdbc:
     password: Yid8789402
 
 agvControl:
-  url: http://192.168.8.7:20100
-#    url: http://10.11.33.60:20100
-#  url: http://localhost:20100
+  #  url: http://192.168.8.7:20100
+  #    url: http://10.11.33.60:20100
+  url: http://localhost:20100
 
 agv:
   low_battery: 70  # AGV電量低於多少算低電量
