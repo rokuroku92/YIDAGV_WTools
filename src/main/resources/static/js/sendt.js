@@ -329,13 +329,11 @@ function switchPage(radioButton) {
                                                                                 <td data-val="3-A-2" class="grid-btn terminal">2</td>
                                                                                 <td data-val="3-A-4" class="grid-btn terminal">4</td>
                                                                                 <td data-val="3-A-6" class="grid-btn terminal">6</td>
-                                                                                <td data-val="3-A-8" class="grid-btn terminal">8</td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td data-val="3-A-1" class="grid-btn terminal">1</td>
                                                                                 <td data-val="3-A-3" class="grid-btn terminal">3</td>
                                                                                 <td data-val="3-A-5" class="grid-btn terminal">5</td>
-                                                                                <td data-val="3-A-7" class="grid-btn terminal">7</td>
                                                                             </tr>
                                                                         </tbody>
                                                                         </table>
@@ -366,8 +364,6 @@ function switchPage(radioButton) {
                                                                             <td data-val="3-C-12" class="grid-btn terminal">12</td>
                                                                             <td data-val="3-C-15" class="grid-btn terminal">15</td>
                                                                             <td data-val="3-C-18" class="grid-btn terminal">18</td>
-                                                                            <td data-val="3-C-21" class="grid-btn terminal">21</td>
-                                                                            <td data-val="3-C-24" class="grid-btn terminal">24</td>
                                                                             </tr>
                                                                             <tr>
                                                                             <td data-val="3-C-2" class="grid-btn terminal">2</td>
@@ -376,8 +372,6 @@ function switchPage(radioButton) {
                                                                             <td data-val="3-C-11" class="grid-btn terminal">11</td>
                                                                             <td data-val="3-C-14" class="grid-btn terminal">14</td>
                                                                             <td data-val="3-C-17" class="grid-btn terminal">17</td>
-                                                                            <td data-val="3-C-20" class="grid-btn terminal">20</td>
-                                                                            <td data-val="3-C-23" class="grid-btn terminal">23</td>
                                                                             </tr>
                                                                             <tr>
                                                                             <td data-val="3-C-1" class="grid-btn terminal">1</td>
@@ -386,8 +380,6 @@ function switchPage(radioButton) {
                                                                             <td data-val="3-C-10" class="grid-btn terminal">10</td>
                                                                             <td data-val="3-C-13" class="grid-btn terminal">13</td>
                                                                             <td data-val="3-C-16" class="grid-btn terminal">16</td>
-                                                                            <td data-val="3-C-19" class="grid-btn terminal">19</td>
-                                                                            <td data-val="3-C-22" class="grid-btn terminal">22</td>
                                                                             </tr>
                                                                         </tbody>
                                                                         </table>

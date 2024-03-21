@@ -205,7 +205,7 @@ public class ElevatorManager {
 
         optionalIOValue.ifPresent(ioValue -> {
             // ioValue[1] 為 Button Trigger (真正呼叫電梯的I/O)(TOGGLE)
-            elevatorCaller.setDoCallElevator(ioValue[1]);
+            elevatorCaller.setDoCallElevator(ioValue[5]);
 
             // 假設呼叫按鈕按下
             if (elevatorCaller.getClrCallCount() <= 0 && ioValue[8]) {
@@ -430,7 +430,7 @@ public class ElevatorManager {
         int value = 0;
         if (ioStatus == ElevatorCaller.IOStatus.TOGGLE) {
             if (elevatorCaller.isDoCallElevator()) {
-                value += 1;
+                value += 4;
             }
         } else if (ioStatus == ElevatorCaller.IOStatus.ON) {
             if (elevatorCaller.isICallButton()) {

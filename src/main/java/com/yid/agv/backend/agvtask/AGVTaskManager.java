@@ -21,27 +21,29 @@ public class AGVTaskManager {
     public AGVTaskManager() {
         taskQueueMap = new HashMap<>();
     }
+
     @PostConstruct
     public void initialize() {
         agvIdDao.queryAGVList().forEach(agvId -> taskQueueMap.put(agvId.getId(), new ConcurrentLinkedDeque<>()));
     }
 
-    public Queue<AGVQTask> getTaskQueue(int agvId){
+    public Queue<AGVQTask> getTaskQueue(int agvId) {
         return taskQueueMap.get(agvId);
     }
 
-    public void forceClearTaskQueueByAGVId(int agvId){
+    public void forceClearTaskQueueByAGVId(int agvId) {
         taskQueueMap.put(agvId, new ConcurrentLinkedDeque<>());
     }
 
-    public AGVQTask getNewTaskByAGVId(int agvId){
+    public AGVQTask getNewTaskByAGVId(int agvId) {
         return taskQueueMap.get(agvId).poll();
     }
-    public AGVQTask peekNewTaskByAGVId(int agvId){
+
+    public AGVQTask peekNewTaskByAGVId(int agvId) {
         return taskQueueMap.get(agvId).peek();
     }
 
-    public boolean isEmpty(int agvId){
+    public boolean isEmpty(int agvId) {
         return taskQueueMap.get(agvId).isEmpty();
     }
 
@@ -52,7 +54,6 @@ public class AGVTaskManager {
         taskQueue.offer(task);
         return true;
     }
-
 //    public Integer getTerminalByNotification(String notificationId);  // 這個專案不用自動選擇終點站
 //    public QTask peekTaskWithPlace();  // 這個專案不用優先派遣演算法
 

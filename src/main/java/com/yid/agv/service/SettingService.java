@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,9 +54,21 @@ public class SettingService {
     private String writeConfigToFile(SettingRequest settingRequest){
         Map<String, Object> yamlMap;
 
-        try (FileReader reader = new FileReader("src/main/resources/application.yml")) {
-            Yaml yaml = new Yaml();
-            yamlMap = yaml.load(reader);
+//        try (FileReader reader = new FileReader("src/main/resources/application.yml")) {
+//            Yaml yaml = new Yaml();
+//            yamlMap = yaml.load(reader);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("application.yml")) {
+            if (inputStream != null) {
+                Yaml yaml = new Yaml();
+                yamlMap = yaml.load(inputStream);
+            } else {
+                System.err.println("Unable to find application.yml in the classpath.");
+                return null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;

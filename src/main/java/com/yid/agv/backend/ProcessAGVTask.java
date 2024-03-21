@@ -227,7 +227,7 @@ public class ProcessAGVTask {
         return dispatchTaskToAGV(agv, agv.getTask());
     }
 
-    public void failedTask(AGV agv){
+    public void failedTask(AGV agv) {
         AGVQTask task = agv.getTask();
         log.info("Failed task:" + task);
         if (task.getStartStation().matches("\\d+-T-\\d+")) {

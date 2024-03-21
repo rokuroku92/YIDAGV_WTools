@@ -4,8 +4,15 @@ import com.yid.agv.backend.agvtask.AGVQTask;
 import com.yid.agv.repository.NotificationDao;
 import lombok.Data;
 
+/**
+ * AGV（Automated Guided Vehicle，自動導引車）的類。
+ * 屬性皆來自於 TrafficControl 提供的資料。
+ */
 @Data
 public class AGV {
+    /**
+     * 表示 AGV 的狀態。
+     */
     public enum Status{
         OFFLINE, ONLINE, MANUAL, REBOOT,
         STOP, DERAIL, COLLIDE, OBSTACLE,
@@ -14,20 +21,23 @@ public class AGV {
 
     }
 
+    /**
+     * 表示 AGV 任務的狀態。
+     */
     public enum TaskStatus{
         NO_TASK, PRE_START_STATION, PRE_TERMINAL_STATION, COMPLETED
     }
 
-    private int id;
-    private Status status;
-    private String place;
-    private int battery;
-    private int signal;
-    private boolean iScan;
+    private int id; // AGV 的唯一標識符
+    private Status status; // AGV 的狀態
+    private String place; // AGV 的位置(RFID Tag)
+    private int battery; // AGV 的電池電量(電壓、電流經庫侖計轉換)
+    private int signal; // AGV 的信號強度
+    private boolean iScan; // 是否有棧板
 
-    private AGVQTask task;
-    private TaskStatus taskStatus;
-    private NotificationDao.Title title;
+    private AGVQTask task; // AGV 的當前任務
+    private TaskStatus taskStatus; // AGV 的當前任務狀態
+    private NotificationDao.Title title; // AGV 的資料庫通知表標題
 
     // 以下是程式附帶屬性|補償屬性
     private String lastAgvSystemStatusData;  // 利基系統的狀態參數
@@ -38,11 +48,14 @@ public class AGV {
     private boolean fixAgvTagErrorCompleted;  // 卡號錯誤是否成功消除
     private boolean tagErrorDispatchCompleted;  // 卡號錯誤是否成功派遣回原任務
     private boolean lastTaskBuffer;  // 對於利基系統卡號錯誤時系統補償的緩衝值
-    private int obstacleCount;  // 前有障礙時計數器，原time
-    private boolean iAlarm;  // 是否需要前端發出警報。
+    private int obstacleCount;  // 前有障礙時計數器
+    private boolean iAlarm;  // 是否需要前端發出警報
 
-
-    public AGV(int id){
+    /**
+     * 建構一個新的 AGV 對象。
+     * @param id AGV 的唯一標識符
+     */
+    public AGV(int id) {
         this.id=id;
         taskStatus = TaskStatus.NO_TASK;
         this.title = switch (id) {
