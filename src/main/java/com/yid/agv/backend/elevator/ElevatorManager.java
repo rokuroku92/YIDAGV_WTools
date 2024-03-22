@@ -107,26 +107,29 @@ public class ElevatorManager {
             case PRE_PERSON -> {
                 Integer floor = callQueue.peek();
                 ElevatorCaller elevatorCaller = elevatorCallerMap.get(floor);
+                controlElevatorTO(floor);
                 if (elevatorCaller.isIOpenDoor()) {
+                    elevatorCaller.setICallButton(false);
+                    controlElevatorTO(null);
                     if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
                         prePersonOpenDoorCount++;
                         log.info("prePersonOpenDoorCount: " + prePersonOpenDoorCount);
-                        if(elevatorSocketBox.isElevatorBoxBuzzer()  == ElevatorSocketBox.ElevatorBoxStatus.FALSE){
-                            elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.OPEN_BUZZER);
-                        }
-                        if(prePersonOpenDoorCount > prePersonOpenDoorDuration){
+//                        if(elevatorSocketBox.isElevatorBoxBuzzer()  == ElevatorSocketBox.ElevatorBoxStatus.FALSE){
+//                            elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.OPEN_BUZZER);
+//                        }
+                        if(prePersonOpenDoorCount > prePersonOpenDoorDuration) {
                             elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
                             callQueue.poll();
-                            elevatorCaller.setICallButton(false);
-                            controlElevatorTO(null);
+//                            elevatorCaller.setICallButton(false);
+//                            controlElevatorTO(null);
                             elevatorPermission = ElevatorPermission.FREE;
                             prePersonOpenDoorCount = 0;
                         }
                     } else {
                         elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
                         callQueue.poll();
-                        elevatorCaller.setICallButton(false);
-                        controlElevatorTO(null);
+//                        elevatorCaller.setICallButton(false);
+//                        controlElevatorTO(null);
                         elevatorPermission = ElevatorPermission.PERSON;
                         prePersonOpenDoorCount = 0;
                     }
@@ -373,7 +376,7 @@ public class ElevatorManager {
         if (elevatorCaller.getLastCaller2ToggleValue() != caller2ToggleValue || caller2ToggleValue != instantCaller2ToggleValue) {
             elevatorCaller.setLastCaller2ToggleValue(caller2ToggleValue);
             log.info("SendIOControlBoxToggle Id: " + caller2Id + " Value: " + caller2ToggleValue);
-            if (caller1ToggleValue == 0){
+            if (caller2ToggleValue == 0){
                 sendCaller(caller2Id, 0, "output");
             } else {
                 sendCaller(caller2Id, caller2ToggleValue, "toggle");

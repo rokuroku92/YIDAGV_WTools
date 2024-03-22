@@ -234,7 +234,7 @@ public class ElevatorSocketBox {
     }
 
     public synchronized void sendCommandToElevatorBox(ElevatorBoxCommand elevatorBoxCommand){
-        if (socket != null && !socket.isClosed()) {
+        if (socket != null && !socket.isClosed() && writer != null) {
             if(elevatorBoxCommand != ElevatorBoxCommand.ASK_STATUS){
                 log.info("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
             }

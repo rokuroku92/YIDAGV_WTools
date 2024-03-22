@@ -93,17 +93,32 @@ public class AGVManager {
     public AGV[] getAgvCopyArray() {
         return agvMap.values()
                 .stream()
-                .map(originalAGV -> {
-                    AGV copy = new AGV(originalAGV.getId());
-                    copy.setStatus(originalAGV.getStatus());
-                    copy.setPlace(originalAGV.getPlace());
-                    copy.setBattery(originalAGV.getBattery());
-                    copy.setSignal(originalAGV.getSignal());
-                    copy.setTask(originalAGV.getTask());
-                    copy.setTaskStatus(originalAGV.getTaskStatus());
-                    return copy;
-                })
+                .map(this::copyAGV)
                 .toArray(AGV[]::new);
     }
+
+    private AGV copyAGV(AGV originalAGV) {
+        AGV copy = new AGV(originalAGV.getId());
+        copy.setStatus(originalAGV.getStatus());
+        copy.setPlace(originalAGV.getPlace());
+        copy.setBattery(originalAGV.getBattery());
+        copy.setSignal(originalAGV.getSignal());
+        copy.setTask(originalAGV.getTask());
+        copy.setTaskStatus(originalAGV.getTaskStatus());
+        copy.setIScan(originalAGV.isIScan());
+        copy.setTitle(originalAGV.getTitle());
+        copy.setLastAgvSystemStatusData(originalAGV.getLastAgvSystemStatusData());
+        copy.setILowBattery(originalAGV.isILowBattery());
+        copy.setLowBatteryCount(originalAGV.getLowBatteryCount());
+        copy.setReDispatchCount(originalAGV.getReDispatchCount());
+        copy.setTagError(originalAGV.isTagError());
+        copy.setFixAgvTagErrorCompleted(originalAGV.isFixAgvTagErrorCompleted());
+        copy.setTagErrorDispatchCompleted(originalAGV.isTagErrorDispatchCompleted());
+        copy.setLastTaskBuffer(originalAGV.isLastTaskBuffer());
+        copy.setObstacleCount(originalAGV.getObstacleCount());
+//        copy.setIAlarm(originalAGV.isIAlarm());
+        return copy;
+    }
+
 
 }

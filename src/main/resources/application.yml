@@ -4,7 +4,7 @@ jdbc:
     username: root
     password: 12345678
   WTools:
-    url: jdbc:sqlserver://192.168.0.20:1433;databaseName=WTOOLS;encrypt=false
+    url: jdbc:sqlserver://192.168.2.20:1433;databaseName=WTOOLS;encrypt=false
     username: AgvYidUser
     password: Yid8789402
 
@@ -24,7 +24,7 @@ elevator:
   port: 8887
   timeout: 3000
   fail_socket: 5
-  pre_person_open_door_duration: 30  # 人員呼叫，電梯開門多久後沒按下人員佔用按鈕，歸還權限
+  pre_person_open_door_duration: 20  # 人員呼叫，電梯開門多久後沒按下人員佔用按鈕，歸還權限
 
 http:
   timeout: 2
