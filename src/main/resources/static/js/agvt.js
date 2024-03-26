@@ -263,13 +263,13 @@ function agvUpdate(agv){  // 更新資料
             document.getElementById('AGVTaskST'+(i+1)).innerHTML = "<h5>NO TASK</h5>";
         }
 
-        // 判斷是否警報
-        agvIAlarm(agv[i]);
         // 更新AGV位置
         // updateAGVPositions(agv[i].place);
-
+        
         // updateTN();
     }
+    // 判斷是否警報
+    agvIAlarm(agv);
 }
 
 function updateTaskLists() {
@@ -484,56 +484,65 @@ function agvIAlarm(agv) {
     // if (Notification.permission !== 'granted') {
     //     Notification.requestPermission();
     // }
-    if (!agv.iAlarm) {
+    let cancelAlarmCnt = 0;
+    for(let i=0;i<agv.length;i++){
+        if (!agv[i].iAlarm) {
+            document.getElementById(`alarmInfo${i+1}`).innerHTML = null;
+            cancelAlarmCnt++;
+            console.log(cancelAlarmCnt);
+        } else {
+            switch (agv[i].status) {
+                case "STOP":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 觸發緊急停止，請至現場排除！`;
+                    break;
+                case "DERAIL":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 出軌，請至現場排除！`;
+                    break;
+                case "COLLIDE":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 發生碰撞，請至現場排除！`;
+                    break;
+                case "OBSTACLE":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 前有障礙超過30秒，請至現場排除！`;
+                    break;
+                case "EXCESSIVE_TURN_ANGLE":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 馬達驅動器異常，請至現場排除！`;
+                    break;
+                case "WRONG_TAG_NUMBER":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} AMR系統找不到路徑(卡號錯誤)，請聯絡我們！`;
+                    break;
+                case "UNKNOWN_TAG_NUMBER":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} AMR系統路徑未匹配(未知卡號)，請聯絡我們！`;
+                    break;
+                case "NAVIGATION_LOST":
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} AMR失去導航方向，請至現場協助將AMR推至啟動點！`;
+                    break;
+                default:
+                    document.getElementById(`alarmInfo${i+1}`).innerHTML = `AMR#${agv[i].id} 後端資料錯誤： ${agv[i].status}`;
+                    break;
+            }
+            if (!cancelAlarm) {
+                if (document.getElementById('alarmModal').style.display != 'block') {
+                    document.getElementById('alarmBTN').click();
+                }
+                if (alarmToggle) {
+                    alarmToggle=false;
+                    const audio = document.createElement("audio");
+                    // audio.src = baseUrl+"/audio/laser.mp3";
+                    audio.src = baseUrl+"/audio/alarm3.m4a";
+                    audio.play();
+                } else {
+                    alarmToggle=true;
+                }
+            }
+        }
+    }
+    if (cancelAlarmCnt == 3){
         if(document.getElementById('alarmModal').style.display == 'block'){
             document.getElementById('closeAlarmBTN').click();
         }
         cancelAlarm = false;
-    } else {
-        switch (agv.status) {
-            case "STOP":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 觸發緊急停止，請至現場排除！`;
-                break;
-            case "DERAIL":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 出軌，請至現場排除！`;
-                break;
-            case "COLLIDE":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 發生碰撞，請至現場排除！`;
-                break;
-            case "OBSTACLE":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 前有障礙超過30秒，請至現場排除！`;
-                break;
-            case "EXCESSIVE_TURN_ANGLE":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 馬達驅動器異常，請至現場排除！`;
-                break;
-            case "WRONG_TAG_NUMBER":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR系統找不到路徑(卡號錯誤)，請聯絡我們！`;
-                break;
-            case "UNKNOWN_TAG_NUMBER":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR系統路徑未匹配(未知卡號)，請聯絡我們！`;
-                break;
-            case "NAVIGATION_LOST":
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} AMR失去導航方向，請至現場協助將AMR推至啟動點！`;
-                break;
-            default:
-                document.getElementById('alarmInfo').innerHTML = `AMR#${agv.id} 後端資料錯誤： ${agv.status}`;
-                break;
-        }
-        if (!cancelAlarm) {
-            if (document.getElementById('alarmModal').style.display != 'block') {
-                document.getElementById('alarmBTN').click();
-            }
-            if (alarmToggle) {
-                alarmToggle=false;
-                const audio = document.createElement("audio");
-                // audio.src = baseUrl+"/audio/laser.mp3";
-                audio.src = baseUrl+"/audio/alarm3.m4a";
-                audio.play();
-            } else {
-                alarmToggle=true;
-            }
-        }
     }
+    
 }
 
 function closeAlarm() {

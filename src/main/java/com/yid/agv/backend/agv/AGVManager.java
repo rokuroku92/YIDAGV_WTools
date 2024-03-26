@@ -116,7 +116,7 @@ public class AGVManager {
         copy.setTagErrorDispatchCompleted(originalAGV.isTagErrorDispatchCompleted());
         copy.setLastTaskBuffer(originalAGV.isLastTaskBuffer());
         copy.setObstacleCount(originalAGV.getObstacleCount());
-//        copy.setIAlarm(originalAGV.isIAlarm());
+        copy.setIAlarm(originalAGV.isIAlarm());
         return copy;
     }
 

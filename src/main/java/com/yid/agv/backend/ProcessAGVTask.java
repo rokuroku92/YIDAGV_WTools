@@ -113,7 +113,7 @@ public class ProcessAGVTask {
                         agv.setTask(goTask);
                         failedTask(agv);
                     }
-                    default -> log.warn("TrafficControl result exception: " + result);
+                    default -> log.warn("dispatchTaskToAGV result exception: " + result);
                 }
             } else if (taskQueueIEmpty && !iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
                 goStandbyTask(agv);
@@ -198,7 +198,7 @@ public class ProcessAGVTask {
                         }
                     }
                     default -> {
-                        log.warn("Undefined AGV System message: " + webpageContent);
+                        log.warn("TrafficControl result exception: " + webpageContent);
                         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.ERROR_AGV_DATA);
                         return "FAIL";
                     }
