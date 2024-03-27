@@ -1,7 +1,5 @@
 package com.yid.agv.backend.elevator;
 
-import com.yid.agv.backend.ProcessAGVTask;
-import com.yid.agv.repository.NotificationDao;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -18,7 +16,7 @@ import java.util.Objects;
 
 @Component
 public class ElevatorSocketBox {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(ElevatorSocketBox.class);
     public enum ElevatorBoxCommand {
         ASK_STATUS("QQQE0010E0000XXX"), OPEN_BUZZER("QQQE0010E0042XXX"), CLOSE_BUZZER("QQQE0010E0002XXX"), CLOSE_BUTTON("QQQE0010E0021XXX");
         private final String command;

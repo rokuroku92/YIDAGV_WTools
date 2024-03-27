@@ -222,7 +222,7 @@ function agvUpdate(agv){  // 更新資料
                 statusHTMLClass = "warning"; 
                 break;
             case "EXCESSIVE_TURN_ANGLE":
-                // statusText="WHEEL_ERROR";
+                statusText="MOTOR_ERROR";
                 statusHTMLClass = "error";
                 break;
             case "WRONG_TAG_NUMBER":

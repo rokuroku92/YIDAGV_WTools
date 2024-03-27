@@ -13,7 +13,7 @@ import java.util.*;
 
 @Component
 public class GridManager {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(GridManager.class);
     @Autowired
     private StationDao stationDao;
     @Autowired

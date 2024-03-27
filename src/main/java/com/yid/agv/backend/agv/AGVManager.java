@@ -1,7 +1,6 @@
 package com.yid.agv.backend.agv;
 
 
-import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.repository.AGVIdDao;
 import com.yid.agv.repository.StationDao;
 import jakarta.annotation.PostConstruct;
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 @Component
 public class AGVManager {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(AGVManager.class);
     @Autowired
     private AGVIdDao agvIdDao;
     @Autowired

@@ -3,13 +3,13 @@ package com.yid.agv.backend;
 import com.yid.agv.backend.agv.AGVManager;
 import com.yid.agv.backend.agv.AGV;
 import com.yid.agv.backend.agvtask.AGVQTask;
-import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.model.Station;
 import com.yid.agv.repository.*;
 import com.yid.agv.service.HomePageService;
 import jakarta.annotation.PostConstruct;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class AGVInstantStatus {
     public void updateAgvStatuses() {
         // 從 Traffic Control 抓取 AGV 狀態，並更新到 agv
         String[] allAgvInstantStatuses = crawlAGVStatus().orElse(new String[0]);
-//        String[] allAgvInstantStatuses = new String[]{"2,2600,115,100,128,11","1,1600,115,100,128,11","3,3600,115,100,128,11"};
+//        String[] allAgvInstantStatuses = new String[]{"2,2001,115,100,128,2","1,1019,115,100,128,11","3,3073,115,100,128,2"};
 
         if (allAgvInstantStatuses.length == 0) {
             // 資料錯誤時，通常不應該進入到這邊
@@ -137,6 +137,7 @@ public class AGVInstantStatus {
             agv.setStatus(AGV.Status.OFFLINE);
             agv.setSignal(0);
             agv.setBattery(0);
+            agv.setIAlarm(false);
         }
     }
 
@@ -192,18 +193,18 @@ public class AGVInstantStatus {
 
     }
 
-    private void handleTagError(boolean[] taskStatus, AGV agv){
+    private void handleTagError(boolean @NotNull [] taskStatus, AGV agv){
         if (taskStatus[0] && !agv.isLastTaskBuffer()) {
 //            if(!agv.isFixAgvTagErrorCompleted()) OLD
             if(agv.getStatus() == AGV.Status.WRONG_TAG_NUMBER){
                 fixAgvTagError(agv);
             }
-        } else if (taskStatus[0] && agv.isLastTaskBuffer()) {
+        } else if (taskStatus[0]) {  // && agv.isLastTaskBuffer()
             agv.setTagError(false);
             agv.setFixAgvTagErrorCompleted(false);
             agv.setTagErrorDispatchCompleted(false);
             agv.setLastTaskBuffer(false);
-        } else if (!taskStatus[0]) {
+        } else {  // !taskStatus[0]
             if(!agv.isTagErrorDispatchCompleted() || taskStatus[7]){
                 try{
                     tagErrorDispatch(agv);
@@ -251,30 +252,28 @@ public class AGVInstantStatus {
             return;
         }
         AGVQTask task = agv.getTask();
-        if (task != null) {
-            if (agv.getPlace().equals(stationDao.getStationTagByGridName(task.getTerminalStation()))) {
-                // handleCompletedTask
-                processTasks.completedTask(agv);
-            } else {
-                // 刪除任務或重派任務
-                switch (TASK_EXCEPTION_OPTION){
-                    case 0 -> processTasks.failedTask(agv);
-                    case 1 -> {
-                        if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION) {
-                            // 檢查 AGV 車上是否有棧板。有，則繼續派遣；無，則刪除任務。
-                            if (agv.isIScan()) {
-                                processTasks.dispatchTaskToAGV(agv);
-                            } else {
-                                processTasks.failedTask(agv);
-                            }
-                        } else {
-                            processTasks.dispatchTaskToAGV(agv);
-                        }
-                    }
-                    default -> log.warn("TASK_EXCEPTION_OPTION值錯誤");
-                }
-            }
 
+        if (agv.getPlace().equals(stationDao.getStationTagByGridName(task.getTerminalStation()))) {
+            // handleCompletedTask
+            processTasks.completedTask(agv);
+        } else {
+            // 刪除任務或重派任務
+            switch (TASK_EXCEPTION_OPTION){
+                case 0 -> processTasks.failedTask(agv);
+                case 1 -> {
+                    if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION) {
+                        // 檢查 AGV 車上是否有棧板。有，則繼續派遣；無，則刪除任務。
+                        if (agv.isIScan()) {
+                            processTasks.dispatchTaskToAGV(agv);
+                        } else {
+                            processTasks.failedTask(agv);
+                        }
+                    } else {
+                        processTasks.dispatchTaskToAGV(agv);
+                    }
+                }
+                default -> log.warn("TASK_EXCEPTION_OPTION值錯誤");
+            }
         }
     }
 

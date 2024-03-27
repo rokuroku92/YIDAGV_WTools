@@ -84,15 +84,15 @@ public class ProcessAGVTask {
             boolean hasNextTaskList = false;
             if (agv.getId() == 2) {
                 List<NowTaskList> taskLists = nowTaskListDao.queryNowTaskListsByProcessId(2);
-                if (taskLists.size() > 0) hasNextTaskList = true;
+                if (!taskLists.isEmpty()) hasNextTaskList = true;
             } else if (agv.getId() == 3) {
                 NowTaskList nowTaskList = taskListManager.getNowTaskListByTaskProcessId(1);
-                if (nowTaskList.getTaskNumber().startsWith("#RE") && nowTaskList.getPhase() == Phase.FIRST_STAGE_3F || nowTaskList.getPhase() == Phase.CALL_ELEVATOR) {
+                if (nowTaskList != null && nowTaskList.getTaskNumber().startsWith("#RE") && (nowTaskList.getPhase() == Phase.FIRST_STAGE_3F || nowTaskList.getPhase() == Phase.CALL_ELEVATOR)) {
                     hasNextTaskList = true;
                 }
             }
 
-            if(agv.isILowBattery() && !iAtStandbyStation){  // 低電量時，派遣回待命點
+            if (agv.isILowBattery() && !iAtStandbyStation) {  // 低電量時，派遣回待命點
                 goStandbyTask(agv);
             } else if (!taskQueueIEmpty && !agv.isILowBattery()){  // 正常派遣
                 // 這個專案不用寫優先派遣邏輯
@@ -249,8 +249,8 @@ public class ProcessAGVTask {
             int analysisId = analysisDao.getTodayAnalysisId().get(task.getAgvId() - 1).getAnalysisId();
             analysisDao.updateTask(analysisDao.queryAnalysisByAnalysisId(analysisId).getTask() + 1, analysisId);
 //            String taskStartStation = gridManager.getGridNameByStationId(task.getStartStationId());
-//            String taskTerminalStation = gridManager.getGridNameByStationId(task.getTerminalStationId());
             String taskStartStation = task.getStartStation();
+//            String taskTerminalStation = gridManager.getGridNameByStationId(task.getTerminalStationId());
             String taskTerminalStation = task.getTerminalStation();
 
             switch (task.getAgvId()){

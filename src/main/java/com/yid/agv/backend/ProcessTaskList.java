@@ -6,8 +6,6 @@ import com.yid.agv.backend.agvtask.AGVQTask;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.elevator.ElevatorPermission;
-import com.yid.agv.backend.station.Grid;
-import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
@@ -24,7 +22,7 @@ import java.util.List;
 
 @Component
 public class ProcessTaskList {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessTaskList.class);
     @Autowired
     private NowTaskListDao nowTaskListDao;
     @Autowired
@@ -296,7 +294,8 @@ public class ProcessTaskList {
                 }
             }
             case FIRST_STAGE_1F -> {
-                if(agvManager.getAgv(1).getTask().getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)){
+                AGVQTask task = agvManager.getAgv(1).getTask();
+                if(task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)){
                     elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
@@ -349,8 +348,9 @@ public class ProcessTaskList {
                 }
             }
             case THIRD_STAGE_3F -> {
+                AGVQTask task = agvManager.getAgv(3).getTask();
                 if(agvTaskManager.isEmpty(3) &&
-                        (agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB"))){
+                        (task == null || task.getTaskNumber().startsWith("#SB"))){
                     taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                 }
             }

@@ -1,7 +1,7 @@
 package com.yid.agv.backend.elevator;
 
-import com.yid.agv.backend.ProcessAGVTask;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
 public class ElevatorManager {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(ElevatorManager.class);
     @Value("${http.timeout}")
     private int HTTP_TIMEOUT;
     @Value("${agvControl.url}")
@@ -30,9 +30,11 @@ public class ElevatorManager {
     private int prePersonOpenDoorDuration;
     @Autowired
     private ElevatorSocketBox elevatorSocketBox;
+    @Getter
     private ElevatorPermission elevatorPermission;
 
     private int prePersonOpenDoorCount;
+    @Getter
     private int elevatorPersonCount;
     private boolean iAlarmObstacle;
     private final Map<Integer, ElevatorCaller> elevatorCallerMap;
@@ -158,6 +160,7 @@ public class ElevatorManager {
                 }
             }
         }
+        log.info("targetFloor: " + targetFloor);
 
         // 發送指令到TrafficControl
         elevatorCallerMap.values().forEach(elevatorCaller -> {
@@ -239,18 +242,18 @@ public class ElevatorManager {
                 }
             }
 
+            if (elevatorPermission == ElevatorPermission.SYSTEM) {
+                elevatorCaller.setDoCallElevator(elevatorCaller.getFloor() == targetFloor);
+            }
+
             elevatorCaller.setIOpenDoor(!ioValue[6]);
         });
-    }
-
-    public ElevatorPermission getElevatorPermission() {
-        return elevatorPermission;
     }
 
     public boolean acquireElevatorPermission() {
         if (elevatorPermission == ElevatorPermission.SYSTEM){
             return true;
-        } else if (elevatorPermission != ElevatorPermission.FREE || callQueue.size() > 0){
+        } else if (elevatorPermission != ElevatorPermission.FREE || !callQueue.isEmpty()){
             return false;
         } else if (elevatorSocketBox.isElevatorBoxScan() == ElevatorSocketBox.ElevatorBoxStatus.TRUE) {
             iAlarmObstacle = true;
@@ -265,10 +268,6 @@ public class ElevatorManager {
 
     public void resetElevatorPermission() {
         elevatorPermission = ElevatorPermission.FREE;
-    }
-
-    public int getElevatorPersonCount(){
-        return elevatorPersonCount;
     }
 
     public boolean getIAlarmObstacle(){
@@ -320,10 +319,10 @@ public class ElevatorManager {
         int instantCaller1ToggleValue = 0;
         for (int i = 0, index = 0; i < Objects.requireNonNull(instantCaller1Status).length && i < 8; i += 2, index++) {
             if (instantCaller1Status[i]) {
-                instantCaller1OutputValue += Math.pow(2, index);
+                instantCaller1OutputValue += (int) Math.pow(2, index);
             }
             if (instantCaller1Status[i+1]) {
-                instantCaller1ToggleValue += Math.pow(2, index);
+                instantCaller1ToggleValue += (int) Math.pow(2, index);
             }
         }
 
@@ -354,10 +353,10 @@ public class ElevatorManager {
         int instantCaller2ToggleValue = 0;
         for (int i = 0, index = 0; i < Objects.requireNonNull(instantCaller2Status).length && i < 6; i += 2, index++) {
             if (instantCaller2Status[i]) {
-                instantCaller2OutputValue += Math.pow(2, index);
+                instantCaller2OutputValue += (int) Math.pow(2, index);
             }
             if (instantCaller2Status[i+1]) {
-                instantCaller2ToggleValue += Math.pow(2, index);
+                instantCaller2ToggleValue += (int) Math.pow(2, index);
             }
         }
 

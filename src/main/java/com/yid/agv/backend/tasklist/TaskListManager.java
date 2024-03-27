@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Component
 public class TaskListManager {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskListManager.class);
     @Autowired
     private NowTaskListDao nowTaskListDao;
     @Autowired
