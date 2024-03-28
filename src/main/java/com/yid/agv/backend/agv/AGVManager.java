@@ -74,13 +74,18 @@ public class AGVManager {
      * @param agvId AGV 的 ID。
      * @return 如果指定的 AGV 在電梯中，則返回 true；否則返回 false。
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean iAgvInElevator(int agvId){
-        String place = agvMap.get(agvId).getPlace();
+        int place = Integer.parseInt(agvMap.get(agvId).getPlace());
         List<String> tags = stationDao.getStationTagByAreaName("E-");
-        for (String tag: tags) {
-            if (place.equals(tag)){
+        for (String tagString: tags) {
+            int tag = Integer.parseInt(tagString);
+            tag = tag/1000*1000 + (tag%250);
+            if (tag == place
+                    || tag+250 == place
+                    || tag+500 == place
+                    || tag+750 == place)
                 return true;
-            }
         }
         return false;
     }

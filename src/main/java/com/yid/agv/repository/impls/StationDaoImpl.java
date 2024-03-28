@@ -6,6 +6,7 @@ import com.yid.agv.repository.StationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class StationDaoImpl implements StationDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, areaName+"%");
     }
     @Override
-    public List<String> getStationTagByAreaName(String areaName){
+    public List<String> getStationTagByAreaName(String areaName) {
         String sql = "SELECT tag FROM `station_data` WHERE `name` LIKE ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(String.class), areaName+"%");
+        RowMapper<String> rowMapper = (rs, rowNum) -> rs.getString("tag");
+//        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(String.class), areaName+"%"); 無效
+        return jdbcTemplate.query(sql, rowMapper, areaName+"%");
     }
     @Override
-    public String getStationTagByGridName(String gridName){
+    public String getStationTagByGridName(String gridName) {
         String sql = "SELECT tag FROM `station_data` WHERE `name` = ?";
         return jdbcTemplate.queryForObject(sql, String.class, gridName);
     }

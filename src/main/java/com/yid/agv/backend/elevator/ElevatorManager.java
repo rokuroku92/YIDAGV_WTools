@@ -160,7 +160,6 @@ public class ElevatorManager {
                 }
             }
         }
-        log.info("targetFloor: " + targetFloor);
 
         // 發送指令到TrafficControl
         elevatorCallerMap.values().forEach(elevatorCaller -> {

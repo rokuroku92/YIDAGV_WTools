@@ -77,7 +77,7 @@ public class AGVInstantStatus {
     public void updateAgvStatuses() {
         // 從 Traffic Control 抓取 AGV 狀態，並更新到 agv
         String[] allAgvInstantStatuses = crawlAGVStatus().orElse(new String[0]);
-//        String[] allAgvInstantStatuses = new String[]{"2,2001,115,100,128,2","1,1019,115,100,128,11","3,3073,115,100,128,2"};
+//        String[] allAgvInstantStatuses = new String[]{"2,2001,115,100,128,2","1,505,115,100,128,11","3,3073,115,100,128,2"};
 
         if (allAgvInstantStatuses.length == 0) {
             // 資料錯誤時，通常不應該進入到這邊
