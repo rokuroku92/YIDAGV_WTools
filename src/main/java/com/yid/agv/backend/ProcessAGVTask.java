@@ -74,6 +74,7 @@ public class ProcessAGVTask {
     public void dispatchTasks() {
         if (isRetrying) return;
 
+        //noinspection CommentedOutCode
         agvManager.getAgvs().forEach(agv -> {
             if(agv.getStatus() != AGV.Status.ONLINE) return;  // AGV未連線則無法派遣
             if(agv.getTask() != null) return;  // AGV任務中
@@ -92,9 +93,7 @@ public class ProcessAGVTask {
                 }
             }
 
-            if (agv.isILowBattery() && !iAtStandbyStation) {  // 低電量時，派遣回待命點
-                goStandbyTask(agv);
-            } else if (!taskQueueIEmpty && !agv.isILowBattery()){  // 正常派遣
+            if (!taskQueueIEmpty){  // 正常派遣
                 // 這個專案不用寫優先派遣邏輯
                 AGVQTask goTask = AGVTaskManager.peekNewTaskByAGVId(agv.getId());
                 log.info("Process dispatch...");
@@ -115,9 +114,36 @@ public class ProcessAGVTask {
                     }
                     default -> log.warn("dispatchTaskToAGV result exception: " + result);
                 }
-            } else if (taskQueueIEmpty && !iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
+            } else if (!iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
                 goStandbyTask(agv);
             }
+
+//            if (agv.isILowBattery() && !iAtStandbyStation) {  // 低電量時，派遣回待命點
+//                goStandbyTask(agv);
+//            } else if (!taskQueueIEmpty && !agv.isILowBattery()){  // 正常派遣
+//                // 這個專案不用寫優先派遣邏輯
+//                AGVQTask goTask = AGVTaskManager.peekNewTaskByAGVId(agv.getId());
+//                log.info("Process dispatch...");
+//                String result = dispatchTaskToAGV(agv, goTask);
+//                switch (result) {
+//                    case "OK" -> {
+//                        AGVTaskManager.getNewTaskByAGVId(agv.getId());
+//                        agv.setTask(goTask);
+//                        Objects.requireNonNull(goTask).setStatus(1);
+//                        agv.setTaskStatus(AGV.TaskStatus.PRE_START_STATION);
+//                        taskDetailDao.updateStatusByTaskNumberAndSequence(goTask.getTaskNumber(), goTask.getSequence(), 1);
+//                    }
+//                    case "BUSY" -> {}
+//                    case "FAIL" -> {
+//                        AGVTaskManager.getNewTaskByAGVId(agv.getId());
+//                        agv.setTask(goTask);
+//                        failedTask(agv);
+//                    }
+//                    default -> log.warn("dispatchTaskToAGV result exception: " + result);
+//                }
+//            } else if (taskQueueIEmpty && !iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
+//                goStandbyTask(agv);
+//            }
         });
 
     }
@@ -193,6 +219,7 @@ public class ProcessAGVTask {
                         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_SEND_TASK);
                         log.warn("Failed to dispatch task, retrying... (Attempt " + retryCount + ")");
                         try {
+                            // noinspection BusyWait
                             Thread.sleep(3000); // 延遲再重新發送
                         } catch (InterruptedException ignored) {
                         }
@@ -210,6 +237,7 @@ public class ProcessAGVTask {
                 retryCount++;
                 log.warn("Failed to dispatch task, retrying... (Attempt " + retryCount + ")");
                 try {
+                    // noinspection BusyWait
                     Thread.sleep(3000); // 延遲再重新發送
                 } catch (InterruptedException ignored) {
                 }

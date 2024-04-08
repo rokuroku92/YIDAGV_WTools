@@ -1,11 +1,9 @@
 package com.yid.agv.backend.tasklist;
 
-import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
-import com.yid.agv.model.TaskList;
 import com.yid.agv.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -77,7 +75,7 @@ public class TaskListManager {
         taskListMap.forEach((taskProcessId, taskList) -> {
             if(taskList == null) {
                 List<NowTaskList> taskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
-                if (taskLists.size()>0){
+                if (!taskLists.isEmpty()) {
                     NowTaskList doTaskList = taskLists.get(0);
                     if (doTaskList != null){
                         taskListMap.put(taskProcessId, doTaskList);

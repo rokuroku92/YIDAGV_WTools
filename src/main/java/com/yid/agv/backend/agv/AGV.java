@@ -57,7 +57,8 @@ public class AGV {
      */
     public AGV(int id) {
         this.id=id;
-        taskStatus = TaskStatus.NO_TASK;
+        this.status = Status.OFFLINE;
+        this.taskStatus = TaskStatus.NO_TASK;
         this.title = switch (id) {
             case 1 -> NotificationDao.Title.AMR_1;
             case 2 -> NotificationDao.Title.AMR_2;

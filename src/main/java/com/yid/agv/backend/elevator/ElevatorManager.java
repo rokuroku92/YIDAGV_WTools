@@ -32,7 +32,7 @@ public class ElevatorManager {
     private ElevatorSocketBox elevatorSocketBox;
     @Getter
     private ElevatorPermission elevatorPermission;
-
+    private boolean hasOpenedDoorBefore;
     private int prePersonOpenDoorCount;
     @Getter
     private int elevatorPersonCount;
@@ -110,7 +110,8 @@ public class ElevatorManager {
                 Integer floor = callQueue.peek();
                 ElevatorCaller elevatorCaller = elevatorCallerMap.get(floor);
                 controlElevatorTO(floor);
-                if (elevatorCaller.isIOpenDoor()) {
+                if (elevatorCaller.isIOpenDoor() || hasOpenedDoorBefore) {
+                    hasOpenedDoorBefore = true;
                     elevatorCaller.setICallButton(false);
                     controlElevatorTO(null);
                     if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
@@ -143,6 +144,7 @@ public class ElevatorManager {
                     elevatorSocketBox.sendCommandToElevatorBox(ElevatorSocketBox.ElevatorBoxCommand.CLOSE_BUZZER);
                 if (elevatorSocketBox.isElevatorBoxManual() == ElevatorSocketBox.ElevatorBoxStatus.FALSE) {
                     elevatorPersonCount = 0;
+                    hasOpenedDoorBefore = false;
                     elevatorPermission = ElevatorPermission.FREE;
                 }
             }
