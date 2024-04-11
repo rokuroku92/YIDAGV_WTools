@@ -14,9 +14,16 @@ import java.net.SocketException;
 import java.util.Objects;
 
 
+/**
+ * ElevatorSocketBox 類用於與電梯控制盒建立 Socket 連接並通信。
+ */
 @Component
 public class ElevatorSocketBox {
     private static final Logger log = LoggerFactory.getLogger(ElevatorSocketBox.class);
+
+    /**
+     * 定義 ElevatorBoxCommand 列舉類，用於表示要向電梯控制盒發送的命令。
+     */
     public enum ElevatorBoxCommand {
         ASK_STATUS("QQQE0010E0000XXX"), OPEN_BUZZER("QQQE0010E0042XXX"), CLOSE_BUZZER("QQQE0010E0002XXX"), CLOSE_BUTTON("QQQE0010E0021XXX");
         private final String command;
@@ -27,6 +34,10 @@ public class ElevatorSocketBox {
             return command;
         }
     }
+
+    /**
+     * 定義 ElevatorBoxStatus 列舉類，用於表示電梯控制盒的狀態。
+     */
     public enum ElevatorBoxStatus {
         TRUE, FALSE, UNKNOWN
     }
@@ -54,6 +65,9 @@ public class ElevatorSocketBox {
     private final ElevatorBoxCommand defaultCommand = ElevatorBoxCommand.ASK_STATUS;
     private int failSocketCount = 0;
 
+    /**
+     * 在 Spring 容器初始化後執行，用於初始化 ElevatorSocketBox 對象。
+     */
     @PostConstruct
     public void initialize() {
         ElevatorBoxConnected = false;
@@ -64,6 +78,9 @@ public class ElevatorSocketBox {
         new Thread(this::elevatorSocketBoxMain).start();
     }
 
+    /**
+     * elevatorSocketBoxMain 方法用於執行與電梯控制盒的主要通信邏輯。
+     */
     public void elevatorSocketBoxMain() {
         connectToServer();
         // 啟動接收訊息的執行緒
@@ -126,6 +143,9 @@ public class ElevatorSocketBox {
 
     }
 
+    /**
+     * 在 Spring 容器銷毀之前執行，用於清理資源。
+     */
     @PreDestroy
     public void cleanup() {
         // 在應用程式終止時執行清理工作
@@ -231,6 +251,10 @@ public class ElevatorSocketBox {
         return statusArray;
     }
 
+    /**
+     * 向電梯控制盒發送命令的方法。
+     * @param elevatorBoxCommand 要發送的命令
+     */
     public synchronized void sendCommandToElevatorBox(ElevatorBoxCommand elevatorBoxCommand){
         if (socket != null && !socket.isClosed() && writer != null) {
             if(elevatorBoxCommand != ElevatorBoxCommand.ASK_STATUS){

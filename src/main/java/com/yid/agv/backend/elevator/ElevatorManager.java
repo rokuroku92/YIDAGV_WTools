@@ -19,6 +19,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 用於管理電梯的類。
+ */
 @Component
 public class ElevatorManager {
     private static final Logger log = LoggerFactory.getLogger(ElevatorManager.class);
@@ -40,11 +43,17 @@ public class ElevatorManager {
     private final Map<Integer, ElevatorCaller> elevatorCallerMap;
     private final Queue<Integer> callQueue;
 
+    /**
+     * ElevatorManager 的構造函數。
+     */
     public ElevatorManager() {
         elevatorCallerMap = new HashMap<>();
         callQueue = new ConcurrentLinkedDeque<>();
     }
 
+    /**
+     * 初始化 ElevatorManager。
+     */
     @PostConstruct
     public void initialize() {
         prePersonOpenDoorCount = 0;
@@ -55,6 +64,10 @@ public class ElevatorManager {
         elevatorPermission = ElevatorPermission.FREE;
     }
 
+    /**
+     * 用於定時處理電梯任務的方法。
+     * 此方法根據一定的時間間隔執行，處理電梯的狀態和任務。
+     */
     @Scheduled(fixedRate = 1000)
     public void elevatorProcess() {
         String[] allCallerInstantStatuses = crawlStatus().orElse(new String[0]);
@@ -172,6 +185,10 @@ public class ElevatorManager {
 
     }
 
+    /**
+     * 更新 Caller1 離線狀態的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     */
     private void updateCaller1OfflineStatus(ElevatorCaller elevatorCaller){
         elevatorCaller.setICaller1Offline(true);
         elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.UNKNOWN);
@@ -179,9 +196,20 @@ public class ElevatorManager {
         elevatorCaller.setRedLight(ElevatorCaller.IOStatus.UNKNOWN);
         elevatorCaller.setIBuzz(ElevatorCaller.IOStatus.UNKNOWN);
     }
+
+    /**
+     * 更新 Caller2 離線狀態的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     */
     private void updateCaller2OfflineStatus(ElevatorCaller elevatorCaller){
         elevatorCaller.setICaller2Offline(true);
     }
+
+    /**
+     * 更新 Caller1 在線狀態的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     * @param data 電梯呼叫器數據
+     */
     private void updateCaller1OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
         elevatorCaller.setICaller1Offline(false);
         elevatorCaller.setInstantCaller1Value(Integer.parseInt(data[1]));
@@ -205,6 +233,12 @@ public class ElevatorManager {
                 .orElse(ElevatorCaller.IOStatus.UNKNOWN));
 
     }
+
+    /**
+     * 更新 Caller2 在線狀態的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     * @param data 電梯呼叫器數據
+     */
     private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
         elevatorCaller.setICaller2Offline(false);
         elevatorCaller.setInstantCaller2Value(Integer.parseInt(data[1]));
@@ -251,6 +285,10 @@ public class ElevatorManager {
         });
     }
 
+    /**
+     * 獲取電梯許可權的方法。
+     * @return 如果成功獲取電梯許可權，返回 true；否則返回 false。
+     */
     public boolean acquireElevatorPermission() {
         if (elevatorPermission == ElevatorPermission.SYSTEM){
             return true;
@@ -267,18 +305,34 @@ public class ElevatorManager {
 
     }
 
+    /**
+     * 重置電梯許可權的方法。
+     */
     public void resetElevatorPermission() {
         elevatorPermission = ElevatorPermission.FREE;
     }
 
+    /**
+     * 獲取是否存在障礙物告警的方法。
+     * @return 如果存在障礙物告警，返回 true；否則返回 false。
+     */
     public boolean getIAlarmObstacle(){
         return iAlarmObstacle;
     }
 
+    /**
+     * 獲取指定樓層的電梯是否開門的方法。
+     * @param floor 指定的樓層
+     * @return 如果電梯門打開，返回 true；否則返回 false。
+     */
     public boolean iOpenDoorByFloor(int floor){
         return elevatorCallerMap.get(floor).isIOpenDoor();
     }
 
+    /**
+     * 擷取電梯呼叫器的狀態的方法。
+     * @return 獲取到的電梯呼叫器狀態，以字符串數組形式返回
+     */
     public Optional<String[]> crawlStatus() {
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -301,6 +355,10 @@ public class ElevatorManager {
     }
 
     private int targetFloor = 0;
+    /**
+     * 控制電梯移動到指定樓層的方法。
+     * @param floor 指定的樓層，為 null 時表示取消指定樓層
+     */
     public void controlElevatorTO(Integer floor){
         if (floor == null) {
             elevatorCallerMap.values().forEach(elevatorCaller -> elevatorCaller.setDoCallElevator(false));
@@ -310,6 +368,10 @@ public class ElevatorManager {
         }
     }
 
+    /**
+     * 用於總和 ElevatorCaller 對象資料後發送電梯呼叫器指令的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     */
     public void sendCaller(ElevatorCaller elevatorCaller) {
         int caller1Id = elevatorCaller.getFloor()*2-1;
         int caller1OutputValue = convertToCaller1ValueByIOStatus(elevatorCaller, ElevatorCaller.IOStatus.ON);
@@ -384,7 +446,12 @@ public class ElevatorManager {
         }
     }
 
-
+    /**
+     * 用於直接發送電梯呼叫器指令的方法。
+     * @param callerId 電梯呼叫器ID
+     * @param value 指令值 參考利基文件內容 v0.903
+     * @param command 指令類型 output|toggle|clrcall
+     */
     public void sendCaller(int callerId, int value, String command){
         Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
         HttpRequest request = HttpRequest.newBuilder()
@@ -399,6 +466,11 @@ public class ElevatorManager {
         }
     }
 
+    /**
+     * 解析電梯呼叫器的狀態值的方法。
+     * @param statusValue 狀態值
+     * @return 電梯呼叫器狀態的布爾數組
+     */
     private boolean[] parseStatus(int statusValue) {
         if(statusValue < 0) return null;
         boolean[] statusArray = new boolean[16];
@@ -412,6 +484,12 @@ public class ElevatorManager {
         return statusArray;
     }
 
+    /**
+     * 根據 IO 狀態轉換為 Caller1 的值的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     * @param ioStatus IO 狀態
+     * @return Caller1 的值
+     */
     private int convertToCaller1ValueByIOStatus(ElevatorCaller elevatorCaller, ElevatorCaller.IOStatus ioStatus){
         int value = 0;
         if (elevatorCaller.getGreenLight() == ioStatus) {
@@ -429,6 +507,12 @@ public class ElevatorManager {
         return value;
     }
 
+    /**
+     * 根據 IO 狀態轉換為 Caller2 的值的方法。
+     * @param elevatorCaller 電梯呼叫器對象
+     * @param ioStatus IO 狀態
+     * @return Caller2 的值
+     */
     private int convertToCaller2ValueByIOStatus(ElevatorCaller elevatorCaller, ElevatorCaller.IOStatus ioStatus){
         int value = 0;
         if (ioStatus == ElevatorCaller.IOStatus.TOGGLE) {

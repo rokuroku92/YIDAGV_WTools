@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * TaskListManager 類負責管理當前任務列表和任務細節。
+ */
 @Component
 public class TaskListManager {
     private static final Logger log = LoggerFactory.getLogger(TaskListManager.class);
@@ -34,11 +37,17 @@ public class TaskListManager {
     private final Map<Integer, NowTaskList> taskListMap;
     private final Map<String, List<TaskDetail>> taskDetailsMap;
 
+    /**
+     * TaskListManager 的建構函數，初始化 taskListMap 和 taskDetailsMap。
+     */
     public TaskListManager() {
         taskListMap = new HashMap<>();
         taskDetailsMap = new HashMap<>();
     }
 
+    /**
+     * 在 Spring 容器初始化後執行，初始化 taskListMap。
+     */
     @PostConstruct
     public void initialize() {
         taskListMap.put(1, null);
@@ -70,6 +79,9 @@ public class TaskListManager {
         });
     }
 
+    /**
+     * 定時任務，定期刷新任務列表(與資料庫對照)。
+     */
     @Scheduled(fixedRate = 1000)
     public synchronized void refreshTaskList(){
         taskListMap.forEach((taskProcessId, taskList) -> {
@@ -86,10 +98,19 @@ public class TaskListManager {
         });
     }
 
+    /**
+     * 根據任務處理 ID 獲取當前任務列表。
+     * @param taskProcessId 任務處理 ID
+     * @return 當前任務列表
+     */
     public NowTaskList getNowTaskListByTaskProcessId(int taskProcessId){
         return taskListMap.get(taskProcessId);
     }
 
+    /**
+     * 獲取所有當前任務列表。
+     * @return 所有當前任務列表
+     */
     public List<NowTaskList> getNowAllTaskList(){
         List<NowTaskList> allTaskLists = new ArrayList<>();
 
@@ -103,26 +124,51 @@ public class TaskListManager {
         return allTaskLists;
     }
 
+    /**
+     * 根據任務編號獲取任務細節列表。
+     * @param taskNumber 任務編號
+     * @return 任務細節列表
+     */
     public List<TaskDetail> getTaskDetailByTaskNumber(String taskNumber){
         return taskDetailsMap.get(taskNumber);
     }
 
+    /**
+     * 根據任務編號獲取任務細節列表的長度。
+     * @param taskNumber 任務編號
+     * @return 任務細節列表的長度
+     */
     public int getTaskDetailLengthByTaskNumber(String taskNumber){
         return taskDetailsMap.get(taskNumber).size();
     }
 
+    /**
+     * 設置任務列表的階段。
+     * @param nowTaskList 現在的任務列表
+     * @param phase 要設置的階段
+     */
     public void setTaskListPhase(NowTaskList nowTaskList, Phase phase){
         nowTaskList.setPhase(phase);
         nowTaskListDao.updateNowTaskListPhase(nowTaskList.getTaskNumber(), phase);
         taskListDao.updateTaskListPhase(nowTaskList.getTaskNumber(), phase);
     }
 
+    /**
+     * 設置任務列表的進度。
+     * @param nowTaskList 現在的任務列表
+     * @param progress 要設置的進度
+     */
     public void setTaskListProgress(NowTaskList nowTaskList, int progress){
         nowTaskList.setProgress(progress);
         nowTaskListDao.updateNowTaskListProgress(nowTaskList.getTaskNumber(), progress);
         taskListDao.updateTaskListProgress(nowTaskList.getTaskNumber(), progress);
     }
 
+    /**
+     * 根據序列設置任務列表的進度。
+     * @param taskNumber 任務編號
+     * @param sequence 序列
+     */
     public void setTaskListProgressBySequence(String taskNumber, int sequence){
         int steps = getTaskDetailLengthByTaskNumber(taskNumber);
         int progress = (int)(((double)sequence/(double)steps)*(double)99);
@@ -130,6 +176,10 @@ public class TaskListManager {
         taskListDao.updateTaskListProgress(taskNumber, progress);
     }
 
+    /**
+     * 完成任務列表。
+     * @param taskProcessId 任務處理 ID
+     */
     public void completedTaskList(int taskProcessId){
         String taskNumber = getNowTaskListByTaskProcessId(taskProcessId).getTaskNumber();
         nowTaskListDao.deleteNowTaskList(taskNumber);
@@ -139,6 +189,10 @@ public class TaskListManager {
         taskDetailsMap.put(taskNumber, null);
     }
 
+    /**
+     * 獲取任務列表大小(任務處理進程的數量)。
+     * @return 任務列表的大小(任務處理進程的數量)
+     */
     public int getTaskListMapSize(){
         return taskListMap.size();
     }

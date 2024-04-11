@@ -1,7 +1,6 @@
 
 package com.yid.agv.service;
 
-import com.yid.agv.backend.ProcessAGVTask;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
@@ -12,14 +11,13 @@ import com.yid.agv.repository.GridListDao;
 import com.yid.agv.repository.NowTaskListDao;
 import com.yid.agv.repository.TaskDetailDao;
 import com.yid.agv.repository.TaskListDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class TaskService {
-    private static final Logger log = LoggerFactory.getLogger(ProcessAGVTask.class);
     @Autowired
     private TaskListDao taskListDao;
     @Autowired
@@ -54,21 +51,18 @@ public class TaskService {
     
     private String lastDate;
 
-//    @Scheduled(fixedRate = 3000)
-//    public void test(){
-//        System.out.println(getWToolsInformation("MO01-20200907001"));
-//    }
-
-    private WorkNumberResult getWToolsInformation(String workNumber){
+    private @Nullable WorkNumberResult getWToolsInformation(@NotNull String workNumber){
         if(workNumber.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
             String[] TA = workNumber.split("-");
             String sql = "SELECT TA006 AS object_number, TA034 AS object_name FROM V_MOCTA WHERE TA001 = ? AND TA002 = ?";
-            WorkNumberResult result = new WorkNumberResult();
-//            try {
-//                result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
-//            } catch (EmptyResultDataAccessException ignore){}
-            result.setObjectName("1/2\"72T電金全拋八角葫蘆柄軟打 KINCROME"); // TODO: remove
-            result.setObjectNumber("0254780011");  // TODO: remove
+            WorkNumberResult result;
+            try {
+                result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
+            } catch (EmptyResultDataAccessException ignore){
+                return null;
+            }
+//            result.setObjectName("1/2\"72T電金全拋八角葫蘆柄軟打 KINCROME");
+//            result.setObjectNumber("0254780011");
             return result;
         } else {
             return null;
