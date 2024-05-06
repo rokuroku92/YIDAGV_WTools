@@ -3,16 +3,11 @@ package com.yid.agv.backend;
 import com.yid.agv.backend.agv.AGVManager;
 import com.yid.agv.backend.agv.AGV;
 import com.yid.agv.backend.agvtask.AGVQTask;
-import com.yid.agv.backend.station.GridManager;
-import com.yid.agv.backend.agvtask.AGVTaskManager;
 import com.yid.agv.model.Station;
 import com.yid.agv.repository.*;
-import com.yid.agv.service.HomePageService;
-import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -29,8 +24,6 @@ import java.util.stream.Collectors;
 @Component
 public class AGVInstantStatus {
     private static final Logger log = LoggerFactory.getLogger(AGVInstantStatus.class);
-    @Autowired
-    private TestFakeData testFakeData;
     @Value("${http.timeout}")
     private int HTTP_TIMEOUT;
     @Value("${agvControl.url}")
@@ -43,33 +36,36 @@ public class AGVInstantStatus {
     private int OBSTACLE_DURATION;
     @Value("${agv.task_exception_option}")
     private int TASK_EXCEPTION_OPTION;
-    @Autowired
-    private AGVIdDao agvIdDao;
-    @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private NotificationDao notificationDao;
-    @Autowired
-    private AnalysisDao analysisDao;
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-    @Autowired
-    private AGVManager agvManager;
-    @Autowired
-    private GridManager gridManager;
-    @Autowired
-    private AGVTaskManager taskQueue;
-    @Autowired
-    private ProcessAGVTask processTasks;
-    @Autowired
-    private GridManager stationManager;
-    @Autowired
-    private HomePageService homePageService;
-    private Map<Integer, Integer> stationIdTagMap;
+    @Value("${agv.task_exception_pre_terminal_station_scan_count}")
+    private int TASK_EXCEPTION_PRE_TERMINAL_STATION_SCAN_COUNT;
 
-    @PostConstruct
-    public void initialize() {
-        stationIdTagMap = stationDao.queryStations().stream()
+    private final StationDao stationDao;
+
+    private final NotificationDao notificationDao;
+
+    private final TaskDetailDao taskDetailDao;
+
+    private final AGVManager agvManager;
+
+//    private final GridManager gridManager;
+
+    private final ProcessAGVTask processTasks;
+
+    private final Map<Integer, Integer> stationIdTagMap;
+
+    public AGVInstantStatus(StationDao stationDao,
+                            NotificationDao notificationDao,
+                            TaskDetailDao taskDetailDao,
+                            AGVManager agvManager,
+//                            GridManager gridManager,
+                            ProcessAGVTask processTasks) {
+        this.stationDao = stationDao;
+        this.notificationDao = notificationDao;
+        this.taskDetailDao = taskDetailDao;
+        this.agvManager = agvManager;
+//        this.gridManager = gridManager;
+        this.processTasks = processTasks;
+        this.stationIdTagMap = stationDao.queryStations().stream()
                 .collect(Collectors.toMap(Station::getId, Station::getTag));
     }
 
@@ -145,7 +141,7 @@ public class AGVInstantStatus {
         // data[1] 位置
         agv.setPlace(data[1].trim());
         // data[2] 訊號
-        agv.setSignal((int)Math.ceil(Integer.parseInt(data[2].trim()) / 120.0 * 100));
+        agv.setSignal((int)Math.ceil(Integer.parseInt(data[2].trim()) / 60.0 * 100));
         // data[3] 電量
         agv.setBattery(Integer.parseInt(data[3].trim()));
         if(agv.getBattery()<LOW_BATTERY){
@@ -241,7 +237,7 @@ public class AGVInstantStatus {
 
     private void handleExecutingTask(AGV agv){
         AGVQTask task = agv.getTask();
-        if(task.getStatus() == 1){
+        if(task.getStatus() == 1) {
             task.setStatus(2);
             taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 2);
         }
@@ -261,12 +257,18 @@ public class AGVInstantStatus {
             switch (TASK_EXCEPTION_OPTION){
                 case 0 -> processTasks.failedTask(agv);
                 case 1 -> {
-                    if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION) {
+                    if (agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION && !agv.getTask().getTaskNumber().startsWith("#SB")) {
                         // 檢查 AGV 車上是否有棧板。有，則繼續派遣；無，則刪除任務。
-                        if (agv.isIScan()) {
-                            processTasks.dispatchTaskToAGV(agv);
+                        if (agv.getScanCountForHandleNotExecutingTaskRedispatch() >= TASK_EXCEPTION_PRE_TERMINAL_STATION_SCAN_COUNT) {
+                            if (agv.isIScan()) {
+                                agv.getTask().setModeId(2);  // 改為起始站頂升
+                                processTasks.dispatchTaskToAGV(agv);
+                            } else {
+                                processTasks.failedTask(agv);
+                            }
+                            agv.setScanCountForHandleNotExecutingTaskRedispatch(0);
                         } else {
-                            processTasks.failedTask(agv);
+                            agv.setScanCountForHandleNotExecutingTaskRedispatch(agv.getScanCountForHandleNotExecutingTaskRedispatch() + 1);
                         }
                     } else {
                         processTasks.dispatchTaskToAGV(agv);
@@ -313,7 +315,7 @@ public class AGVInstantStatus {
                             notificationDao.insertMessage(agvTitle, NotificationDao.Status.ERROR_AGV_DATA);
                             agv.setIAlarm(false);
                         }
-                        log.warn("異常agv狀態資料");
+                        log.warn("AGV Exception function status data: {}", Integer.parseInt(data) % 10);
                     }
                 }
             }
@@ -412,7 +414,7 @@ public class AGVInstantStatus {
                     notificationDao.insertMessage(agvTitle, NotificationDao.Status.ERROR_AGV_DATA);
                     agv.setIAlarm(false);
                 }
-                log.warn("異常agv狀態資料");
+                log.warn("AGV Exception error status data: {}", Integer.parseInt(data) / 10);
             }
         }
     }

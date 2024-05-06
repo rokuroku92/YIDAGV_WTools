@@ -290,7 +290,7 @@ public class ElevatorManager {
      * @return 如果成功獲取電梯許可權，返回 true；否則返回 false。
      */
     public boolean acquireElevatorPermission() {
-        if (elevatorPermission == ElevatorPermission.SYSTEM){
+        if (elevatorPermission == ElevatorPermission.SYSTEM) {
             return true;
         } else if (elevatorPermission != ElevatorPermission.FREE || !callQueue.isEmpty()){
             return false;

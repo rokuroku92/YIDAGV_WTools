@@ -2,13 +2,10 @@ SHOW DATABASES;
 SHOW TABLES;
 SELECT DATABASE();
 SELECT * FROM `notification_history_title_data`;
-UPDATE `task_history` SET `status` = 100 WHERE (`task_number` = '#202306300008');
 select DISTINCT agv_id,analysis_id from analysis order by analysis_id DESC LIMIT 3;
 SELECT agv_id, MAX(analysis_id) FROM analysis WHERE agv_id IN (1, 2, 3) GROUP BY agv_id ORDER BY agv_id;
 DELETE FROM grid_list WHERE station_id = 20;
 
-SELECT * FROM task_history WHERE DATE_FORMAT(STR_TO_DATE(create_task_time, '%Y%m%d%H%i%s'), '%Y-%m-%d') = CURDATE() ORDER BY id DESC;
-SELECT * FROM now_task_list;
 SELECT * FROM task_list;
 SELECT * FROM task_detail;
 SELECT * FROM agv_data;

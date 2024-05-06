@@ -49,6 +49,7 @@ public class AGV {
     private boolean tagErrorDispatchCompleted;  // 卡號錯誤是否成功派遣回原任務
     private boolean lastTaskBuffer;  // 對於利基系統卡號錯誤時系統補償的緩衝值
     private int obstacleCount;  // 前有障礙時計數器
+    private int scanCountForHandleNotExecutingTaskRedispatch; // 是否有棧板持續時間計數器
     private boolean iAlarm;  // 是否需要前端發出警報
 
     /**

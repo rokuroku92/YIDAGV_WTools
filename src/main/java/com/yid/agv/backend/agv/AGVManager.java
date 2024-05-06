@@ -1,6 +1,7 @@
 package com.yid.agv.backend.agv;
 
 
+import com.yid.agv.model.Station;
 import com.yid.agv.repository.AGVIdDao;
 import com.yid.agv.repository.StationDao;
 import jakarta.annotation.PostConstruct;
@@ -89,6 +90,31 @@ public class AGVManager {
         }
         return false;
     }
+
+    /**
+     * 判斷指定的 AGV 是否在待命點。
+     * @param agvId AGV 的 ID。
+     * @return 如果指定的 AGV 在待命點，則返回 true；否則返回 false。
+     */
+    public boolean iAgvInStandbyStation(int agvId){
+        int place = Integer.parseInt(agvMap.get(agvId).getPlace());
+        if (place == -1) return false;
+
+        List<Integer> standbyTags = stationDao.queryStandbyStations().stream()
+                .map(Station::getTag).toList();
+
+        for (int standbyTag : standbyTags) {
+            standbyTag = standbyTag/1000*1000 + (standbyTag%250);
+            if (standbyTag == place
+                    || standbyTag+250 == place
+                    || standbyTag+500 == place
+                    || standbyTag+750 == place)
+                return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * 獲取 AGVMap 中所有 AGV 的副本。

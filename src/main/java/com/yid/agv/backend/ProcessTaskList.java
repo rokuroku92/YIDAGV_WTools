@@ -9,12 +9,10 @@ import com.yid.agv.backend.elevator.ElevatorPermission;
 import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
-import com.yid.agv.repository.NowTaskListDao;
 import com.yid.agv.repository.Phase;
 import com.yid.agv.repository.TaskDetailDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,22 +21,26 @@ import java.util.List;
 @Component
 public class ProcessTaskList {
     private static final Logger log = LoggerFactory.getLogger(ProcessTaskList.class);
-    @Autowired
-    private NowTaskListDao nowTaskListDao;
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-    @Autowired
-    private AGVManager agvManager;
-    @Autowired
-    private AGVTaskManager agvTaskManager;
-    @Autowired
-    private TaskListManager taskListManager;
-    @Autowired
-    private ElevatorManager elevatorManager;
+    private final TaskDetailDao taskDetailDao;
+    private final AGVManager agvManager;
+    private final AGVTaskManager agvTaskManager;
+    private final TaskListManager taskListManager;
+    private final ElevatorManager elevatorManager;
+    private final ProcessAGVTask processAGVTask;
 
-    @Autowired
-    private ProcessAGVTask processAGVTask;
-
+    public ProcessTaskList(TaskDetailDao taskDetailDao,
+                           AGVManager agvManager,
+                           AGVTaskManager agvTaskManager,
+                           TaskListManager taskListManager,
+                           ElevatorManager elevatorManager,
+                           ProcessAGVTask processAGVTask) {
+        this.taskDetailDao = taskDetailDao;
+        this.agvManager = agvManager;
+        this.agvTaskManager = agvTaskManager;
+        this.taskListManager = taskListManager;
+        this.elevatorManager = elevatorManager;
+        this.processAGVTask = processAGVTask;
+    }
 
     @Scheduled(fixedRate = 4000)
     public void checkTaskList() {
@@ -256,7 +258,7 @@ public class ProcessTaskList {
                 }
             }
             case THIRD_STAGE_1F -> {
-                log.info("任務完成");
+                log.info("Completed TaskList");
                 elevatorManager.controlElevatorTO(null);
                 elevatorManager.resetElevatorPermission();  // unlock elevator permission
                 taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
@@ -292,7 +294,8 @@ public class ProcessTaskList {
             }
             case FIRST_STAGE_1F -> {
                 AGVQTask task = agvManager.getAgv(1).getTask();
-                if(task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)){
+                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)) ||
+                        (agvTaskManager.isEmpty(1) && agvManager.iAgvInStandbyStation(1))){
                     elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
@@ -369,7 +372,7 @@ public class ProcessTaskList {
                 taskListManager.setTaskListPhase(nowTaskList, Phase.FIRST_STAGE_3F);
             }
             case FIRST_STAGE_3F -> {
-                if (agvTaskManager.isEmpty(3) && agvManager.getAgv(2).getTask() == null) {
+                if (agvTaskManager.isEmpty(3) && agvManager.getAgv(3).getTask() == null) {
                     if(elevatorManager.acquireElevatorPermission()){  // check elevator permission
                         elevatorManager.controlElevatorTO(4);
                         taskListManager.setTaskListPhase(nowTaskList, Phase.CALL_ELEVATOR);
@@ -393,8 +396,9 @@ public class ProcessTaskList {
                 }
             }
             case SECOND_STAGE_3F -> {
-                if(agvTaskManager.isEmpty(3) && (agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB"))
-                        && !agvManager.iAgvInElevator(3)) {
+                AGVQTask task = agvManager.getAgv(3).getTask();
+                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(3))
+                    || (agvTaskManager.isEmpty(3) && agvManager.iAgvInStandbyStation(3))) {
                     elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
@@ -424,7 +428,7 @@ public class ProcessTaskList {
                         elevatorManager.resetElevatorPermission();  // unlock elevator permission
                     }
                 } else {
-                    if(agvManager.getAgv(3).getTask() == null || agvManager.getAgv(3).getTask().getTaskNumber().startsWith("#SB")){
+                    if(agvManager.getAgv(1).getTask() == null || agvManager.getAgv(1).getTask().getTaskNumber().startsWith("#SB")){
                         taskListManager.setTaskListPhase(nowTaskList, Phase.COMPLETED);
                     }
                 }

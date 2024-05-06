@@ -14,10 +14,11 @@ agvControl:
   url: http://localhost:20100
 
 agv:
-  low_battery: 70  # AGV電量低於多少算低電量
+  low_battery: 60  # AGV電量低於多少算低電量
   low_battery_duration: 60  # AGV低電量持續多久時，派遣回待命點
   obstacle_duration: 30  # 前有障礙多久時要發出警告
   task_exception_option: 0 # AGV上線並且實例有任務時TrafficControl回報沒有執行任務時該: 0刪除任務 1重新派遣
+  task_exception_pre_terminal_station_scan_count: 5 # AGV上線並且實例有任務時，讀值為非執行中，重新派遣時檢查棧板 sensor 的持續時間
 
 elevator:
   ip: 192.168.8.39

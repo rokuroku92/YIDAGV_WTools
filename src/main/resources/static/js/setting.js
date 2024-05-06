@@ -19,6 +19,7 @@ function getConfig(){
             document.getElementById("agvLowBatteryDuration").value = configJSON.agv.low_battery_duration;
             document.getElementById("agvObstacleDuration").value = configJSON.agv.obstacle_duration;
             document.getElementById("agvTaskExceptionOption").value = configJSON.agv.task_exception_option;
+            document.getElementById("agvTaskExceptionPreTerminalStationScanCount").value = configJSON.agv.task_exception_pre_terminal_station_scan_count;
             document.getElementById("httpTimeout").value = configJSON.http.timeout;
             document.getElementById("httpMaxRetry").value = configJSON.http.max_retry;
             document.getElementById("wToolslUrl").value = configJSON.jdbc.WTools.url;
@@ -39,6 +40,7 @@ function setConfig(){
     let agvLowBatteryDuration = document.getElementById("agvLowBatteryDuration").value;
     let agvObstacleDuration = document.getElementById("agvObstacleDuration").value;
     let agvTaskExceptionOption = document.getElementById("agvTaskExceptionOption").value;
+    let agvTaskExceptionPreTerminalStationScanCount = document.getElementById("agvTaskExceptionPreTerminalStationScanCount").value;
     let httpTimeout = document.getElementById("httpTimeout").value;
     let httpMaxRetry = document.getElementById("httpMaxRetry").value;
     let wToolslUrl = document.getElementById("wToolslUrl").value;
@@ -63,6 +65,9 @@ function setConfig(){
         return;
     } else if(agvTaskExceptionOption === ""){
         alert("AgvTaskExceptionOption參數為空值");
+        return;
+    } else if(agvTaskExceptionPreTerminalStationScanCount === ""){
+        alert("agvTaskExceptionPreTerminalStationScanCount參數為空值");
         return;
     } else if(httpTimeout === ""){
         alert("HttpTimeout參數為空值");
@@ -107,6 +112,7 @@ function setConfig(){
         agvLowBatteryDuration: agvLowBatteryDuration,
         agvObstacleDuration: agvObstacleDuration,
         agvTaskExceptionOption: agvTaskExceptionOption,
+        agvTaskExceptionPreTerminalStationScanCount: agvTaskExceptionPreTerminalStationScanCount,
         httpTimeout: httpTimeout,
         httpMaxRetry: httpMaxRetry,
         dbWToolsUrl: wToolslUrl,

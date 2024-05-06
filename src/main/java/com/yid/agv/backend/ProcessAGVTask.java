@@ -11,10 +11,8 @@ import com.yid.agv.model.GridList;
 import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.Station;
 import com.yid.agv.repository.*;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -39,34 +37,43 @@ public class ProcessAGVTask {
     private int HTTP_TIMEOUT;
     @Value("${http.max_retry}")
     private int MAX_RETRY;
-    @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private AnalysisDao analysisDao;
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-    @Autowired
-    private NowTaskListDao nowTaskListDao;
-    @Autowired
-    private NotificationDao notificationDao;
-    @Autowired
-    private GridListDao gridListDao;
-    @Autowired
-    private WorkNumberDao workNumberDao;
-    @Autowired
-    private AGVTaskManager AGVTaskManager;
-    @Autowired
-    private AGVManager agvManager;
-    @Autowired
-    private GridManager gridManager;
-    @Autowired
-    private TaskListManager taskListManager;
 
-    private static Map<Integer, Integer> stationIdTagMap;
+    private final StationDao stationDao;
+    private final AnalysisDao analysisDao;
+    private final TaskDetailDao taskDetailDao;
+    private final NowTaskListDao nowTaskListDao;
+    private final NotificationDao notificationDao;
+    private final GridListDao gridListDao;
+    private final WorkNumberDao workNumberDao;
+    private final AGVTaskManager AGVTaskManager;
+    private final AGVManager agvManager;
+    private final GridManager gridManager;
+    private final TaskListManager taskListManager;
+    private final Map<Integer, Integer> stationIdTagMap;
 
-    @PostConstruct
-    public void initialize() {
-        stationIdTagMap = stationDao.queryStations().stream().
+    public ProcessAGVTask(StationDao stationDao,
+                        AnalysisDao analysisDao,
+                        TaskDetailDao taskDetailDao,
+                        NowTaskListDao nowTaskListDao,
+                        NotificationDao notificationDao,
+                        GridListDao gridListDao,
+                        WorkNumberDao workNumberDao,
+                        AGVTaskManager AGVTaskManager,
+                        AGVManager agvManager,
+                        GridManager gridManager,
+                        TaskListManager taskListManager) {
+        this.stationDao = stationDao;
+        this.analysisDao = analysisDao;
+        this.taskDetailDao = taskDetailDao;
+        this.nowTaskListDao = nowTaskListDao;
+        this.notificationDao = notificationDao;
+        this.gridListDao = gridListDao;
+        this.workNumberDao = workNumberDao;
+        this.AGVTaskManager = AGVTaskManager;
+        this.agvManager = agvManager;
+        this.gridManager = gridManager;
+        this.taskListManager = taskListManager;
+        this.stationIdTagMap = stationDao.queryStations().stream().
                 collect(Collectors.toMap(Station::getId, Station::getTag));
     }
 
@@ -79,7 +86,8 @@ public class ProcessAGVTask {
             if(agv.getStatus() != AGV.Status.ONLINE) return;  // AGV未連線則無法派遣
             if(agv.getTask() != null) return;  // AGV任務中
 
-            boolean iAtStandbyStation = iEqualsStandbyStation(agv.getPlace());
+//            boolean iAtStandbyStation = iEqualsStandbyStation(agv.getPlace());
+            boolean iAtStandbyStation = agvManager.iAgvInStandbyStation(agv.getId());
             boolean taskQueueIEmpty = AGVTaskManager.isEmpty(agv.getId());
 
             boolean hasNextTaskList = false;
@@ -112,7 +120,7 @@ public class ProcessAGVTask {
                         agv.setTask(goTask);
                         failedTask(agv);
                     }
-                    default -> log.warn("dispatchTaskToAGV result exception: " + result);
+                    default -> log.warn("dispatchTaskToAGV result exception: {}", result);
                 }
             } else if (!iAtStandbyStation && !hasNextTaskList){  // 派遣回待命點
                 goStandbyTask(agv);
@@ -148,25 +156,6 @@ public class ProcessAGVTask {
 
     }
 
-    public boolean iEqualsStandbyStation(String place){
-        int placeVal = Integer.parseInt(place == null ? "-1" : place);
-        if (placeVal == -1) return false;
-
-        List<Integer> standbyTags = stationDao.queryStandbyStations().stream()
-                .map(Station::getTag).toList();
-
-        for (int standbyTag : standbyTags) {
-            standbyTag = standbyTag/1000*1000 + (standbyTag%250);
-            if (standbyTag == placeVal
-                    || standbyTag+250 == placeVal
-                    || standbyTag+500 == placeVal
-                    || standbyTag+750 == placeVal)
-                return true;
-        }
-
-        return false;
-    }
-
     private boolean isRetrying = false;
     public synchronized String dispatchTaskToAGV(AGV agv, AGVQTask task) {
         int retryCount = 0;
@@ -176,7 +165,9 @@ public class ProcessAGVTask {
                 if (task == null) return null;
 
                 String nowPlace = agv.getPlace();
-                if(nowPlace.equals(task.getTerminalStation())){  // 主要是為了防止派遣回待命點時，出現無限輪迴。
+                if(nowPlace.equals(Integer.toString(stationIdTagMap.get(task.getTerminalStationId())))){  // 主要是為了防止派遣回待命點時，出現無限輪迴。
+                    failedTask(agv);
+                    isRetrying = false;
                     return "FAIL";
                 }
                 String url;
@@ -191,7 +182,7 @@ public class ProcessAGVTask {
                             "&" + stationIdTagMap.get(task.getStartStationId()) + "&" + stationIdTagMap.get(task.getTerminalStationId());
                 }
 
-                log.info("Dispatch URL: " + url);
+                log.info("Dispatch URL: {}", url);
 
                 Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
                 HttpClient httpClient = HttpClient.newHttpClient();
@@ -206,18 +197,20 @@ public class ProcessAGVTask {
 
                 switch (webpageContent) {
                     case "OK" -> {
-                        log.info("Task number " + task.getTaskNumber() + " has been dispatched.");
+                        log.info("Task number {} has been dispatched.", task.getTaskNumber());
+                        isRetrying = false;
                         return "OK";
                     }
                     case "BUSY" -> {
                         log.info("Send task failed: BUSY");
+                        isRetrying = false;
                         return "BUSY";
                     }
                     case "FAIL" -> {
                         isRetrying = true;
                         retryCount++;
                         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_SEND_TASK);
-                        log.warn("Failed to dispatch task, retrying... (Attempt " + retryCount + ")");
+                        log.warn("Failed to dispatch task, retrying... (Attempt {})", retryCount);
                         try {
                             // noinspection BusyWait
                             Thread.sleep(3000); // 延遲再重新發送
@@ -225,8 +218,9 @@ public class ProcessAGVTask {
                         }
                     }
                     default -> {
-                        log.warn("TrafficControl result exception: " + webpageContent);
+                        log.warn("TrafficControl result exception: {}", webpageContent);
                         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.ERROR_AGV_DATA);
+                        isRetrying = false;
                         return "FAIL";
                     }
                 }
@@ -235,7 +229,7 @@ public class ProcessAGVTask {
                 notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_SEND_TASK);
                 isRetrying = true;
                 retryCount++;
-                log.warn("Failed to dispatch task, retrying... (Attempt " + retryCount + ")");
+                log.warn("Failed to dispatch task, retrying... (Attempt {})", retryCount);
                 try {
                     // noinspection BusyWait
                     Thread.sleep(3000); // 延遲再重新發送
@@ -243,7 +237,7 @@ public class ProcessAGVTask {
                 }
             }
         }
-        log.warn("Failed to dispatch task after " + MAX_RETRY + " attempts.");
+        log.warn("Failed to dispatch task after {} attempts.", MAX_RETRY);
         log.warn("任務發送三次皆失敗，已取消任務");
         failedTask(agv);
         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_SEND_TASK_THREE_TIMES);
@@ -257,7 +251,7 @@ public class ProcessAGVTask {
 
     public void failedTask(AGV agv) {
         AGVQTask task = agv.getTask();
-        log.info("Failed task:" + task);
+        log.info("Failed task:{}", task);
         if (task.getStartStation().matches("\\d+-T-\\d+")) {
             gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);
         } else {
@@ -294,11 +288,13 @@ public class ProcessAGVTask {
                     gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                 }
                 case 3 -> {
-                    if (taskStartStation.startsWith("3-R-")){  // 3F->1F
+                    if (taskStartStation.startsWith("3-R-")) {  // 3F->1F
                         gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);  // Booked to Free
                     } else if (!taskStartStation.startsWith("E-")){
                         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                     } else if (taskTerminalStation.startsWith("3-A-")) {
+                        gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
+                    } else if (taskStartStation.startsWith("E-") && !taskTerminalStation.startsWith("3-T-")){
                         gridManager.setGridStatus(task.getTerminalStationId(), Grid.Status.OCCUPIED);  // Booked to Occupied
                     }
                 }
@@ -324,7 +320,7 @@ public class ProcessAGVTask {
             }
             taskListManager.setTaskListProgressBySequence(task.getTaskNumber(), task.getSequence());
         }
-        log.info("Completed task " + task.getTaskNumber() + ":" + task.getSequence() + ".");
+        log.info("Completed task {}:{}.", task.getTaskNumber(), task.getSequence());
         notificationDao.insertMessage(agv.getTitle(), "Completed task " + task.getTaskNumber() + ":" + task.getSequence());
         taskDetailDao.updateStatusByTaskNumberAndSequence(task.getTaskNumber(), task.getSequence(), 100);
         agv.setTaskStatus(AGV.TaskStatus.NO_TASK);
@@ -375,11 +371,11 @@ public class ProcessAGVTask {
             default -> throw new IllegalStateException("Unexpected value: " + agv.getId());
         };
 
-        log.info("toStandbyTask: " + toStandbyTask);
+        log.info("toStandbyTask: {}", toStandbyTask);
 
         taskDetailDao.insertTaskDetail(toStandbyTask.getTaskNumber(), title, toStandbyTask.getSequence(),
                 Integer.toString(toStandbyTask.getStartStationId()), Integer.toString(toStandbyTask.getTerminalStationId()),
-                TaskDetailDao.Mode.DEFAULT, formattedDateTime);
+                TaskDetailDao.Mode.FORK_DN, formattedDateTime);
         dispatchTaskToAGV(agv);
     }
     public boolean getIsRetrying(){

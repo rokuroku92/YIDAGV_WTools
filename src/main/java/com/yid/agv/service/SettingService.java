@@ -57,10 +57,28 @@ public class SettingService {
                 return "AgvObstacleDuration參數為空值";
             } else if(settingRequest.getAgvTaskExceptionOption() == null){
                 return "AgvTaskExceptionOption參數為空值";
+            }else if(settingRequest.getAgvTaskExceptionPreTerminalStationScanCount()== null){
+                return "AgvTaskExceptionPreTerminalStationScanCount參數為空值";
             } else if(settingRequest.getHttpTimeout() == null){
                 return "HttpTimeout參數為空值";
             } else if(settingRequest.getHttpMaxRetry() == null){
                 return "HttpMaxRetry參數為空值";
+            } else if(settingRequest.getDbWToolsUrl() == null){
+                return "DbWToolsUrl參數為空值";
+            } else if(settingRequest.getDbWToolsUsername() == null){
+                return "DbWToolsUsername參數為空值";
+            } else if(settingRequest.getDbWToolsPassword() == null){
+                return "DbWToolsPassword參數為空值";
+            } else if(settingRequest.getElevatorIp() == null){
+                return "ElevatorIp參數為空值";
+            } else if(settingRequest.getElevatorPort() == null){
+                return "ElevatorPort參數為空值";
+            } else if(settingRequest.getElevatorTimeout() == null){
+                return "ElevatorTimeout參數為空值";
+            } else if(settingRequest.getElevatorFailSocket() == null){
+                return "ElevatorFailSocket參數為空值";
+            } else if(settingRequest.getElevatorPrePersonOpenDoorDuration() == null){
+                return "ElevatorPrePersonOpenDoorDuration參數為空值";
             }
             return writeConfigToFile(settingRequest);
         } else {
@@ -94,6 +112,7 @@ public class SettingService {
             agvMap.put("low_battery_duration", settingRequest.getAgvLowBatteryDuration());
             agvMap.put("obstacle_duration", settingRequest.getAgvObstacleDuration());
             agvMap.put("task_exception_option", settingRequest.getAgvTaskExceptionOption());
+            agvMap.put("task_exception_pre_terminal_station_scan_count", settingRequest.getAgvTaskExceptionPreTerminalStationScanCount());
             Map<String, Object> httpMap = (Map<String, Object>) yamlMap.get("http");
             httpMap.put("timeout", settingRequest.getHttpTimeout());
             httpMap.put("max_retry", settingRequest.getHttpMaxRetry());

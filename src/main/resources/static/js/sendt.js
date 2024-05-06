@@ -498,6 +498,14 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table-start">
                                                                     <tbody>
                                                                         <tr>
+                                                                        <td data-val="3-R-10" class="grid-btn start">10</td>
+                                                                        <td data-val="3-R-9" class="grid-btn start">9</td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                    </table>
+                                                                    <table class="grid-table-start">
+                                                                    <tbody>
+                                                                        <tr>
                                                                         <td data-val="3-R-8" class="grid-btn start">8</td>
                                                                         <td data-val="3-R-7" class="grid-btn start">7</td>
                                                                         <td data-val="3-R-6" class="grid-btn start">6</td>

@@ -1,6 +1,7 @@
 package com.yid.agv.repository;
 
 import com.yid.agv.model.TaskDetail;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -16,14 +17,12 @@ public interface TaskDetailDao {
             return value;
         }
     }
+    @Getter
     enum Mode{
-        DEFAULT(1), TRANSPORT(2), CALL_ELEVATOR(3), ELEVATOR_TRANSPORT(4);
+        FORK_DN(1), FORK_UP(2), CALL_ELEVATOR(3), ELEVATOR_TRANSPORT(4);
         private final int value;
         Mode(int value) {
             this.value = value;
-        }
-        public int getValue(){
-            return value;
         }
     }
     List<TaskDetail> queryTaskDetailsByTaskNumber(String taskNumber);

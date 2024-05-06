@@ -12,6 +12,7 @@ public class SettingRequest {
     private Integer agvLowBatteryDuration;
     private Integer agvObstacleDuration;
     private Integer agvTaskExceptionOption;
+    private Integer agvTaskExceptionPreTerminalStationScanCount;
     private String elevatorIp;
     private Integer elevatorPort;
     private Integer elevatorTimeout;
