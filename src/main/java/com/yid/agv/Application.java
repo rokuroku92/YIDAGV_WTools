@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan("com.yid.agv")
 @EnableAsync
 @EnableScheduling
 @Import(DataSourceConfig.class)

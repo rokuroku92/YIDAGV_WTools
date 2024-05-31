@@ -95,6 +95,45 @@
     color: rgba(0, 0, 0, 0.7); /* 水印文本颜色，这里使用了半透明黑色 */
     pointer-events: none; /* 防止水印文本干扰用户交互 */
 }
+.grid-btns #start3C{
+    position: relative;
+}
+.grid-btns #start3C::before{
+    content: "C"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 4em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.5); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #start3B{
+    position: relative;
+}
+.grid-btns #start3B::before{
+    content: "B"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 4em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.5); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
+.grid-btns #start3D{
+    position: relative;
+}
+.grid-btns #start3D::before{
+    content: "D"; /* 水印文本 */
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%); /* 居中对齐 */
+    font-size: 4em; /* 字体大小 */
+    color: rgba(0, 0, 0, 0.5); /* 水印文本颜色，这里使用了半透明黑色 */
+    pointer-events: none; /* 防止水印文本干扰用户交互 */
+}
 .grid-btn{
     background-color: #cab8b2;
     border: 1px rgba(0, 0, 0) solid;

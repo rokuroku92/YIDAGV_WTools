@@ -40,17 +40,11 @@ public class AGVInstantStatus {
     private int TASK_EXCEPTION_PRE_TERMINAL_STATION_SCAN_COUNT;
 
     private final StationDao stationDao;
-
     private final NotificationDao notificationDao;
-
     private final TaskDetailDao taskDetailDao;
-
     private final AGVManager agvManager;
-
 //    private final GridManager gridManager;
-
     private final ProcessAGVTask processTasks;
-
     private final Map<Integer, Integer> stationIdTagMap;
 
     public AGVInstantStatus(StationDao stationDao,
@@ -67,6 +61,15 @@ public class AGVInstantStatus {
         this.processTasks = processTasks;
         this.stationIdTagMap = stationDao.queryStations().stream()
                 .collect(Collectors.toMap(Station::getId, Station::getTag));
+    }
+
+    @Scheduled(cron = "0 0 6 * * ?") // 每天上午 6. 執行
+    public void everyDayRebootAGV() {
+        agvManager.getAgvs().forEach(agv -> {
+            if(agv.getStatus() == AGV.Status.ONLINE && agv.getTask() == null) {
+                rebootAGV(agv);
+            }
+        });
     }
 
     @Scheduled(fixedRate = 1000) // 每秒執行
@@ -186,7 +189,6 @@ public class AGVInstantStatus {
                 agv.setIAlarm(true);
             }
         }
-
     }
 
     private void handleTagError(boolean @NotNull [] taskStatus, AGV agv){
@@ -468,6 +470,21 @@ public class AGVInstantStatus {
         }
     }
 
+    private void rebootAGV(AGV agv) {
+        Duration timeout = Duration.ofSeconds(HTTP_TIMEOUT);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(agvUrl + "/cmd=" + agv.getId() + "&QZ9009X"))
+//                .uri(URI.create(agvUrl + "/cmd=" + agv.getId() + "&QJ0130X"))
+                .GET()
+                .timeout(timeout)
+                .build();
+        try {
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            String webpageContent = response.body();
+            log.info("Reboot AGV: {}, Response: {}", agv.getId(), webpageContent.trim());
+        } catch (IOException | InterruptedException ignored) {
+        }
+    }
 
     public boolean[] parseAGVStatus(int statusValue) {
         if(statusValue < 0) return null;

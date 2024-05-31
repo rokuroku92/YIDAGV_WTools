@@ -111,7 +111,7 @@ public class ProcessAGVTask {
                         AGVTaskManager.getNewTaskByAGVId(agv.getId());
                         agv.setTask(goTask);
                         Objects.requireNonNull(goTask).setStatus(1);
-                        agv.setTaskStatus(AGV.TaskStatus.PRE_START_STATION);
+                        agv.setTaskStatus( goTask.getModeId() == 2 ? AGV.TaskStatus.PRE_TERMINAL_STATION : AGV.TaskStatus.PRE_START_STATION );
                         taskDetailDao.updateStatusByTaskNumberAndSequence(goTask.getTaskNumber(), goTask.getSequence(), 1);
                     }
                     case "BUSY" -> {}
@@ -171,7 +171,7 @@ public class ProcessAGVTask {
                     return "FAIL";
                 }
                 String url;
-                if (task.getTaskNumber().matches("#(SB|LB).*") || agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION){
+                if (task.getTaskNumber().matches("#(SB|LB).*") || agv.getTaskStatus() == AGV.TaskStatus.PRE_TERMINAL_STATION || task.getModeId() == 2){
                     url = agvUrl + "/task0=" + task.getAgvId() + "&" + task.getModeId() + "&" + nowPlace +
                             "&" + stationIdTagMap.get(task.getTerminalStationId());
                 } else if (task.getTaskNumber().startsWith("#YE")|| task.getTaskNumber().startsWith("#RE") || task.getTaskNumber().startsWith("#NE")){

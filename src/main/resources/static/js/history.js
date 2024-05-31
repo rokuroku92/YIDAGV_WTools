@@ -113,7 +113,7 @@ function addTasks(tasks){  // 更新資料
 function setNotifications() {
     return new Promise((resolve, reject) => {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', baseUrl + "/api/homepage/notifications", true);
+        xhr.open('GET', baseUrl + "/api/history/notifications", true);
         xhr.send();
         xhr.onload = function(){
             if(xhr.status == 200){

@@ -97,17 +97,26 @@ public class GridManager {
 
         List<Grid> availableGrids = new ArrayList<>();
         int count = 0;
-        for (int i = 1; i <= totalGrids; i++) {
-            if (getGridStatus(fullAreaName+i) == Grid.Status.FREE){
-                count++;
-            }
-            if (i % groupGrids == 0){
-                if (count == groupGrids){
-                    for (int j = groupGrids-1; j >= 0; j--) {
-                        availableGrids.add(gridMap.get(fullAreaName+(i-j)));
-                    }
+        if (areaName.startsWith("1-R")) {
+            if (getGridStatus("1-R-2") == Grid.Status.FREE) {
+                if (getGridStatus("1-R-1") == Grid.Status.FREE) {
+                    availableGrids.add(gridMap.get("1-R-1"));
                 }
-                count = 0;
+                availableGrids.add(gridMap.get("1-R-2"));
+            }
+        } else {
+            for (int i = 1; i <= totalGrids; i++) {
+                if (getGridStatus(fullAreaName+i) == Grid.Status.FREE){
+                    count++;
+                }
+                if (i % groupGrids == 0){
+                    if (count == groupGrids){
+                        for (int j = groupGrids-1; j >= 0; j--) {
+                            availableGrids.add(gridMap.get(fullAreaName+(i-j)));
+                        }
+                    }
+                    count = 0;
+                }
             }
         }
 

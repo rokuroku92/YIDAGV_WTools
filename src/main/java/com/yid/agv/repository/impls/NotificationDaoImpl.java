@@ -16,36 +16,36 @@ public class NotificationDaoImpl implements NotificationDao {
     @Override
     public List<Notification> queryTodayNotifications(){
         String sql = "SELECT nh.id, ntd.name, nh.level, nh.message, DATE_FORMAT(nh.create_time, '%Y%m%d%H%i%s') AS create_time " +
-                "md.level, md.content FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
-                "WHERE DATE_FORMAT(nh.create_time, '%Y-%m-%d') = CURDATE() ORDER BY nh.create_time DESC";
+                "FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
+                "WHERE DATE_FORMAT(nh.create_time, '%Y-%m-%d') = CURDATE() ORDER BY nh.id DESC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class));
     }
     @Override
     public List<Notification> queryNotificationsByDate(String date){  // date 2023-10-31 YYYY-MM-DD
         String sql = "SELECT nh.id, ntd.name, nh.level, nh.message, DATE_FORMAT(nh.create_time, '%Y%m%d%H%i%s') AS create_time " +
-                "md.level, md.content FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
-                "WHERE DATE_FORMAT(nh.create_time, '%Y%m%d') = ? ORDER BY nh.create_time DESC";
+                "FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
+                "WHERE DATE_FORMAT(nh.create_time, '%Y%m%d') = ? ORDER BY nh.id DESC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class), date);
     }
     @Override
     public List<Notification> queryAllNotifications(){
         String sql = "SELECT nh.id, ntd.name, nh.level, nh.message, DATE_FORMAT(nh.create_time, '%Y%m%d%H%i%s') AS create_time " +
                 "FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
-                "ORDER BY nh.create_time DESC";
+                "ORDER BY nh.id DESC";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class));
     }
     @Override
-    public List<Notification> queryNotifications(){  // LIMIT 300
+    public List<Notification> queryNotifications(){
         String sql = "SELECT nh.id, ntd.name, nh.level, nh.message, DATE_FORMAT(nh.create_time, '%Y%m%d%H%i%s') AS create_time " +
                 "FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
-                "ORDER BY nh.create_time DESC LIMIT 300";
+                "ORDER BY nh.id DESC LIMIT 1000";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class));
     }
     @Override
     public List<Notification> queryNotificationsL(){  // LIMIT 50
         String sql = "SELECT nh.id, ntd.name, nh.level, nh.message, DATE_FORMAT(nh.create_time, '%Y%m%d%H%i%s') AS create_time " +
                 "FROM notification_history nh INNER JOIN notification_history_title_data ntd ON nh.title_id = ntd.id " +
-                "ORDER BY nh.create_time DESC LIMIT 50";
+                "ORDER BY nh.id DESC LIMIT 50";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Notification.class));
     }
 

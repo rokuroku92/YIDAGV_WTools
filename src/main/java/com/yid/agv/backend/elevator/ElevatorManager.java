@@ -139,6 +139,7 @@ public class ElevatorManager {
 //                            elevatorCaller.setICallButton(false);
 //                            controlElevatorTO(null);
                             elevatorPermission = ElevatorPermission.FREE;
+                            hasOpenedDoorBefore = false;
                             prePersonOpenDoorCount = 0;
                         }
                     } else {

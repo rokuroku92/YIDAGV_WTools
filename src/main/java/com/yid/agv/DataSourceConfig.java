@@ -32,6 +32,13 @@ public class DataSourceConfig {
         dataSource.setMaxConnectionAge(3600);
         dataSource.setMaxIdleTimeExcessConnections(60);
         dataSource.setDebugUnreturnedConnectionStackTraces(true);
+
+        dataSource.setInitialPoolSize(5);
+        dataSource.setCheckoutTimeout(3000);
+        dataSource.setMaxPoolSize(30);
+        dataSource.setMinPoolSize(5);
+        dataSource.setMaxStatements(50);
+        dataSource.setIdleConnectionTestPeriod(300);
         return dataSource;
     }
 
@@ -60,6 +67,13 @@ public class DataSourceConfig {
         dataSource.setMaxConnectionAge(3600);
         dataSource.setMaxIdleTimeExcessConnections(60);
         dataSource.setDebugUnreturnedConnectionStackTraces(true);
+
+        dataSource.setInitialPoolSize(5);
+        dataSource.setCheckoutTimeout(3000);
+        dataSource.setMaxPoolSize(30);
+        dataSource.setMinPoolSize(5);
+        dataSource.setMaxStatements(50);
+        dataSource.setIdleConnectionTestPeriod(300);
         return dataSource;
     }
 

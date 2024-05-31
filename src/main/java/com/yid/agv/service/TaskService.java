@@ -12,8 +12,12 @@ import com.yid.agv.repository.TaskDetailDao;
 import com.yid.agv.repository.TaskListDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -24,10 +28,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class TaskService {
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
+
     private final TaskListDao taskListDao;
     private final NowTaskListDao nowTaskListDao;
     private final TaskDetailDao taskDetailDao;
@@ -53,14 +60,20 @@ public class TaskService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private @Nullable WorkNumberResult getWToolsInformation(@NotNull String workNumber){
+    private @Nullable WorkNumberResult getWToolsInformation(@NotNull String workNumber) throws CannotGetJdbcConnectionException {
         if(workNumber.matches("^[A-Za-z0-9]{4}-\\d{11}$")){
             String[] TA = workNumber.split("-");
             String sql = "SELECT TA006 AS object_number, TA034 AS object_name FROM V_MOCTA WHERE TA001 = ? AND TA002 = ?";
             WorkNumberResult result;
             try {
                 result = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(WorkNumberResult.class),TA[0],TA[1]);
-            } catch (EmptyResultDataAccessException ignore){
+            } catch (EmptyResultDataAccessException ignore) {
+                return null;
+            } catch (CannotGetJdbcConnectionException e) {
+                throw e;
+            } catch (DataAccessException e) {
+                // 記錄其他數據訪問例外
+                log.error("Data access exception when querying work number: {}", workNumber, e);
                 return null;
             }
 //            result.setObjectName("1/2\"72T電金全拋八角葫蘆柄軟打 KINCROME");
@@ -119,6 +132,7 @@ public class TaskService {
             return "未輸入起始格位";
         }
         sortTasksByStartGrid(taskListRequest);
+        System.out.println(taskListRequest.getTasks().get(0).getStartGrid());
         for (int i = 0; i < taskSize; i++) {
             if(gridManager.getGridStatus(taskListRequest.getTasks().get(i).getStartGrid()) != Grid.Status.FREE){
                 return "起始格位非可用";
@@ -127,10 +141,23 @@ public class TaskService {
 
         AtomicReference<String> failWorkNumber = new AtomicReference<>();
         List<List<WorkNumberResult>> requestObjectData = new ArrayList<>();
+        AtomicBoolean iFailedConnection = new AtomicBoolean(false);
         taskListRequest.getTasks().forEach(task -> {
             List<WorkNumberResult> objectData = new ArrayList<>();
             task.getWorkNumber().forEach(workNumber -> {
-                WorkNumberResult result = getWToolsInformation(workNumber);
+                WorkNumberResult result = null;
+                try {
+                    result = getWToolsInformation(workNumber);
+                } catch (CannotGetJdbcConnectionException e) {
+                    if (e.getCause() instanceof com.mchange.v2.resourcepool.TimeoutException) {
+                        // 記錄超時例外
+                        log.error("Connection pool timeout when querying work number: {}", workNumber, e);
+                    } else {
+                        // 記錄其他連接獲取異常
+                        log.error("Cannot get JDBC connection when querying work number: {}", workNumber, e);
+                    }
+                    iFailedConnection.set(true);
+                }
                 if(result == null){
                     failWorkNumber.set(workNumber);
                 } else {
@@ -139,6 +166,10 @@ public class TaskService {
             });
             requestObjectData.add(objectData);
         });
+
+        if(iFailedConnection.get()) {
+            return "ERP 資料庫連接失敗，請稍後再試！";
+        }
         if(failWorkNumber.get() != null){
             return "工單號碼： ".concat(failWorkNumber.get()).concat("輸入錯誤！");
         }

@@ -277,7 +277,7 @@ public class ProcessTaskList {
                 }
             }
             case CALL_ELEVATOR -> {
-                if(elevatorManager.iOpenDoorByFloor(2)){
+//                if(elevatorManager.iOpenDoorByFloor(2)) {
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#1")) {
                             AGVQTask task = new AGVQTask(taskDetail.getTaskNumber(), 1, taskDetail.getSequence(), taskDetail.getStart(),
@@ -290,18 +290,18 @@ public class ProcessTaskList {
                         }
                     });
                     taskListManager.setTaskListPhase(nowTaskList, Phase.FIRST_STAGE_1F);
-                }
+//                }
             }
             case FIRST_STAGE_1F -> {
                 AGVQTask task = agvManager.getAgv(1).getTask();
                 if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)) ||
-                        (agvTaskManager.isEmpty(1) && agvManager.iAgvInStandbyStation(1))){
+                        (agvTaskManager.isEmpty(1) && task == null && agvManager.iAgvInStandbyStation(1))){
                     elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
             }
             case ELEVATOR_TRANSFER -> {
-                if(elevatorManager.iOpenDoorByFloor(4)){
+//                if(elevatorManager.iOpenDoorByFloor(4)) {
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#3") && taskDetail.getStart().startsWith("E-")) {
                             AGVQTask task = new AGVQTask(taskDetail.getTaskNumber(), 3, taskDetail.getSequence(), taskDetail.getStart(),
@@ -314,7 +314,7 @@ public class ProcessTaskList {
                         }
                     });
                     taskListManager.setTaskListPhase(nowTaskList, Phase.SECOND_STAGE_3F);
-                }
+//                }
             }
             case SECOND_STAGE_3F -> {
                 if (agvTaskManager.isEmpty(3)
@@ -380,7 +380,7 @@ public class ProcessTaskList {
                 }
             }
             case CALL_ELEVATOR -> {
-                if(elevatorManager.iOpenDoorByFloor(4)){
+//                if(elevatorManager.iOpenDoorByFloor(4)) {
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#3") && taskDetail.getTerminal().startsWith("E-")) {
                             AGVQTask task = new AGVQTask(taskDetail.getTaskNumber(), 3, taskDetail.getSequence(), taskDetail.getStart(),
@@ -393,18 +393,18 @@ public class ProcessTaskList {
                         }
                     });
                     taskListManager.setTaskListPhase(nowTaskList, Phase.SECOND_STAGE_3F);
-                }
+//                }
             }
             case SECOND_STAGE_3F -> {
                 AGVQTask task = agvManager.getAgv(3).getTask();
                 if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(3))
-                    || (agvTaskManager.isEmpty(3) && agvManager.iAgvInStandbyStation(3))) {
+                    || (agvTaskManager.isEmpty(3) && task == null && agvManager.iAgvInStandbyStation(3))) {
                     elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
                 }
             }
             case ELEVATOR_TRANSFER -> {
-                if(elevatorManager.iOpenDoorByFloor(2)){
+//                if(elevatorManager.iOpenDoorByFloor(2)) {
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#1") && taskDetail.getStart().startsWith("E-")) {
                             AGVQTask task = new AGVQTask(taskDetail.getTaskNumber(), 1, taskDetail.getSequence(), taskDetail.getStart(),
@@ -417,7 +417,7 @@ public class ProcessTaskList {
                         }
                     });
                     taskListManager.setTaskListPhase(nowTaskList, Phase.THIRD_STAGE_1F);
-                }
+//                }
             }
             case THIRD_STAGE_1F -> {
                 if(elevatorManager.getElevatorPermission() == ElevatorPermission.SYSTEM) {

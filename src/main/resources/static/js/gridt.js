@@ -261,6 +261,8 @@ function switchPage(radioButton) {
                                                                     <tbody>
                                                                         <tr>
                                                                             <td data-val="1-R-1" class="grid-btn">1</td>
+                                                                        </tr>
+                                                                        <tr>
                                                                             <td data-val="1-R-2" class="grid-btn">2</td>
                                                                         </tr>
                                                                     </tbody>
@@ -331,14 +333,14 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table" id="btns1">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td data-val="3-A-2" class="grid-btn">2</td>
-                                                                            <td data-val="3-A-4" class="grid-btn">4</td>
-                                                                            <td data-val="3-A-6" class="grid-btn">6</td>
+                                                                        <td data-val="3-A-5" class="grid-btn">5</td>
+                                                                        <td data-val="3-A-3" class="grid-btn">3</td>
+                                                                        <td data-val="3-A-1" class="grid-btn">1</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td data-val="3-A-1" class="grid-btn">1</td>
-                                                                            <td data-val="3-A-3" class="grid-btn">3</td>
-                                                                            <td data-val="3-A-5" class="grid-btn">5</td>
+                                                                        <td data-val="3-A-6" class="grid-btn">6</td>
+                                                                        <td data-val="3-A-4" class="grid-btn">4</td>
+                                                                        <td data-val="3-A-2" class="grid-btn">2</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
@@ -346,16 +348,16 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table" id="btns2" data-val="B">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="3-B-2" class="grid-btn">2</td>
-                                                                        <td data-val="3-B-4" class="grid-btn">4</td>
-                                                                        <td data-val="3-B-6" class="grid-btn">6</td>
-                                                                        <td data-val="3-B-8" class="grid-btn">8</td>
+                                                                        <td data-val="3-B-7" class="grid-btn">7</td>
+                                                                        <td data-val="3-B-5" class="grid-btn">5</td>
+                                                                        <td data-val="3-B-3" class="grid-btn">3</td>
+                                                                        <td data-val="3-B-1" class="grid-btn">1</td>
                                                                         </tr>
                                                                         <tr>
-                                                                        <td data-val="3-B-1" class="grid-btn">1</td>
-                                                                        <td data-val="3-B-3" class="grid-btn">3</td>
-                                                                        <td data-val="3-B-5" class="grid-btn">5</td>
-                                                                        <td data-val="3-B-7" class="grid-btn">7</td>
+                                                                        <td data-val="3-B-8" class="grid-btn">8</td>
+                                                                        <td data-val="3-B-6" class="grid-btn">6</td>
+                                                                        <td data-val="3-B-4" class="grid-btn">4</td>
+                                                                        <td data-val="3-B-2" class="grid-btn">2</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
@@ -363,44 +365,44 @@ function switchPage(radioButton) {
                                                                     <table class="grid-table" id="btns3" data-val="C">
                                                                     <tbody>
                                                                         <tr>
-                                                                        <td data-val="3-C-3" class="grid-btn">3</td>
-                                                                        <td data-val="3-C-6" class="grid-btn">6</td>
-                                                                        <td data-val="3-C-9" class="grid-btn">9</td>
-                                                                        <td data-val="3-C-12" class="grid-btn">12</td>
-                                                                        <td data-val="3-C-15" class="grid-btn">15</td>
-                                                                        <td data-val="3-C-18" class="grid-btn">18</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                        <td data-val="3-C-2" class="grid-btn">2</td>
-                                                                        <td data-val="3-C-5" class="grid-btn">5</td>
-                                                                        <td data-val="3-C-8" class="grid-btn">8</td>
-                                                                        <td data-val="3-C-11" class="grid-btn">11</td>
-                                                                        <td data-val="3-C-14" class="grid-btn">14</td>
-                                                                        <td data-val="3-C-17" class="grid-btn">17</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                        <td data-val="3-C-1" class="grid-btn">1</td>
-                                                                        <td data-val="3-C-4" class="grid-btn">4</td>
-                                                                        <td data-val="3-C-7" class="grid-btn">7</td>
-                                                                        <td data-val="3-C-10" class="grid-btn">10</td>
-                                                                        <td data-val="3-C-13" class="grid-btn">13</td>
                                                                         <td data-val="3-C-16" class="grid-btn">16</td>
+                                                                        <td data-val="3-C-13" class="grid-btn">13</td>
+                                                                        <td data-val="3-C-10" class="grid-btn">10</td>
+                                                                        <td data-val="3-C-7" class="grid-btn">7</td>
+                                                                        <td data-val="3-C-4" class="grid-btn">4</td>
+                                                                        <td data-val="3-C-1" class="grid-btn">1</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                        <td data-val="3-C-17" class="grid-btn">17</td>
+                                                                        <td data-val="3-C-14" class="grid-btn">14</td>
+                                                                        <td data-val="3-C-11" class="grid-btn">11</td>
+                                                                        <td data-val="3-C-8" class="grid-btn">8</td>
+                                                                        <td data-val="3-C-5" class="grid-btn">5</td>
+                                                                        <td data-val="3-C-2" class="grid-btn">2</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                        <td data-val="3-C-18" class="grid-btn">18</td>
+                                                                        <td data-val="3-C-15" class="grid-btn">15</td>
+                                                                        <td data-val="3-C-12" class="grid-btn">12</td>
+                                                                        <td data-val="3-C-9" class="grid-btn">9</td>
+                                                                        <td data-val="3-C-6" class="grid-btn">6</td>
+                                                                        <td data-val="3-C-3" class="grid-btn">3</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
                                                                     <table class="grid-table" id="btns4" data-val="D">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td data-val="3-D-2" class="grid-btn">2</td>
-                                                                            <td data-val="3-D-4" class="grid-btn">4</td>
-                                                                            <td data-val="3-D-6" class="grid-btn">6</td>
-                                                                            <td data-val="3-D-8" class="grid-btn">8</td>
+                                                                        <td data-val="3-D-7" class="grid-btn">7</td>
+                                                                        <td data-val="3-D-5" class="grid-btn">5</td>
+                                                                        <td data-val="3-D-3" class="grid-btn">3</td>
+                                                                        <td data-val="3-D-1" class="grid-btn">1</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td data-val="3-D-1" class="grid-btn">1</td>
-                                                                            <td data-val="3-D-3" class="grid-btn">3</td>
-                                                                            <td data-val="3-D-5" class="grid-btn">5</td>
-                                                                            <td data-val="3-D-7" class="grid-btn">7</td>
+                                                                        <td data-val="3-D-8" class="grid-btn">8</td>
+                                                                        <td data-val="3-D-6" class="grid-btn">6</td>
+                                                                        <td data-val="3-D-4" class="grid-btn">4</td>
+                                                                        <td data-val="3-D-2" class="grid-btn">2</td>
                                                                         </tr>
                                                                     </tbody>
                                                                     </table>
