@@ -239,7 +239,7 @@ public class ProcessAGVTask {
         }
         log.warn("Failed to dispatch task after {} attempts.", MAX_RETRY);
         log.warn("任務發送三次皆失敗，已取消任務");
-        failedTask(agv);
+//        failedTask(agv);
         notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_SEND_TASK_THREE_TIMES);
         isRetrying = false;
         return "FAIL";
@@ -251,6 +251,7 @@ public class ProcessAGVTask {
 
     public void failedTask(AGV agv) {
         AGVQTask task = agv.getTask();
+        if (task == null) return;
         log.info("Failed task:{}", task);
         if (task.getStartStation().matches("\\d+-T-\\d+")) {
             gridManager.setGridStatus(task.getStartStationId(), Grid.Status.FREE);

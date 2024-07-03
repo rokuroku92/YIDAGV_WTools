@@ -52,30 +52,35 @@ public class TaskListManager {
     public void initialize() {
         taskListMap.put(1, null);
         taskListMap.put(2, null);
-        log.info("Initialize taskListMap: " + taskListMap);
+        log.info("Initialize taskListMap: {}", taskListMap);
 
         // 處理資料庫中狀態為執行中的任務
 //        List<TaskList> unexpectedTasks = taskListDao.queryUnexpectedTaskLists();
         taskListMap.forEach((taskProcessId, taskList) -> {
-            List<NowTaskList> unCompletedTaskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
-            unCompletedTaskLists.forEach(unCompletedTaskList -> {
-                if (unCompletedTaskList.getProgress() != 0){
-                    List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
-                    unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
-                        if(unCompletedTaskDetail.getStatus() != 100) {
-                            log.info("Cancel： " + unCompletedTaskDetail.getTaskNumber() + " : " + unCompletedTaskDetail.getSequence());
-                            if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
-                                gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
-                                gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
-                                gridListDao.clearWorkOrder(unCompletedTaskDetail.getTerminalId());
-                            }
-                            taskDetailDao.updateStatusByTaskNumberAndSequence(unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence(), -1);
+            cancelTaskList(taskProcessId);
+        });
+    }
+
+    public void cancelTaskList(Integer taskProcessId) {
+        taskListMap.put(taskProcessId, null);
+        List<NowTaskList> unCompletedTaskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
+        unCompletedTaskLists.forEach(unCompletedTaskList -> {
+            if (unCompletedTaskList.getProgress() != 0){
+                List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
+                unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
+                    if(unCompletedTaskDetail.getStatus() != 100) {
+                        log.info("Cancel： {} : {}", unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence());
+                        if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
+                            gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);
+                            gridManager.setGridStatus(unCompletedTaskDetail.getTerminalId(), Grid.Status.FREE);
+                            gridListDao.clearWorkOrder(unCompletedTaskDetail.getTerminalId());
                         }
-                    });
-                    nowTaskListDao.deleteNowTaskList(unCompletedTaskList.getTaskNumber());
-                    taskListDao.cancelTaskList(unCompletedTaskList.getTaskNumber());
-                }
-            });
+                        taskDetailDao.updateStatusByTaskNumberAndSequence(unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence(), -1);
+                    }
+                });
+                nowTaskListDao.deleteNowTaskList(unCompletedTaskList.getTaskNumber());
+                taskListDao.cancelTaskList(unCompletedTaskList.getTaskNumber());
+            }
         });
     }
 
@@ -105,6 +110,22 @@ public class TaskListManager {
      */
     public NowTaskList getNowTaskListByTaskProcessId(int taskProcessId){
         return taskListMap.get(taskProcessId);
+    }
+
+    public Integer getProcessIdByTaskNumber(String taskNumber) {
+        return taskListMap.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().getTaskNumber().equals(taskNumber))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public void clearNowTaskListByTaskNumber(String taskNumber){
+        taskListMap.forEach((taskProcessId, taskList) -> {
+            if(taskList.getTaskNumber().equals(taskNumber)){
+                taskListMap.put(taskProcessId, null);
+            }
+        });
     }
 
     /**

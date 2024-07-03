@@ -65,7 +65,7 @@ public class NowTaskListDaoImpl implements NowTaskListDao {
     }
 
     @Override
-    public boolean deleteNowTaskList(String taskNumber){
+    public boolean deleteNowTaskList(String taskNumber) {
         String sql = "DELETE FROM `now_task_list` WHERE task_number = ?";
         int rowsAffected = jdbcTemplate.update(sql, taskNumber);
         return (rowsAffected > 0);

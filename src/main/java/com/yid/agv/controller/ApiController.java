@@ -257,4 +257,14 @@ public class ApiController {
     public String setConfig(@RequestBody SettingRequest settingRequest){
         return settingService.updateConfig(settingRequest);
     }
+
+    @GetMapping(value = "/systemEvent/get")
+    public String getSystemEvent() {
+        return taskService.isHasSystemEvent() ? "YES" : "NO";
+    }
+    @RequestMapping(value = "/systemEvent/set", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String setSystemEventClientOption(@RequestParam("option") String option){
+        taskService.setSystemEventClientOption(option);
+        return "OK";
+    }
 }

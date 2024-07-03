@@ -1,7 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", function() {
     if(localStorage.getItem("gridManual") == 1){
-        document.getElementById("logo").style.fill = "#FF0000";
+        document.getElementById("return").style.fill = "#FF0000";
     }
 
     var modeBtn = document.querySelector('#modeOption');

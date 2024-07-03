@@ -1,6 +1,11 @@
 
 package com.yid.agv.service;
 
+import com.yid.agv.backend.ProcessAGVTask;
+import com.yid.agv.backend.agv.AGV;
+import com.yid.agv.backend.agv.AGVManager;
+import com.yid.agv.backend.agvtask.AGVTaskManager;
+import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.backend.tasklist.TaskListManager;
@@ -39,25 +44,41 @@ public class TaskService {
     private final NowTaskListDao nowTaskListDao;
     private final TaskDetailDao taskDetailDao;
     private final TaskListManager taskListManager;
+    private final AGVManager agvManager;
+    private final AGVTaskManager agvTaskManager;
     private final GridListDao gridListDao;
     private final GridManager gridManager;
+    private final ProcessAGVTask processAGVTask;
+    private final ElevatorManager elevatorManager;
     private final JdbcTemplate jdbcTemplate;
     private String lastDate;
+    private boolean hasSystemEvent;
+    private String systemEventClientOption;
 
     public TaskService(TaskListDao taskListDao,
                        NowTaskListDao nowTaskListDao,
                        TaskDetailDao taskDetailDao,
                        TaskListManager taskListManager,
+                       AGVManager agvManager,
+                       AGVTaskManager agvTaskManager,
                        GridListDao gridListDao,
                        GridManager gridManager,
+                       ProcessAGVTask processAGVTask,
+                       ElevatorManager elevatorManager,
                        @Qualifier("WToolsJdbcTemplate") JdbcTemplate jdbcTemplate) {
         this.taskListDao = taskListDao;
         this.nowTaskListDao = nowTaskListDao;
         this.taskDetailDao = taskDetailDao;
         this.taskListManager = taskListManager;
+        this.agvManager = agvManager;
+        this.agvTaskManager = agvTaskManager;
         this.gridListDao = gridListDao;
         this.gridManager = gridManager;
+        this.processAGVTask = processAGVTask;
+        this.elevatorManager = elevatorManager;
         this.jdbcTemplate = jdbcTemplate;
+        this.hasSystemEvent = false;
+        this.systemEventClientOption = "Unknown";
     }
 
     private @Nullable WorkNumberResult getWToolsInformation(@NotNull String workNumber) throws CannotGetJdbcConnectionException {
@@ -106,9 +127,14 @@ public class TaskService {
 
     public String cancelTask(String taskNumber){
         for (NowTaskList nowTaskList : taskListManager.getNowAllTaskList()) {
-            if(nowTaskList.getTaskNumber().equals(taskNumber)){
-                if(nowTaskList.getProgress() != 0){
-                    return "取消任務失敗： 任務已開始";
+            if(nowTaskList.getTaskNumber().equals(taskNumber)) {
+                if(nowTaskList.getProgress() != 0) {
+//                    return "取消任務失敗： 任務已開始";
+                    endTask(taskNumber);
+                    log.info("Force End task {} success!", taskNumber);
+                    return "結束任務 ".concat(taskNumber).concat(" 成功！");
+                } else {
+                    taskListManager.clearNowTaskListByTaskNumber(taskNumber);
                 }
             }
         }
@@ -124,6 +150,26 @@ public class TaskService {
             }
         });
         return "取消任務 ".concat(taskNumber).concat(" 成功！");
+    }
+
+    private void endTask(String taskNumber) {
+        Integer processId = taskListManager.getProcessIdByTaskNumber(taskNumber);
+        if (processId == 2) {
+            taskListManager.cancelTaskList(2);
+            agvTaskManager.forceClearTaskQueueByAGVId(2);
+            AGV agv2 = agvManager.getAgv(2);
+            processAGVTask.failedTask(agv2);
+        } else if (processId == 1) {
+            elevatorManager.controlElevatorTO(null);
+            elevatorManager.resetElevatorPermission();
+            taskListManager.cancelTaskList(1);
+            agvTaskManager.forceClearTaskQueueByAGVId(1);
+            agvTaskManager.forceClearTaskQueueByAGVId(3);
+            AGV agv1 = agvManager.getAgv(1);
+            AGV agv3 = agvManager.getAgv(3);
+            processAGVTask.failedTask(agv1);
+            processAGVTask.failedTask(agv3);
+        }
     }
 
     public String addTaskList(TaskListRequest taskListRequest){
@@ -427,5 +473,21 @@ public class TaskService {
                         taskListRequest.getTasks().get(index).getLineCode().get(2),
                         taskListRequest.getTasks().get(index).getLineCode().get(3));
         }
+    }
+
+    public boolean isHasSystemEvent() {
+        return hasSystemEvent;
+    }
+
+    public void setHasSystemEvent(boolean hasSystemEvent) {
+        this.hasSystemEvent = hasSystemEvent;
+    }
+
+    public String getSystemEventClientOption() {
+        return systemEventClientOption;
+    }
+
+    public void setSystemEventClientOption(String systemEventClientOption) {
+        this.systemEventClientOption = systemEventClientOption;
     }
 }

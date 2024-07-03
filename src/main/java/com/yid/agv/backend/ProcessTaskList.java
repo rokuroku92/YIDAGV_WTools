@@ -51,13 +51,13 @@ public class ProcessTaskList {
             List<TaskDetail> taskDetails = taskListManager.getTaskDetailByTaskNumber(nowTaskList.getTaskNumber());
 
             if (nowTaskList.getTaskNumber().startsWith("#YE")) {
-                AGV agv1 = agvManager.getAgv(1);
-                AGV agv3 = agvManager.getAgv(3);
-                if (nowTaskList.getPhase() == Phase.PRE_START
-                        && (agv1.getStatus() != AGV.Status.ONLINE
-                        || agv1.isILowBattery()
-                        || agv3.getStatus() != AGV.Status.ONLINE
-                        || agv3.isILowBattery())) continue;
+//                AGV agv1 = agvManager.getAgv(1);
+//                AGV agv3 = agvManager.getAgv(3);
+//                if (nowTaskList.getPhase() == Phase.PRE_START
+//                        && (agv1.getStatus() != AGV.Status.ONLINE
+//                        || agv1.isILowBattery()
+//                        || agv3.getStatus() != AGV.Status.ONLINE
+//                        || agv3.isILowBattery())) continue;
                 handleYETask(nowTaskList, taskDetails, i);
 //                handleYETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#RE")) {
@@ -71,10 +71,10 @@ public class ProcessTaskList {
                 handleRETask(nowTaskList, taskDetails, i);
 //                handleRETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#NE")) {
-                AGV agv2 = agvManager.getAgv(2);
-                if (nowTaskList.getPhase() == Phase.PRE_START
-                        && (agv2.getStatus() != AGV.Status.ONLINE
-                        || agv2.isILowBattery())) continue;
+//                AGV agv2 = agvManager.getAgv(2);
+//                if (nowTaskList.getPhase() == Phase.PRE_START
+//                        && (agv2.getStatus() != AGV.Status.ONLINE
+//                        || agv2.isILowBattery())) continue;
                 handleNETask(nowTaskList, taskDetails, i);
             }
         }
@@ -441,7 +441,7 @@ public class ProcessTaskList {
     private void handleNETask(NowTaskList nowTaskList, List<TaskDetail> taskDetails, int taskProcessId){
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
-                if (agvManager.getAgv(2).getStatus() == AGV.Status.ONLINE) {
+//                if (agvManager.getAgv(2).getStatus() == AGV.Status.ONLINE) {
                     taskListManager.setTaskListProgress(nowTaskList, 1);
                     taskDetails.forEach(taskDetail -> {
                         if (taskDetail.getTitle().equals("AMR#2")) {
@@ -452,7 +452,7 @@ public class ProcessTaskList {
                         }
                     });
                     taskListManager.setTaskListPhase(nowTaskList, Phase.TRANSFER);
-                }
+//                }
             }
             case TRANSFER -> {
                 if (agvTaskManager.isEmpty(2) && agvManager.getAgv(2).getTask() == null) {

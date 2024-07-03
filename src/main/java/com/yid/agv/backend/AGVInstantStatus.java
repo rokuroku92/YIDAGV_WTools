@@ -3,8 +3,11 @@ package com.yid.agv.backend;
 import com.yid.agv.backend.agv.AGVManager;
 import com.yid.agv.backend.agv.AGV;
 import com.yid.agv.backend.agvtask.AGVQTask;
+import com.yid.agv.backend.agvtask.AGVTaskManager;
+import com.yid.agv.backend.tasklist.TaskListManager;
 import com.yid.agv.model.Station;
 import com.yid.agv.repository.*;
+import com.yid.agv.service.TaskService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,9 @@ public class AGVInstantStatus {
     private final NotificationDao notificationDao;
     private final TaskDetailDao taskDetailDao;
     private final AGVManager agvManager;
+    private final TaskService taskService;
+    private final TaskListManager taskListManager;
+    private final AGVTaskManager agvTaskManager;
 //    private final GridManager gridManager;
     private final ProcessAGVTask processTasks;
     private final Map<Integer, Integer> stationIdTagMap;
@@ -51,12 +57,18 @@ public class AGVInstantStatus {
                             NotificationDao notificationDao,
                             TaskDetailDao taskDetailDao,
                             AGVManager agvManager,
+                            TaskService taskService,
+                            TaskListManager taskListManager,
+                            AGVTaskManager agvTaskManager,
 //                            GridManager gridManager,
                             ProcessAGVTask processTasks) {
         this.stationDao = stationDao;
         this.notificationDao = notificationDao;
         this.taskDetailDao = taskDetailDao;
         this.agvManager = agvManager;
+        this.taskService = taskService;
+        this.taskListManager = taskListManager;
+        this.agvTaskManager = agvTaskManager;
 //        this.gridManager = gridManager;
         this.processTasks = processTasks;
         this.stationIdTagMap = stationDao.queryStations().stream()
@@ -215,16 +227,40 @@ public class AGVInstantStatus {
 
     }
 
-    private void handleFailedTask(AGV agv){
+    private void handleFailedTask(AGV agv) {
         if(!processTasks.getIsRetrying() && agv.getTask()!=null){
             int reDispatchCount = agv.getReDispatchCount();
             if(reDispatchCount < 3) {
                 notificationDao.insertMessage(NotificationDao.Title.AGV_SYSTEM, NotificationDao.Status.FAILED_EXECUTION_TASK);
                 processTasks.dispatchTaskToAGV(agv);
                 agv.setReDispatchCount(++reDispatchCount);
+                agv.setReDispatchCount(reDispatchCount);
             } else if (reDispatchCount == 3) {
-                processTasks.failedTask(agv);
-                agv.setReDispatchCount(0);
+//                processTasks.failedTask(agv);
+//                agv.setReDispatchCount(0);
+                if (!taskService.isHasSystemEvent()) {
+                    taskService.setHasSystemEvent(true);
+                    taskService.setSystemEventClientOption("Unknown");
+                }
+
+                if (taskService.getSystemEventClientOption().equals("Continue")) {
+                    agv.setReDispatchCount(0);
+                    taskService.setHasSystemEvent(false);
+                    taskService.setSystemEventClientOption("Unknown");
+                } else if (taskService.getSystemEventClientOption().equals("Cancel")) {
+                    processTasks.failedTask(agv);
+                    agv.setReDispatchCount(0);
+                    taskService.setHasSystemEvent(false);
+                    taskService.setSystemEventClientOption("Unknown");
+                    if (agv.getId() == 2) {
+                        taskListManager.cancelTaskList(2);
+                        agvTaskManager.forceClearTaskQueueByAGVId(2);
+                    } else if (agv.getId() == 1 || agv.getId() == 3) {
+                        taskListManager.cancelTaskList(1);
+                        agvTaskManager.forceClearTaskQueueByAGVId(1);
+                        agvTaskManager.forceClearTaskQueueByAGVId(3);
+                    }
+                }
             }
         }
     }
