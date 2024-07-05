@@ -122,7 +122,9 @@ public class TaskListManager {
 
     public void clearNowTaskListByTaskNumber(String taskNumber){
         taskListMap.forEach((taskProcessId, taskList) -> {
-            if(taskList.getTaskNumber().equals(taskNumber)){
+            if(taskList != null
+                    && taskList.getTaskNumber() != null
+                    && taskList.getTaskNumber().equals(taskNumber)){
                 taskListMap.put(taskProcessId, null);
             }
         });
