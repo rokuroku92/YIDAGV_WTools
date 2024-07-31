@@ -15,9 +15,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateAGVStatus();  //  取得狀態資料
     updateTaskLists();
     updateNotifications();
+    getSystemEvent();
+
     setInterval(updateAGVStatus, 1000);  //  每秒更新
     setInterval(updateTaskLists, 1000);
     setInterval(updateNotifications, 1000);
+    setInterval(getSystemEvent, 1000);
 });
 
 function setAGVList() {
@@ -581,7 +584,7 @@ function getSystemEvent() {
     xhr.send();
     xhr.onload = function () {
         if (xhr.status == 200) {
-            var ihasEvent = this.responseText;
+            let ihasEvent = this.responseText;
             if (ihasEvent == "YES" && document.getElementById('systemOptionModal').style.display != 'block') {
                 $('#systemOptionModal').modal('show');
             } else if (ihasEvent == "NO" && document.getElementById('systemOptionModal').style.display == 'block') {
@@ -599,4 +602,31 @@ async function setSystemEventClientOption(option) {
         console.log("SystemEventSet Error!");
         console.log("response: ", response);
     }
+}
+
+var cancelTaskAlarm = false;
+function getTaskError() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', baseUrl + "/api/taskError", true);
+    xhr.send();
+    xhr.onload = function () {
+        if (xhr.status == 200) {
+            let response = this.responseText;
+            if (response != "NO" && !cancelTaskAlarm && document.getElementById('taskErrorModal').style.display != 'block') {
+                document.getElementById("taskErrorContent").innerHTML = response;
+                $('#taskErrorModal').modal('show');
+            } else if (response == "NO" && document.getElementById('taskErrorModal').style.display == 'block') {
+                $('#taskErrorModal').modal('hide');
+                cancelTaskAlarm = false;
+                document.getElementById("taskErrorContent").innerHTML = "";
+            } else {
+                cancelTaskAlarm = false;
+                document.getElementById("taskErrorContent").innerHTML = "";
+            }
+        }
+    };
+}
+
+function closeTaskAlarm() {
+    cancelTaskAlarm = true;
 }

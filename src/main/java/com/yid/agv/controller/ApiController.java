@@ -69,6 +69,11 @@ public class ApiController {
         return gson.toJson(taskService.queryAllTaskLists());
     }
 
+    @GetMapping(value = "/taskError", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String tskError(){
+        return taskService.getTaskError().isEmpty() ? "NO" : taskService.getTaskError();
+    }
+
     @GetMapping(value = "/elevator/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public String getElevatorStatus() {
         return gson.toJson(elevatorService.getElevatorStatus());

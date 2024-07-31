@@ -1,10 +1,10 @@
 package com.yid.agv.backend.elevator;
 
+import com.yid.agv.repository.NotificationDao;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,9 @@ public class ElevatorManager {
     private String agvUrl;
     @Value("${elevator.pre_person_open_door_duration}")
     private int prePersonOpenDoorDuration;
-    @Autowired
-    private ElevatorSocketBox elevatorSocketBox;
+    private final ElevatorSocketBox elevatorSocketBox;
+    private final NotificationDao notificationDao;
+
     @Getter
     private ElevatorPermission elevatorPermission;
     private boolean hasOpenedDoorBefore;
@@ -46,7 +47,10 @@ public class ElevatorManager {
     /**
      * ElevatorManager 的構造函數。
      */
-    public ElevatorManager() {
+    public ElevatorManager(ElevatorSocketBox elevatorSocketBox,
+                           NotificationDao notificationDao) {
+        this.elevatorSocketBox = elevatorSocketBox;
+        this.notificationDao = notificationDao;
         elevatorCallerMap = new HashMap<>();
         callQueue = new ConcurrentLinkedDeque<>();
     }
@@ -59,7 +63,10 @@ public class ElevatorManager {
         prePersonOpenDoorCount = 0;
         elevatorPersonCount = 0;
         for (int i = 2; i <= 5; i++) {  // TODO: 改為 int i = 1; i <= 5; i++
-            elevatorCallerMap.put(i, new ElevatorCaller(i));
+            ElevatorCaller elevatorCaller = new ElevatorCaller(i);
+            elevatorCallerMap.put(i, elevatorCaller);
+            updateCaller1OfflineStatus(elevatorCaller);
+            updateCaller2OfflineStatus(elevatorCaller);
         }
         elevatorPermission = ElevatorPermission.FREE;
     }
@@ -191,6 +198,15 @@ public class ElevatorManager {
      * @param elevatorCaller 電梯呼叫器對象
      */
     private void updateCaller1OfflineStatus(ElevatorCaller elevatorCaller){
+        if (!elevatorCaller.isICaller1Offline()) {
+            switch (elevatorCaller.getFloor()) {
+                case 1 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_1, NotificationDao.Status.OFFLINE);
+                case 2 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_3, NotificationDao.Status.OFFLINE);
+                case 3 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_5, NotificationDao.Status.OFFLINE);
+                case 4 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_7, NotificationDao.Status.OFFLINE);
+                case 5 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_9, NotificationDao.Status.OFFLINE);
+            }
+        }
         elevatorCaller.setICaller1Offline(true);
         elevatorCaller.setGreenLight(ElevatorCaller.IOStatus.UNKNOWN);
         elevatorCaller.setYellowLight(ElevatorCaller.IOStatus.UNKNOWN);
@@ -203,6 +219,15 @@ public class ElevatorManager {
      * @param elevatorCaller 電梯呼叫器對象
      */
     private void updateCaller2OfflineStatus(ElevatorCaller elevatorCaller){
+        if (!elevatorCaller.isICaller2Offline()) {
+            switch (elevatorCaller.getFloor()) {
+                case 1 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_2, NotificationDao.Status.OFFLINE);
+                case 2 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_4, NotificationDao.Status.OFFLINE);
+                case 3 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_6, NotificationDao.Status.OFFLINE);
+                case 4 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_8, NotificationDao.Status.OFFLINE);
+                case 5 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_10, NotificationDao.Status.OFFLINE);
+            }
+        }
         elevatorCaller.setICaller2Offline(true);
     }
 
@@ -212,6 +237,15 @@ public class ElevatorManager {
      * @param data 電梯呼叫器數據
      */
     private void updateCaller1OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
+        if (elevatorCaller.isICaller1Offline()) {
+            switch (elevatorCaller.getFloor()) {
+                case 1 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_1, NotificationDao.Status.ONLINE);
+                case 2 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_3, NotificationDao.Status.ONLINE);
+                case 3 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_5, NotificationDao.Status.ONLINE);
+                case 4 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_7, NotificationDao.Status.ONLINE);
+                case 5 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_9, NotificationDao.Status.ONLINE);
+            }
+        }
         elevatorCaller.setICaller1Offline(false);
         elevatorCaller.setInstantCaller1Value(Integer.parseInt(data[1]));
         Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
@@ -241,6 +275,16 @@ public class ElevatorManager {
      * @param data 電梯呼叫器數據
      */
     private void updateCaller2OnlineStatus(ElevatorCaller elevatorCaller, String[] data){
+        if (elevatorCaller.isICaller2Offline()) {
+            switch (elevatorCaller.getFloor()) {
+                case 1 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_2, NotificationDao.Status.ONLINE);
+                case 2 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_4, NotificationDao.Status.ONLINE);
+                case 3 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_6, NotificationDao.Status.ONLINE);
+                case 4 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_8, NotificationDao.Status.ONLINE);
+                case 5 -> notificationDao.insertMessage(NotificationDao.Title.CALLER_10, NotificationDao.Status.ONLINE);
+            }
+        }
+
         elevatorCaller.setICaller2Offline(false);
         elevatorCaller.setInstantCaller2Value(Integer.parseInt(data[1]));
         Optional<boolean[]> optionalIOValue = Optional.ofNullable(parseStatus(Integer.parseInt(data[1])));
@@ -529,5 +573,8 @@ public class ElevatorManager {
     }
 
 
+    public Map<Integer, ElevatorCaller> getElevatorCallerMap() {
+        return elevatorCallerMap;
+    }
 
 }

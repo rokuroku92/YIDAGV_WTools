@@ -4,6 +4,7 @@ import com.yid.agv.backend.agv.AGV;
 import com.yid.agv.backend.agv.AGVManager;
 import com.yid.agv.backend.agvtask.AGVQTask;
 import com.yid.agv.backend.agvtask.AGVTaskManager;
+import com.yid.agv.backend.elevator.ElevatorCaller;
 import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.elevator.ElevatorPermission;
 import com.yid.agv.backend.tasklist.TaskListManager;
@@ -11,6 +12,7 @@ import com.yid.agv.model.NowTaskList;
 import com.yid.agv.model.TaskDetail;
 import com.yid.agv.repository.Phase;
 import com.yid.agv.repository.TaskDetailDao;
+import com.yid.agv.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,19 +29,22 @@ public class ProcessTaskList {
     private final TaskListManager taskListManager;
     private final ElevatorManager elevatorManager;
     private final ProcessAGVTask processAGVTask;
+    private final TaskService taskService;
 
     public ProcessTaskList(TaskDetailDao taskDetailDao,
                            AGVManager agvManager,
                            AGVTaskManager agvTaskManager,
                            TaskListManager taskListManager,
                            ElevatorManager elevatorManager,
-                           ProcessAGVTask processAGVTask) {
+                           ProcessAGVTask processAGVTask,
+                           TaskService taskService) {
         this.taskDetailDao = taskDetailDao;
         this.agvManager = agvManager;
         this.agvTaskManager = agvTaskManager;
         this.taskListManager = taskListManager;
         this.elevatorManager = elevatorManager;
         this.processAGVTask = processAGVTask;
+        this.taskService = taskService;
     }
 
     @Scheduled(fixedRate = 4000)
@@ -270,7 +275,20 @@ public class ProcessTaskList {
     private void handleYETask(NowTaskList nowTaskList, List<TaskDetail> taskDetails, int taskProcessId){
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
-                if(elevatorManager.acquireElevatorPermission()){  // check elevator permission
+                for (ElevatorCaller elevatorCaller : elevatorManager.getElevatorCallerMap().values()) {
+                    if (elevatorCaller.getFloor() == 2 || elevatorCaller.getFloor() == 4) {
+                        if (elevatorCaller.isICaller1Offline()) {
+                            taskService.setTaskError("遠端IO控制盒 ID: " + (elevatorCaller.getFloor()*2-1) + " 離線");
+                            return;
+                        } else if (elevatorCaller.isICaller2Offline()) {
+                            taskService.setTaskError("遠端IO控制盒 ID: " + (elevatorCaller.getFloor()*2) + " 離線");
+                            return;
+                        }
+                    }
+                }
+                taskService.setTaskError("");
+
+                if (elevatorManager.acquireElevatorPermission()) {  // check elevator permission
                     elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.CALL_ELEVATOR);
                     taskListManager.setTaskListProgress(nowTaskList, 1);
@@ -354,6 +372,19 @@ public class ProcessTaskList {
     private void handleRETask(NowTaskList nowTaskList, List<TaskDetail> taskDetails, int taskProcessId){
         switch (nowTaskList.getPhase()) {
             case PRE_START -> {
+                for (ElevatorCaller elevatorCaller : elevatorManager.getElevatorCallerMap().values()) {
+                    if (elevatorCaller.getFloor() == 2 || elevatorCaller.getFloor() == 4) {
+                        if (elevatorCaller.isICaller1Offline()) {
+                            taskService.setTaskError("遠端IO控制盒 ID: " + (elevatorCaller.getFloor()*2-1) + " 離線");
+                            return;
+                        } else if (elevatorCaller.isICaller2Offline()) {
+                            taskService.setTaskError("遠端IO控制盒 ID: " + (elevatorCaller.getFloor()*2) + " 離線");
+                            return;
+                        }
+                    }
+                }
+                taskService.setTaskError("");
+
                 taskDetails.forEach(taskDetail -> {
                     if (taskDetail.getTitle().equals("AMR#3") && taskDetail.getTerminal().startsWith("3-T-")) {
                         AGVQTask task = new AGVQTask();

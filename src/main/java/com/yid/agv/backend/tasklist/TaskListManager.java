@@ -1,5 +1,6 @@
 package com.yid.agv.backend.tasklist;
 
+import com.yid.agv.backend.elevator.ElevatorManager;
 import com.yid.agv.backend.station.Grid;
 import com.yid.agv.backend.station.GridManager;
 import com.yid.agv.model.NowTaskList;
@@ -23,16 +24,11 @@ import java.util.Map;
 @Component
 public class TaskListManager {
     private static final Logger log = LoggerFactory.getLogger(TaskListManager.class);
-    @Autowired
-    private NowTaskListDao nowTaskListDao;
-    @Autowired
-    private TaskListDao taskListDao;
-    @Autowired
-    private TaskDetailDao taskDetailDao;
-    @Autowired
-    private GridListDao gridListDao;
-    @Autowired
-    private GridManager gridManager;
+    private final NowTaskListDao nowTaskListDao;
+    private final TaskListDao taskListDao;
+    private final TaskDetailDao taskDetailDao;
+    private final GridListDao gridListDao;
+    private final GridManager gridManager;
 
     private final Map<Integer, NowTaskList> taskListMap;
     private final Map<String, List<TaskDetail>> taskDetailsMap;
@@ -40,7 +36,16 @@ public class TaskListManager {
     /**
      * TaskListManager 的建構函數，初始化 taskListMap 和 taskDetailsMap。
      */
-    public TaskListManager() {
+    public TaskListManager(NowTaskListDao nowTaskListDao,
+                           TaskListDao taskListDao,
+                           TaskDetailDao taskDetailDao,
+                           GridListDao gridListDao,
+                           GridManager gridManager) {
+        this.nowTaskListDao = nowTaskListDao;
+        this.taskListDao = taskListDao;
+        this.taskDetailDao = taskDetailDao;
+        this.gridListDao = gridListDao;
+        this.gridManager = gridManager;
         taskListMap = new HashMap<>();
         taskDetailsMap = new HashMap<>();
     }
@@ -65,10 +70,10 @@ public class TaskListManager {
         taskListMap.put(taskProcessId, null);
         List<NowTaskList> unCompletedTaskLists = nowTaskListDao.queryNowTaskListsByProcessId(taskProcessId);
         unCompletedTaskLists.forEach(unCompletedTaskList -> {
-            if (unCompletedTaskList.getProgress() != 0){
+            if (unCompletedTaskList.getProgress() != 0) {
                 List<TaskDetail> unCompletedTaskDetails = taskDetailDao.queryTaskDetailsByTaskNumber(unCompletedTaskList.getTaskNumber());
                 unCompletedTaskDetails.forEach(unCompletedTaskDetail -> {
-                    if(unCompletedTaskDetail.getStatus() != 100) {
+                    if (unCompletedTaskDetail.getStatus() != 100) {
                         log.info("Cancel： {} : {}", unCompletedTaskDetail.getTaskNumber(), unCompletedTaskDetail.getSequence());
                         if(unCompletedTaskDetail.getMode()!=100 && unCompletedTaskDetail.getMode()!=101){
                             gridManager.setGridStatus(unCompletedTaskDetail.getStartId(), Grid.Status.FREE);

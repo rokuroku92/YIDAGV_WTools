@@ -54,6 +54,7 @@ public class TaskService {
     private String lastDate;
     private boolean hasSystemEvent;
     private String systemEventClientOption;
+    private String taskError;
 
     public TaskService(TaskListDao taskListDao,
                        NowTaskListDao nowTaskListDao,
@@ -79,6 +80,7 @@ public class TaskService {
         this.jdbcTemplate = jdbcTemplate;
         this.hasSystemEvent = false;
         this.systemEventClientOption = "Unknown";
+        this.taskError = "";
     }
 
     private @Nullable WorkNumberResult getWToolsInformation(@NotNull String workNumber) throws CannotGetJdbcConnectionException {
@@ -489,5 +491,12 @@ public class TaskService {
 
     public void setSystemEventClientOption(String systemEventClientOption) {
         this.systemEventClientOption = systemEventClientOption;
+    }
+
+    public String getTaskError() {
+        return taskError;
+    }
+    public void setTaskError(String taskError) {
+        this.taskError = taskError;
     }
 }

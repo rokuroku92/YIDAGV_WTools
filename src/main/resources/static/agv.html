@@ -1166,14 +1166,38 @@
             <h5 class="modal-title" id="systemOptionModalLabel">系統訊息</h5>
             <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
           </div>
-          <div id="alarmInfo" class="modal-body">
+          <div class="modal-body">
             <p>系統任務發送失敗，是否繼續執行任務？</p>
           </div>
           <div class="modal-footer">
-            <button id="closeAlarmBTN" type="button" class="btn btn-primary" data-bs-dismiss="modal"
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
               onclick="setSystemEventClientOption('Continue')">繼續發送</button>
-            <button id="closeAlarmBTN" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
               onclick="setSystemEventClientOption('Cancel')">停止並取消任務</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="taskErrorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="taskErrorModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header" style="justify-content: start;">
+            <svg style="fill: #ffbb00;" width="30" height="30">
+              <use xlink:href="#alarmWarning"></use>
+            </svg>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <h5 class="modal-title" id="systemOptionModalLabel">系統訊息</h5>
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+          </div>
+          <div class="modal-body">
+            <p id="taskErrorContent"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              onclick="closeTaskAlarm()">取消警報</button>
           </div>
         </div>
       </div>
