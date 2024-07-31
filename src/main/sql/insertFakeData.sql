@@ -292,8 +292,16 @@ INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('AGV System
 INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('AMR#1', 'AMR#1');
 INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('AMR#2', 'AMR#2');
 INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('AMR#3', 'AMR#3');
--- INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller1', 'Caller1');
--- INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller2', 'Caller2');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller1', 'Caller1');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller2', 'Caller2');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller3', 'Caller3');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller4', 'Caller4');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller5', 'Caller5');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller6', 'Caller6');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller7', 'Caller7');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller8', 'Caller8');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller9', 'Caller9');
+INSERT INTO `notification_history_title_data`(`name`, `memo`) VALUES('Caller10', 'Caller10');
 
 
 

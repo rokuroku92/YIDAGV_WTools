@@ -39,6 +39,7 @@ SELECT tl.id, tl.task_number, tl.create_task_time, tl.steps, tl.progress, tp.nam
 SELECT * FROM task_detail;
 SELECT * FROM task_list;
 SELECT * FROM task_phase;
+SELECT * FROM notification_history_title_data;
 SELECT * FROM now_task_list;
 SElECT * FROM now_task_list WHERE task_number LIKE "#YE%" OR task_number LIKE "#RE%" ORDER BY id;
 INSERT INTO `now_task_list`(`task_number`, `steps`) VALUES('#YE202311030001', 8);
