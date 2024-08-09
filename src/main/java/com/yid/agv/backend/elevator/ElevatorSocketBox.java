@@ -82,61 +82,81 @@ public class ElevatorSocketBox {
      * elevatorSocketBoxMain 方法用於執行與電梯控制盒的主要通信邏輯。
      */
     public void elevatorSocketBoxMain() {
-        connectToServer();
-        // 啟動接收訊息的執行緒
-        receiveThread = new Thread(() -> {
-            log.info("receiveThread");
-            try {
-                while (running) {
-                    // 從伺服器接收訊息
-                    String serverMessage = readInputStream(reader);
-                    if (serverMessage == null) {
-                        // Server has closed the connection
-                        log.warn("Server has closed the connection, trying to reconnect...");
-                        reStartThread();
-                    } else {
-//                        log.info("ServerMessage: " + serverMessage);
-                        failSocketCount--;
-                        if(serverMessage.matches("^QQQ([A-Z]\\d{4})XXX$")){
-                            // update status
-                            String resultMode = serverMessage.substring(3, 4);
-                            int resultValue = Integer.parseInt(serverMessage.substring(4, 8));
-                            boolean[] parseResultValue = parseCommand(resultValue);
-                            if ("R".equals(resultMode)) {
-//                                ElevatorBoxI??? = Objects.requireNonNull(parseResultValue)[0];
-                                ElevatorBoxManual = Objects.requireNonNull(parseResultValue)[1] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
-                                ElevatorBoxScan = Objects.requireNonNull(parseResultValue)[2] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
-                                ElevatorBoxError = Objects.requireNonNull(parseResultValue)[3] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
-                                ElevatorBoxBuzzer = Objects.requireNonNull(parseResultValue)[4] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
-                            }
+        try {
+            connectToServer();
 
+            // Check and log thread status before starting new threads
+            if (receiveThread != null && receiveThread.isAlive()) {
+                log.warn("Receive thread is still running. Stopping it before starting a new one.");
+                receiveThread.interrupt();
+                receiveThread.join();
+            }
+
+            if (sendThread != null && sendThread.isAlive()) {
+                log.warn("Send thread is still running. Stopping it before starting a new one.");
+                sendThread.interrupt();
+                sendThread.join();
+            }
+
+            // 啟動接收訊息的執行緒
+            receiveThread = new Thread(() -> {
+                log.info("receiveThread");
+                try {
+                    while (running) {
+                        // 從伺服器接收訊息
+                        String serverMessage = readInputStream(reader);
+                        if (serverMessage == null) {
+                            // Server has closed the connection
+                            log.warn("Server has closed the connection, trying to reconnect...");
+                            reStartThread();
+                        } else {
+//                        log.info("ServerMessage: " + serverMessage);
+                            failSocketCount--;
+                            if(serverMessage.matches("^QQQ([A-Z]\\d{4})XXX$")){
+                                // update status
+                                String resultMode = serverMessage.substring(3, 4);
+                                int resultValue = Integer.parseInt(serverMessage.substring(4, 8));
+                                boolean[] parseResultValue = parseCommand(resultValue);
+                                if ("R".equals(resultMode)) {
+//                                ElevatorBoxI??? = Objects.requireNonNull(parseResultValue)[0];
+                                    ElevatorBoxManual = Objects.requireNonNull(parseResultValue)[1] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                    ElevatorBoxScan = Objects.requireNonNull(parseResultValue)[2] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                    ElevatorBoxError = Objects.requireNonNull(parseResultValue)[3] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                    ElevatorBoxBuzzer = Objects.requireNonNull(parseResultValue)[4] ? ElevatorBoxStatus.TRUE : ElevatorBoxStatus.FALSE;
+                                }
+
+                            }
                         }
                     }
+                    log.info("ReceiveThread stop.");
+                } catch (SocketException s) {
+                    reStartThread();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    reStartThread();
                 }
-                log.info("ReceiveThread stop.");
-            } catch (SocketException s) {
-                reStartThread();
-            } catch (IOException e) {
-                e.printStackTrace();
-                reStartThread();
-            }
-        });
-        receiveThread.setDaemon(false);
-        receiveThread.start();
+            });
+            receiveThread.setDaemon(false);
+            receiveThread.start();
 
-        // 啟動發送訊息的執行緒
-        sendThread = new Thread(() -> {
-            log.info("sendThread");
-            try {
-                while (running) {
-                    sendCommandToElevatorBox(defaultCommand);
-                    Thread.sleep(1000);
-                }
-            } catch (InterruptedException ignore) {
+            // 啟動發送訊息的執行緒
+            sendThread = new Thread(() -> {
+                log.info("sendThread");
+                try {
+                    while (running) {
+                        sendCommandToElevatorBox(defaultCommand);
+                        Thread.sleep(1000);
+                    }
+                } catch (InterruptedException ignore) {
 //                i.printStackTrace();
-            }
-        });
-        sendThread.start();
+                }
+            });
+            sendThread.start();
+
+        } catch (Exception e) {
+            log.error("Exception in elevatorSocketBoxMain: ", e);
+            reStartThread();
+        }
 
         // 設定 ShutdownHook
 //        Runtime.getRuntime().addShutdownHook(new Thread(this::cleanup));
@@ -181,9 +201,11 @@ public class ElevatorSocketBox {
     private void connectToServer() {
         try {
             if (socket != null && !socket.isClosed()) {
+                log.info("Closing existing socket connection...");
                 socket.close();
             }
 
+            log.info("Attempting to connect to ElevatorBox at IP: {} Port: {}", ELEVATOR_IP, ELEVATOR_PORT);
             socket = new Socket();
             socket.connect(new InetSocketAddress(ELEVATOR_IP, ELEVATOR_PORT), ELEVATOR_TIMEOUT);
 
@@ -200,9 +222,10 @@ public class ElevatorSocketBox {
             log.info("Connected to ElevatorBox!");
             iCon=true;
         } catch (IOException e) {
-            if(iCon){
+            log.warn("Failed to connect to ElevatorSocketBox: ", e);
+            if (iCon) {
                 log.warn("Failed to connect to ElevatorSocketBox, try again later...");
-                iCon=false;
+                iCon = false;
             }
             try {
                 Thread.sleep(1000);
@@ -218,9 +241,8 @@ public class ElevatorSocketBox {
             log.info("Do restart thread...");
             cleanup();
             running = true;
-            if(!socket.isClosed()){
-                elevatorSocketBoxMain();
-            }
+            log.info("Starting elevatorSocketBoxMain after cleanup...");
+            elevatorSocketBoxMain();
         }
     }
 
@@ -258,7 +280,7 @@ public class ElevatorSocketBox {
     public synchronized void sendCommandToElevatorBox(ElevatorBoxCommand elevatorBoxCommand){
         if (socket != null && !socket.isClosed() && writer != null) {
             if(elevatorBoxCommand != ElevatorBoxCommand.ASK_STATUS){
-                log.info("ElevatorBox Command: " + elevatorBoxCommand.getCommand());
+                log.info("ElevatorBox Command: {}", elevatorBoxCommand.getCommand());
             }
             writer.println(elevatorBoxCommand.getCommand());
             failSocketCount++;

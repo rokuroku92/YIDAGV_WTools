@@ -3,9 +3,6 @@
     src: url("US101.TTF");
     font-weight: bold;
 }
-::-webkit-scrollbar {
-    display: none;
-}
 .Title{
     margin-left: 1em;
     padding-left: 0px;

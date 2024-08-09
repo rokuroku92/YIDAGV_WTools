@@ -56,13 +56,13 @@ public class ProcessTaskList {
             List<TaskDetail> taskDetails = taskListManager.getTaskDetailByTaskNumber(nowTaskList.getTaskNumber());
 
             if (nowTaskList.getTaskNumber().startsWith("#YE")) {
-//                AGV agv1 = agvManager.getAgv(1);
-//                AGV agv3 = agvManager.getAgv(3);
-//                if (nowTaskList.getPhase() == Phase.PRE_START
-//                        && (agv1.getStatus() != AGV.Status.ONLINE
-//                        || agv1.isILowBattery()
-//                        || agv3.getStatus() != AGV.Status.ONLINE
-//                        || agv3.isILowBattery())) continue;
+                AGV agv1 = agvManager.getAgv(1);
+                AGV agv3 = agvManager.getAgv(3);
+                if (nowTaskList.getPhase() == Phase.PRE_START
+                        && (agv1.getStatus() != AGV.Status.ONLINE
+                        || agv1.isILowBattery()
+                        || agv3.getStatus() != AGV.Status.ONLINE
+                        || agv3.isILowBattery())) continue;
                 handleYETask(nowTaskList, taskDetails, i);
 //                handleYETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#RE")) {
@@ -76,10 +76,10 @@ public class ProcessTaskList {
                 handleRETask(nowTaskList, taskDetails, i);
 //                handleRETaskTEST(nowTaskList, taskDetails, i);
             } else if (nowTaskList.getTaskNumber().startsWith("#NE")) {
-//                AGV agv2 = agvManager.getAgv(2);
-//                if (nowTaskList.getPhase() == Phase.PRE_START
-//                        && (agv2.getStatus() != AGV.Status.ONLINE
-//                        || agv2.isILowBattery())) continue;
+                AGV agv2 = agvManager.getAgv(2);
+                if (nowTaskList.getPhase() == Phase.PRE_START
+                        && (agv2.getStatus() != AGV.Status.ONLINE
+                        || agv2.isILowBattery())) continue;
                 handleNETask(nowTaskList, taskDetails, i);
             }
         }
@@ -312,7 +312,7 @@ public class ProcessTaskList {
             }
             case FIRST_STAGE_1F -> {
                 AGVQTask task = agvManager.getAgv(1).getTask();
-                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)) ||
+                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(1)) && agvTaskManager.isEmpty(1) ||
                         (agvTaskManager.isEmpty(1) && task == null && agvManager.iAgvInStandbyStation(1))){
                     elevatorManager.controlElevatorTO(4);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
@@ -401,6 +401,7 @@ public class ProcessTaskList {
                     }
                 });
                 taskListManager.setTaskListPhase(nowTaskList, Phase.FIRST_STAGE_3F);
+                taskListManager.setTaskListProgress(nowTaskList, 1);
             }
             case FIRST_STAGE_3F -> {
                 if (agvTaskManager.isEmpty(3) && agvManager.getAgv(3).getTask() == null) {
@@ -428,7 +429,7 @@ public class ProcessTaskList {
             }
             case SECOND_STAGE_3F -> {
                 AGVQTask task = agvManager.getAgv(3).getTask();
-                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(3))
+                if((task != null && task.getTaskNumber().startsWith("#SB") && !agvManager.iAgvInElevator(3)) && agvTaskManager.isEmpty(3)
                     || (agvTaskManager.isEmpty(3) && task == null && agvManager.iAgvInStandbyStation(3))) {
                     elevatorManager.controlElevatorTO(2);
                     taskListManager.setTaskListPhase(nowTaskList, Phase.ELEVATOR_TRANSFER);
